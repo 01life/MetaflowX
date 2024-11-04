@@ -1,0 +1,26 @@
+Cog_SYMBOL	Cog_DESCRIPTION	Cog_CATEGORIE
+J	Translation, ribosomal structure and biogenesis	INFORMATION STORAGE AND PROCESSING
+A	RNA processing and modification	INFORMATION STORAGE AND PROCESSING
+K	Transcription	INFORMATION STORAGE AND PROCESSING
+L	Replication, recombination and repair	INFORMATION STORAGE AND PROCESSING
+B	Chromatin structure and dynamics	INFORMATION STORAGE AND PROCESSING
+D	Cell cycle control, cell division, chromosome partitioning	CELLULAR PROCESSES AND SIGNALING
+Y	Nuclear structure	CELLULAR PROCESSES AND SIGNALING
+V	Defense mechanisms	CELLULAR PROCESSES AND SIGNALING
+T	Signal transduction mechanisms	CELLULAR PROCESSES AND SIGNALING
+M	Cell wall/membrane/envelope biogenesis	CELLULAR PROCESSES AND SIGNALING
+N	Cell motility	CELLULAR PROCESSES AND SIGNALING
+Z	Cytoskeleton	CELLULAR PROCESSES AND SIGNALING
+W	Extracellular structures	CELLULAR PROCESSES AND SIGNALING
+U	Intracellular trafficking, secretion, and vesicular transport	CELLULAR PROCESSES AND SIGNALING
+O	Posttranslational modification, protein turnover, chaperones	CELLULAR PROCESSES AND SIGNALING
+C	Energy production and conversion	METABOLISM
+G	Carbohydrate transport and metabolism	METABOLISM
+E	Amino acid transport and metabolism	METABOLISM
+F	Nucleotide transport and metabolism	METABOLISM
+H	Coenzyme transport and metabolism	METABOLISM
+I	Lipid transport and metabolism	METABOLISM
+P	Inorganic ion transport and metabolism	METABOLISM
+Q	Secondary metabolites biosynthesis, transport and catabolism	METABOLISM
+R	General function prediction only	POORLY CHARACTERIZED
+S	Function unknown	POORLY CHARACTERIZED

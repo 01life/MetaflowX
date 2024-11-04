@@ -1,0 +1,6 @@
+GH	GHs|Glycoside Hydrolases
+GT	GTs|GlycosylTransferases
+PL	PLs|Polysaccharide Lyase
+CE	CEs|Carbohydrate Esterases
+AA	AAs|Auxiliary Activities
+CB	CBMs|Carbohydrate-Binding Modules

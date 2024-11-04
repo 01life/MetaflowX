@@ -1,0 +1,312 @@
+# MetaflowX: Output
+
+## Introduction
+
+This document describes the output produced by the pipeline. The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
+
+<!-- TODO nf-core: Write this documentation describing your workflow's output -->
+
+## Pipeline overview
+
+The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
+
+- [Quality control](#quality-control) of input reads
+- [Contig assembly](#contig-assembly)
+- [Microbial taxonomy and metabolic function analysis](#microbial-taxonomy-and-metabolic-function-analysis)
+- [Gene catalog construction](#gene-catalog-construction)  
+- [Automated binning analysis](#automated-binning-analysis)
+- [Report generation](#report-generation) - generate html report, describing results of the whole pipeline
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+
+
+### Quality control
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `01.CleanData/`
+  - `clean.reads.path.list`
+  - `MetaflowX_all_sample_reads_stat.xls`
+  - `qc_report/`
+    - `readstat.xls`
+  - `sampleID/`
+    - `sampleID_clean_1.fq.gz`: clean readsampleID
+    - `sampleID_clean_2.fq.gz`: clean reads2
+    - `sampleID_fastp.html`: fastp report
+    - `sampleID_fastp.json`: fastp statistical data
+
+</details>
+
+
+### Contig assembly
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `02.Contig/`
+  - `all_contig_info.txt`
+  - `contig.path.list`
+  - `contig_report/`
+    - `contigstat.txt`
+  - `Megahit/`
+    - `sampleID/`
+      - `sampleID_contigs.fa`: the final contigs
+  - `MetaSPAdes/`
+    - `sampleID/`
+      - `sampleID_contigs.fa`: the final contigs
+
+
+</details>
+
+
+### Microbial taxonomy and metabolic function analysis
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+
+- `101.Metaphlan/`
+  - `MetaflowX_MetaPhlAn_abundance_table_nohead.xls`: abundance file of all samples without header information
+  - `MetaflowX_MetaPhlAn_abundance_table.xls`: abundance file of all samples
+  - `MetaflowX_MetaPhlAn_{level}.xls`: abundance at the biological level of phylum/class/order/family/genus/species
+  - `MetaflowX_MetaPhlAn_rel_ab_w_read_stats.xls`
+  - `MetaflowX_MetaPhlAn_sgb2gtdb.xls`
+  - `mpa_report/`
+    - `mpaspeciesTPCA.xls`
+    - `mpaspeciesT.xls`
+    - `mpaspecies.txt`
+  - `sampleID/`
+    - `sampleID_clade_profiles.xls`
+    - `sampleID_marker_ab_table.xls`
+    - `sampleID_marker_counts.xls`
+    - `sampleID_marker_pres_table.xls`
+    - `sampleID_mpa_bowtie2.bz2`
+    - `sampleID_reads_map.xls`
+    - `sampleID_rel_ab_w_read_stats.xls`
+    - `sampleID.xls`: taxonomic classification information of this sample
+
+- `101.Kraken2/`
+  - `kraken_report/`
+    - `krakenspeciesTPCA.xls`
+    - `krakenspeciesT.xls`
+    - `krakenspecies.txt`
+  - `MetaflowX_Kraken2_{level}.xls`: abundance at the biological level of domain/phylum/class/order/family/genus/species
+  - `sampleID/`
+    - `sampleID_bracken_{level}.xls`: taxonomic classification information of domains/phylums/classes/orders/families/genuses/species
+    - `sampleID_bracken_{level}_mpa.xls`:  taxonomic result file format same as Metaphlan
+    - `sampleID_kreport_bracken_{level}.xls`: taxonomic classification information of domains/phylums/classes/orders/families/genuses/species
+    - `sampleID_kreport.xls`: all taxonomy level information
+    
+- `102.HUMAnN/`
+  - `humann_report/`
+    - `metacyc.xls`
+  - `MetaflowX_HUMAnN_genefamilies.xls`: abundances of each gene family in the community in reads per kilobase (RPK) units of all samples
+  - `MetaflowX_HUMAnN_pathcoverage.xls`:  pathway coverage output of all samples
+  - `MetaflowX_HUMAnN_pathabundance.xls`: abundances of each pathway in the community in RPK units of this sample
+  - `MetaflowX_HUMAnN_{DB}.xls`: relative abundance of functional database like eggnog/go/ko/level4ec/MetaCyc/pfam
+  - `sampleID/`
+    - `sampleID_genefamilies.xls`: abundances of each gene family in the community in reads per kilobase (RPK) units of this sample
+    - `sampleID_pathcoverage.xls`: pathway coverage output of this sample
+    - `sampleID_pathabundance.xls`:  abundances of each pathway in the community in RPK units of this sample
+    - `sampleID_{DB}.xls`:  relative abundance of functional database like eggnog/go/ko/level4ec/MetaCyc/pfam
+    - `sampleID.log`: execution log file of humann
+
+</details>
+
+
+### Gene catalog construction
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `03.Geneset/`
+  - `030.Prodigal/`
+    - `sampleID/`
+      - `sampleID_gene.fa`: nucleotide sequences of this sample geneset
+      - `sampleID_protein.fa`: protein sequences of this sample geneset
+  - `031.UniqueGeneFasta/`
+    - `MetaflowX_geneset_cdhit_clstr.txt`: all sample geneset original cluster result using cdhit
+    - `MetaflowX_geneset_gene.fa`: nucleotide sequences of all sample geneset
+    - `MetaflowX_geneset_gene_info.xls`: gene information file
+    - `MetaflowX_geneset_gene_length.xls`: gene length information file
+    - `MetaflowX_geneset_protein.fa`: protein sequences of all sample geneset
+  - `032.Annotation/`
+    - `MetaflowX_antiSMash.tar.gz`: BGC gbk file from antiSMash
+    - `MetaflowX_geneset_function_emapper_org_annotation.xls`: EggNog annotation result
+    - `MetaflowX_geneset_function_{DB}_annotation.xls`: CARD/CAZy/cog_catF/EC/GOs/KEGG/PFAMs/VFDB/custom database annotation result
+  - `geneset_Gene_report/`
+    - `genesetLenStat.xls`
+    - `genesetSampleStat.txt`
+  
+- `04.GenesetProfile/`
+  - `bigmap_report/`
+    - `antismash.xls`
+  - `customnt_report/`
+    - `customNT.xls`
+  - `genesetAbundance_report/`
+    - `genesetAbundance.xls`
+  - `genesetFunction_report/`
+    - `genesetCAZY.txt`
+    - `genesetCOG.txt`
+    - `genesetGO.txt`
+    - `genesetKEGG.txt`
+  - `rgi_report/`
+    - `CARD.xls`
+  - `vfdb_report/`
+    - `VFDB.xls`
+  - `MetaflowX_BiG-MAP_{method}.xls`: corecov/coreRAW/coreRPKM/coreTPM/cov/RAW/RPKM/TPM
+  - `MetaflowX_geneset_function_gene_abundance.xls`: the total geneset abundance
+  - `MetaflowX_geneset_function_{DB}_abundance.xls`: CARD/CAZy/cog_catF/EC/GOs/KEGG/PFAMs/VFDB/custom database abundance
+  - `sampleID/`
+    - `sampleID_abundance.xls`: abundance of this sample
+    - `sampleID_geneset_bowtie2_log.txt`: bowtie2 log file
+    - `BiG-MAP/`: output directory of running BiG-MAP.map.py
+      - `BiG-MAP.map.core.coverage.txt`
+      - `BiG-MAP.map.coverage.txt`
+      - `BiG-MAP.map.results.ALL.csv`
+      - `BiG-MAP.map.results.coreRPKM.csv`
+      - `BiG-MAP.map.results.RPKM.txt`
+      - `BiG-MAP.percentages.csv`
+      - `bowtie2_log.txt`
+      - `sampleID_BiG-MAP_{method}.xls`: corecov/coreRAW/coreRPKM/coreTPM/cov/RAW/RPKM/TPM
+
+
+</details>
+
+
+### Automated binning analysis
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `05.BinSet/`
+  - `050.HQRawBin/`
+    - `MetaflowX_all_Original_Bins_all_level_quality.xls`: QS quality report
+    - `eachSample/`
+      - `sampleID/`
+        - `{binner}.contigs2bin.tsv`: contigs and bin information mapping table (metabat/concoct/semibin2/maxbin2/binny/metabinner/comebin)
+        - `sampleID_contig_bowtie2_log.txt`
+        - `sampleID_contig_depth.txt`
+        - `DASTool/`
+          - `sampleID_allBins_eval.tsv`: evaluation file containing information about all the bins generated by the DASTool tool
+          - `sampleID_DASTool_contig2bin.tsv`: mapping file that associates each contig with its corresponding bin
+          - `sampleID_DASTool_summary.tsv`: a summary file that provides an overview of the DASTool analysis results
+    - `HQBin/`: filtered bins (high quality)   
+  - `multi_binner_error.log`
+  
+  - `051.UniqueBin/`
+    - `bin.fa.list`
+    - `binInfo_report/`
+      - `binInfo.xls`
+    - `HQUniqueBins/`: folder contains nonredundant bins
+    - `MetaflowX_contigs_gc_depth.xls`
+    - `MetaflowX_dRep_cluster.xls`: results of the dRep cluster analysis
+    - `MetaflowX_final_bins_info.xls`: information of all bins
+    - `MetaflowX_HQ_unique_bins_info.xls`
+    - `MetaflowX_HQ_unique_bins_rename_map.xls`: name mapping table of all bins
+
+  - `052.Annotation/`
+    - `eachBin/`
+      - `eachBinFunction_report/`
+        - `eachBinFunction.xls`
+      - `MetaflowX_bin_function.xls`: functional annotation result
+      - `MetaflowX_bin_function_gene.xls`: gene information of bins
+      - `MetaflowX_bin_function_{DB}_anotation.xls`: CAZy/cog_catF/EC/GOs/KEGG/PFAMs annotation
+    - `GTDB/`
+      - `bin_QS_taxonomy_summary.xls`
+      - `gtdb_output_floderX/`: output directory of gtdbtk classify_wf
+      - `gtdb_report/`
+        - `bintable.xls`
+        - `gtdb.txt`
+      - `gtdbtk_ar53.summary.tsv`
+      - `gtdbtk.bac120.summary.tsv`: GTDB annotaion result
+      - `gtdbtk_bac120.summary.tsv`
+      - `gtdbtk.taxonomy2ncbi.summary.tsv`: GTDB annotaion result with NCBI taxonomy information
+  
+- `06.BinSetProfile/`
+  - `060.Bowtie2/`
+    - `sampleID/`
+      - `sampleID_depth.xls`: the file containing depth information for each contig
+      - `sampleID_bin_bowtie2_log.txt`
+  - `061.BinAbundance/`
+    - `coverm_{method}_report/` : relative_abundance/mean/trimmed_mean/coverage_histogram/covered_bases/variance/length/count/reads_per_base/rpkm/tpm
+      - `bin_{method}.xls` 
+    - `MetaflowX_CoverM_bins_{method}.xls`: bin abundance of all samples
+    - `MetaflowX_CoverM_bins_{method}_rename.xls`: bin abundance of all samples
+
+  - `062.TaxonomyAbundance/`
+    - `MetaflowX_bins_abundance_table.xls` 
+    - `MetaflowX_{level}_abundance_unmap.csv`: Domain/Phylum/Class/Order/Family/Genus/Species
+    
+- `08.BinOptimization/`
+  - `081.BinRefine/`
+    - `COBRA/`
+      - `COBRA_bin.XXX.fa`
+    - `Deepurify/`
+      - `Deepurify_Result/`
+        - `Deepurify_Bin_XXX.fasta`
+        - `MetaInfo.tsv`
+        - `rename_bins/`
+          - `Deepurify_bin.XXX.fa`
+          - `deepurify_rename.QS.txt`
+          - `deepurify_rename.txt`
+    - `Last_Refined_Bin/`
+      - `Refine_bin/`
+        - `Refine_bin.XXX.fa`
+        - `Refine_bin_choose_info.txt`
+  - `082.BinReassembly/`
+    - `bins/`
+      - `binID/`
+        - `binID_reassembly_contigs.fa`
+    - `MetaFlowX_Bins_Reassembly_Deepurify_info.xls`
+  - `After_Refine_bin_CheckM2_info.txt`
+  - `Deepurify_COBRA_Refine_bin_choose_info.txt`
+  - `MetaFlowX_select2refine_bin_info.xls`
+
+</details>
+
+### Report generation
+
+Description ********************************
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `07.MultiQC/`
+  - `MultiQC_bowtie2_data/`
+    - `multiqc*`: output file generated by multiQC
+  - `MultiQC_bowtie2.html`: analysis report of fastp results generated by multiQC
+  - `MultiQC_fastp_data/`
+    - `multiqc*`: output file generated by multiQC
+  - `MultiQC_fastp.html`: analysis report of bowtie2 results generated by multiQC
+
+- `MetaflowX_{step}_warning_log_{timestamps}.txt`
+- `MetaflowX_{step}_error_log_{timestamps}.txt`
+- `MetaflowX_Report_{timestamps}.html`：report of the pipeline
+
+</details>
+
+
+### Pipeline information
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pipeline_info/`  
+  - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
+  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
+
+
+</details>
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
