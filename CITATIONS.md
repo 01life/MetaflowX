@@ -1,4 +1,4 @@
-# nf-core/metassembly: Citations
+# nf-core/metaflowx: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
@@ -10,21 +10,39 @@
 
 ## Pipeline tools
 
+- [fastp](https://doi.org/10.1093/bioinformatics/bty560)
+- [Trimmomatic](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4103590)
+- [SPAdes](https://doi.org/10.1002/cpbi.102)
+- [MEGAHIT](https://pubmed.ncbi.nlm.nih.gov/25609793/)
+- [MetaPhlAn](https://www.nature.com/articles/s41587-023-01688-w)
+- [HUMAnN](https://elifesciences.org/articles/65088)
+- [Kraken2](https://dx.doi.org/10.1186/s13059-019-1891-0)
+- [Prodigal](https://doi.org/10.1186/1471-2105-11-119)
+- [CD-HIT](https://www.bioinformatics.org/cd-hit/)
+- [eggNOG-mapper](https://doi.org/10.1093/molbev/msab293)
+- [samtools](https://doi.org/10.1093/gigascience/giab008)
+- [DIAMOND](https://doi.org/10.1038/s41592-021-01101-x)
+- [RGI](https://www.ncbi.nlm.nih.gov/pubmed/36263822)
+- [antiSMASH](https://doi.org/10.1093/nar/gkab335)
+- [BiG-MAP](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8547482/)
+- [VFDB](https://academic.oup.com/nar/article/50/D1/D912/6446532)
+- [MetaBAT2](https://doi.org/10.7717/peerj.7359)
+- [CONCOCT](https://doi.org/10.1038/nmeth.3103)
+- [MetaBinner](https://doi.org/10.1186/s13059-022-02832-6)
+- [MaxBin2](https://doi.org/10.1093/bioinformatics/btv638)
+- [SemiBin2](https://doi.org/10.1093/bioinformatics/btad209)
+- [COMEBin](https://doi.org/10.1038/s41467-023-44290-z)
+- [binny](https://doi.org/10.1101/2021.12.22.473795)
+- [DAS Tool](https://doi.org/10.1038/s41564-018-0171-1)
+- [CheckM2](https://doi.org/10.1038/s41592-023-01940-w)
+- [dRep](https://doi.org/10.1101/108142)
+- [GTDB-Tk](https://doi.org/10.1093/bioinformatics/btac672)
+- [Deepurify](https://www.nature.com/articles/s42256-024-00908-5)
+- [BWA](https://doi.org/10.48550/arXiv.1303.3997)
+- [Mash](https://doi.org/10.1186/s13059-019-1841-x)
+- [Bowtie2](https://www.nature.com/articles/nmeth.1923)
+- [MultiQC](https://doi.org/10.1093/bioinformatics/btw354)
 
-- [`trimmomatic`](https://github.com/usadellab/Trimmomatic) 
-- [`bowtie2`](https://github.com/BenLangmead/bowtie2) 
-- [`megahit`](https://github.com/voutcn/megahit)
-- [`metaspades`](https://github.com/ablab/spades) 
-- [`Prodigal`](https://github.com/hyattpd/Prodigal) 
-- [`Cdhit`](https://github.com/weizhongli/cdhit) 
-- [`eggnog-mapper`](https://github.com/eggnogdb/eggnog-mapper) 
-- [`Maxbin2`](https://sourceforge.net/projects/maxbin/)
-- [`MetaBAT2`](https://bitbucket.org/berkeleylab/metabat/downloads/) 
-- [`Concoct`](https://github.com/BinPro/CONCOCT)
-- [`DAS_Tool`](https://github.com/cmks/DAS_Tool)
-- [`Checkm2`](https://github.com/chklovski/CheckM2) 
-- [`dRep`](https://github.com/MrOlm/drep)
-- [`gtdb-tk`](https://github.com/Ecogenomics/GTDBTk) 
 
 ## Software packaging/containerisation tools
 

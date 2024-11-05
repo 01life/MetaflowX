@@ -1,6 +1,21 @@
 # Database Installation and Configuration
 
+🚀 [MetaflowX User Manual](../README.md)
+
 MetaflowX utilizes 15 reference databases crucial for taxonomic identification and functional annotation. These databases require an additional storage allocation of about 436.6 GB for pre-construction.
+
+## Contents
+ - [Making host genome index by Bowtie 2](#making-host-genome-index-by-bowtie-2)
+ - [Downloading the MetaPhlAn database](#downloading-the-metaphlan-database-25gb)
+ - [Downloading the HUMAnN database](#downloading-the-humann-database-30gb)
+ - [Downloading the Kraken2 standard database](#downloading-the-kraken2-standard-database)
+ - [Downloading the eggNOG-mapper database](#downloading-the-eggnog-mapper-database-20gb)
+ - [Downloading the CheckM2 database](#downloading-the-checkm2-database-3gb)
+ - [Download the GTDB-tk database](#download-the-gtdb-tk-database-110g)
+ - [Downloading the BiG-MAP database](#downloading-the-big-map-database)
+ - [Downloading the RGI database](#downloading-the-rgi-database)
+ - [Downloading the VFDB database](#downloading-the-vfdb-database)
+ - [Downloading the Deepurify database](#downloading-the-deepurify-database)
 
 ## Making host genome index by Bowtie 2
 
