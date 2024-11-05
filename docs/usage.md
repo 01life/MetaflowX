@@ -1,11 +1,35 @@
 # MetaflowX: Usage
 
-## Pipeline parameters
+🚀 [MetaflowX User Manual](../README.md)
+
+## Contents
+- [1. Pipeline parameters](#1-pipeline-parameters)
+- [2. Samplesheet input](#2-samplesheet-input)
+    - [2.1 Paired-end data](#21-paired-end-data)
+    - [2.2 Single-end data](#22-single-end-data)
+- [3. Running the pipeline](#3-running-the-pipeline)
+    - [3.1 Standard workflow](#31-standard-workflow)
+    - [3.2 'skip' pattern](#32-skip-pattern)
+    - [3.3 'mode' pattern](#33-mode-pattern)
+        - [3.3.1 Run quality control for microbiome analysis `--mode 1`](#331-run-quality-control-for-microbiome-analysis---mode-1)
+        - [3.3.2 Run flexible short read assembly `--mode 2`](#332-run-flexible-short-read-assembly---mode-2)
+        - [3.3.3 Run marker gene-based profiling for taxonomic composition and functional potential in microbiome analysis `--mode 3` ](#333-run-marker-gene-based-profiling-for-taxonomic-composition-and-functional-potential-in-microbiome-analysis---mode-3)
+        - [3.3.4 Run unveiling community metabolism through gene prediction, annotation, and abundance estimation `--mode 4`](#334-run-unveiling-community-metabolism-through-gene-prediction-annotation-and-abundance-estimation---mode-4)
+        - [3.3.5 Run streamlined strategies for MAG generation and abundance estimation in microbiome studies `--mode 5`](#335-run-streamlined-strategies-for-mag-generation-and-abundance-estimation-in-microbiome-studies---mode-5)
+- [4. Core Nextflow arguments](#4-core-nextflow-arguments)
+- [5. Custom configuration](#5-custom-configuration)
+- [6. Azure Resource Requests](#6-azure-resource-requests)
+- [7. Running in the background](#7-running-in-the-background)
+- [8. Nextflow memory requirements](#8-nextflow-memory-requirements)
+
+
+
+## 1. Pipeline parameters
 
 Please provide pipeline parameters via the CLI or Nextflow -params-file option. Custom config files including those provided by the -c Nextflow option can be used to provide any configuration except for parameters, see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 
-## Samplesheet input
+## 2. Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location.
 
@@ -16,7 +40,7 @@ You will need to create a samplesheet with information about the samples you wou
 The pipeline supports both single-end and paired-end data. To ensure accurate parsing the input data, it is crucial that the column names in the CSV table correspond to the type of data being analyzed. Please refer to the following sections for more detailed information.
 
 
-### Paired-end data
+### 2.1 Paired-end data
 
 The pipeline analyzes paired-end data by default. You can specify a CSV samplesheet input file that contains the paths to your FASTQ files and additional metadata. The CSV file can support the following column names.
 
@@ -29,7 +53,7 @@ The pipeline analyzes paired-end data by default. You can specify a CSV samplesh
 | `clean_reads2` | Full path to FastQ file for cleaned Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
 | `contig` | Full path to FastA file for assembled contigs. File has to have the extension ".fa". |
 
-### Single-end data
+### 2.2 Single-end data
 
 For single-end data analysis, you need to configure `--single_end` or `--single_end true` when running the pipeline. The input CSV file can support the following column names.
 
@@ -50,12 +74,14 @@ For single-end data analysis, you need to configure `--single_end` or `--single_
 > - Within one samplesheet only cleaned reads and contig can be specified at the same time
 
 
-## Running the pipeline 
+## 3. Running the pipeline
 
 MetaflowX has a crucial parameter `--mode` that controls the execution of the analysis. This parameter is prioritized above all others and defaults to 0, which means the entire workflow (all analysis modules) is executed by default. In this case, you can set some parameters to skip analysis modules that you don't need to execute, like `--skip_qc`, `--skip_marker` and `--skip_binning`. Note that these parameters only take effect when mode is set to 0. If you need to execute a specific analysis module, you can adjust the mode parameter accordingly. Please refer to the examples below for specific usage.
 
 
-### Run the whole pipeline with default parameters `--mode 0`
+### 3.1 Standard workflow
+
+Run the whole pipeline with default parameters `--mode 0`
 
 ```bash
 nextflow run MetaflowX \
@@ -80,7 +106,7 @@ sample3,sample3.fastq.gz
 sample4,sample4.fastq.gz
 ```
 
-#### Optional parameters
+### 3.2 'skip' pattern
 - skip_qc 
 - skip_marker
 - skip_binning
@@ -106,8 +132,9 @@ id,clean_reads1,clean_reads2
 sample1,sample1_clean_R1.fastq.gz,sample1_clean_R2.fastq.gz
 sample2,sample2_clean_R1.fastq.gz,sample2_clean_R2.fastq.gz
 ```
+### 3.3 'mode' pattern
 
-### Run quality control for microbiome analysis `--mode 1`
+#### 3.3.1 Run quality control for microbiome analysis `--mode 1`
 
 ```bash
 nextflow run MetaflowX \
@@ -148,7 +175,7 @@ nextflow run MetaflowX \
 
 <span id="mode2"></span>
 
-### Run flexible short read assembly `--mode 2`
+#### 3.3.2 Run flexible short read assembly `--mode 2`
 
 The assembly module supports both raw and clean reads. If raw reads are provided, the pipeline automatically performs quality control before assembly.
 
@@ -203,7 +230,7 @@ nextflow run MetaflowX \
 ```
 
 
-### Run marker gene-based profiling for taxonomic composition and functional potential in microbiome analysis `--mode 3`
+#### 3.3.3 Run marker gene-based profiling for taxonomic composition and functional potential in microbiome analysis `--mode 3`
 
 This analysis module supports both raw and clean reads either. If raw reads are provided, the pipeline automatically performs quality control first. Please refer to [mode2](#mode2) for the format of the samplesheet.csv.
 
@@ -236,7 +263,7 @@ nextflow run MetaflowX \
 
 <span id="mode4"></span>
 
-### Run unveiling community metabolism through gene prediction, annotation, and abundance estimation `--mode 4`
+#### 3.3.4 Run unveiling community metabolism through gene prediction, annotation, and abundance estimation `--mode 4`
 
 This analysis module need to provide cleaned reads and assembled contig file, the pipeline will check whether the input are met based on the column name before analysis.
 
@@ -287,7 +314,7 @@ nextflow run MetaflowX \
    --protein_db /path/to/custom_pro_db/xxx.fasta
 ```
 
-### Run streamlined strategies for MAG generation and abundance estimation in microbiome studies `--mode 5`
+#### 3.3.5 Run streamlined strategies for MAG generation and abundance estimation in microbiome studies `--mode 5`
 
 This analysis module need to provide cleaned reads and assembled contig file either. Please refer to [mode4](#mode4) for the format of the samplesheet.csv.
 
@@ -343,7 +370,7 @@ nextflow run MetaflowX \
    --metabinner \
 ```
 
-### Reproducibility
+### 3.4 Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
@@ -351,7 +378,7 @@ First, go to the [MetaflowX releases page](https://github.com/MetaflowX/releases
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 
-## Core Nextflow arguments
+## 4. Core Nextflow arguments
 
 > **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
 
@@ -398,9 +425,9 @@ into your config by using the paramter `-c` as follows. scratch will not output 
 
 Specify the path to a specific config file (this is a core Nextflow command). See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.
 
-## Custom configuration
+## 5. Custom configuration
 
-### Resource requests
+### 5.1 Resource requests
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
@@ -461,7 +488,7 @@ process {
 >
 > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
-### Updating containers (advanced users)
+### 5.2 Updating containers (advanced users)
 
 The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. If for some reason you need to use a different version of a particular tool with the pipeline then you just need to identify the `process` name and override the Nextflow `container` definition for that process using the `withName` declaration. For example, in the [nf-core/viralrecon](https://nf-co.re/viralrecon) pipeline a tool called [Pangolin](https://github.com/cov-lineages/pangolin) has been used during the COVID-19 pandemic to assign lineages to SARS-CoV-2 genome sequenced samples. Given that the lineage assignments change quite frequently it doesn't make sense to re-release the nf-core/viralrecon everytime a new version of Pangolin has been released. However, you can override the default container used by the pipeline by creating a custom config file and passing it as a command-line argument via `-c custom.config`.
 
@@ -501,7 +528,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 
 > **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
 
-### nf-core/configs
+### 5.3 nf-core/configs
 
 In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
@@ -509,7 +536,7 @@ See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config
 
 If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
 
-## Azure Resource Requests
+## 6. Azure Resource Requests
 
 To be used with the `azurebatch` profile by specifying the `-profile azurebatch`.
 We recommend providing a compute `params.vm_type` of `Standard_D16_v3` VMs by default but these options can be changed if required.
@@ -517,7 +544,7 @@ We recommend providing a compute `params.vm_type` of `Standard_D16_v3` VMs by de
 Note that the choice of VM size depends on your quota and the overall workload during the analysis.
 For a thorough list, please refer the [Azure Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
 
-## Running in the background
+## 7. Running in the background
 
 Nextflow handles job submissions and supervises the running jobs. The Nextflow process must run until the pipeline is finished.
 
@@ -526,7 +553,7 @@ The Nextflow `-bg` flag launches Nextflow in the background, detached from your 
 Alternatively, you can use `screen` / `tmux` or similar tool to create a detached session which you can log back into at a later time.
 Some HPC setups also allow you to run nextflow within a cluster job submitted your job scheduler (from where it submits more jobs).
 
-## Nextflow memory requirements
+## 8. Nextflow memory requirements
 
 In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):

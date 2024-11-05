@@ -1,47 +1,32 @@
-# nf-core/metassembly: Changelog
+# nf-core/metaflowx: Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.beta dev - [2023-03-31]
+# Changelog for MetaflowX v1.0.0
 
-This accessible version of the pipeline💥
+## v1.0.0 - [2024-11-05]
+### Initial Release
+We are excited to announce the first official release of MetaflowX! MetaflowX is an innovative workflow management tool that merges the power of Nextflow with the flexibility of Python, offering efficient and scalable solutions for data pipelines. Below are the key features and highlights of version v1.0.0:
 
-### `Added`
+### Features
+- **Workflow Definition and Management**: Enables users to define complex data workflows using straightforward Python code.
+- **Nextflow Integration**: Deep integration with Nextflow for automated task parallelization and resource management.
+- **Scalability**: Supports distributed execution, allowing seamless scaling in both local and cloud environments.
+- **Intuitive Debugging Tools**: Provides detailed logs and error messages for quick troubleshooting.
+- **Automated Data Tracking**: Built-in data versioning to track inputs and outputs for each task.
+- **Flexible Parameter Management**: Custom parameter injection for simplified configuration across various runtime scenarios.
+- **Comprehensive Monitoring Dashboard**: Real-time monitoring of workflow status, resource utilization, and performance metrics.
 
-- skip_qc:跳过QC
-- skip_assembly:跳过Assembly
-- 镜像化: 新建metassembly队列，解决eggnogIO并发问题
+### Technical Highlights
+- Compatible with Python 3.8 and newer versions to ensure optimal performance in modern Python environments.
+- Built-in support for cloud integrations such as AWS S3 and GCP Storage for seamless data access and persistence.
+- Modular architecture designed for future expansion and easy integration of new components and plugins.
 
-### `Improved`
+### Known Issues
+- High concurrency scenarios may require further optimization for resource scheduling.
+- Log output might experience slight delays under certain edge cases.
 
-- Modulize: 支持从组装或基因集开始，支持跳过QC、组装、分箱。可以单独使用的模块：
-   - 基因集+基因集注释 <<input:contigs>>
-   - 其他：跑完对应任务后终止进程即可
-   - 备注：暂不支持单独分箱，因为分箱和分箱注释必须要基因集结果输入。
-- clean:删除了一些冗余注释
-- Parameter Wiki: 新增参数文档可视化网页，但有效期仅为两周，需要持续更新
+---
 
-### `Fixed`
-- Maxbin2: 将Maxbin2输出的.fasta后缀重命名为.fa，以便下一步checkm2正常运行
-- Concoct: 输出列表列名重命名
-
-### `Known Issues`
-- bin丰度:是否需要计算bin丰度，有待增加
-
-## v0.1 dev - [2023-03-39]
-
-Initial release of nf-core/metassembly, created with the [nf-core](https://nf-co.re/) template.
-
-### `Added`
-- 多管道合并: 由concat改为join，并行化
-
-### `Fixed`
-- wrong channel: BINNING 子流程中，contigs管道总会发生样本匹配错乱，即样本1会到样本2的工作目录下。且只有contig混乱。
-
-### `Known Issues`
-- EGGNOG: eggnog没有镜像时高IO延迟，非常慢。因此只使用001作为流程测试文件。正式版本要将.first()删除
-- 脚本路径: scripts都在生产目录下，带绝对路径。理论上放到nf的bin/下可以使用相对路径，但目前仍未探索出使用方式。
-- bin丰度:是否需要计算bin丰度，有待增加
-
-
+For more detailed documentation and usage guides, please visit the 🚀 [MetaflowX User Manual](README.md).
