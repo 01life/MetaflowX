@@ -2,7 +2,12 @@
 // SUBWORKFLOW: Read in samplesheet, validate and stage input files
 //
 
-include { CLEANREADSRENAME } from '../../modules/local/common/clean_reads_rename'
+include { READSVALIDATERENAME4PE as RAWREADSVALIDATERENAME4PE } from '../../modules/local/common/reads_validate_rename'
+include { READSVALIDATERENAME4SE as RAWREADSVALIDATERENAME4SE } from '../../modules/local/common/reads_validate_rename'
+include { READSVALIDATERENAME4PE as CLEANREADSVALIDATERENAME4PE } from '../../modules/local/common/reads_validate_rename'
+include { READSVALIDATERENAME4SE as CLEANREADSVALIDATERENAME4SE } from '../../modules/local/common/reads_validate_rename'
+
+include { NOTIFICATION } from '../../modules/local/common/notification'
 
 //Check for duplicate sample IDs.
 def checkID(file){
@@ -22,52 +27,15 @@ def checkID(file){
 
 }
 
-// Check if the file is a valid gz file.
-def isGzFile(file) {  
-    
-    // Check if it is a file and its file extension.
-    if(!(file.getName().endsWith(".gz")) || !file.isFile()) {
-        return false
-    }
-    
-    // The magic number for gzip files is 0x1F 0x8B.
-    def magicBytes = new byte[2]  
-    file.withInputStream { stream ->  
-        stream.read(magicBytes)  
-        return magicBytes[0] == (byte) 0x1F && magicBytes[1] == (byte) 0x8B  
-    }  
-
-}
-
-// Check fastq files.
-def checkFastq(filePath, String type, String suffix) {  
-    // Fastq file path is not configured.
-    if (!filePath) {  
-        exit 1, "Invalid input samplesheet: ${type}_${suffix} can not be empty!"  
-    // Check if the configured fastq files are valid.
-    } else if (!isGzFile(filePath)) {  
-        exit 1, "Error: ${filePath} is not a valid gz file, please check!"  
-    }  
-}
-
 def checkContent(LinkedHashMap row, String type) {
     
     //Determine if sequence data is empty.
     def id = row.id
     def contig = row.contig
-    def fq1 = row[type.concat("_reads1")] ? file(row[type.concat("_reads1")], checkIfExists: true) : false
-    def fq2 = row[type.concat("_reads2")] ? file(row[type.concat("_reads2")], checkIfExists: true) : false
-    def se = row[type.concat("_se")] ? file(row[type.concat("_se")], checkIfExists: true) : false
+    def fq1 = row[type.concat("_reads1")] ? file(row[type.concat("_reads1")]) : false
+    def fq2 = row[type.concat("_reads2")] ? file(row[type.concat("_reads2")]) : false
+    def se = row[type.concat("_se")] ? file(row[type.concat("_se")]) : false
     if(id == null) {exit 1, "Invalid input samplesheet: id can not be empty !"}
-    
-    // SE data check for raw_se/clean_se.
-    if(params.single_end){
-        checkFastq(se, type, "se")
-    // PE data check.
-    }else{
-        checkFastq(fq1, type, "reads1")
-        checkFastq(fq2, type, "reads2")
-    }
     
     //In modes 4/5, check the contig column.
     if( params.mode==4 || params.mode==5){
@@ -85,16 +53,19 @@ def checkContent(LinkedHashMap row, String type) {
     }
     
 
-    if(params.single_end){
+    if(params.single_end){        
+
+        if (!se) {  exit 1, "Invalid input samplesheet: ${type}_se can not be empty for ${id}!"  }
+        
         return [ id, se, contig ]
+
     }else{
-        //Check the size of the sequence files.
-        def fq1size = fq1.size()
-        def fq2size = fq2.size()
-        if (Math.abs(fq1size - fq2size) > 2 * Math.min(fq1size, fq2size)) {
-            exit 1, "The file sizes of reads1 and reads2 sequence files for sample ${id} differ significantly !"
-        }
+
+        if (!fq1) {  exit 1, "Invalid input samplesheet: ${type}_reads1 can not be empty for ${id}!"  }
+        if (!fq2) {  exit 1, "Invalid input samplesheet: ${type}_reads2 can not be empty for ${id}!"  }
+        
         return [ id, fq1, fq2, contig ]
+
     }
 
 }
@@ -105,12 +76,6 @@ workflow INPUT_CHECK {
     samplesheet     // file: /path/to/samplesheet.csv
 
     main:
-
-    //If there were errors in the previous execution, clear the log to avoid re-running without issues and not generating a report.
-    // def error_log = file("${params.outdir}/Stop_pipeline_error.log")
-    // if(error_log.exists() && error_log.size()>0) {
-    //     error_log.write("")
-    // }
 
     //Check for duplicate IDs; exit immediately if duplicates are found.
     freads = checkID(samplesheet)
@@ -128,14 +93,26 @@ workflow INPUT_CHECK {
 
     //Pass sequence data to the corresponding channel based on reads type.
     if(type == "raw"){
-        raw_reads = input_rows.map{ it ->  //[id, [raw_reads1, raw_reads2]] or [id, [raw_se]]
+        raw_reads_original = input_rows.map{ it ->  //[id, [raw_reads1, raw_reads2]] or [id, [raw_se]]
                         if (params.single_end)
                             return [ it[0], [it[1]] ]
                         else
                             return [ it[0], [it[1], it[2]] ]
                         }
+                        
+        // Raw reads validate and rename
+        raw_reads = Channel.empty()
+        if (params.single_end){
+            RAWREADSVALIDATERENAME4SE(type, raw_reads_original)
+            raw_reads = RAWREADSVALIDATERENAME4SE.out.reads
+        }else{
+            RAWREADSVALIDATERENAME4PE(type, raw_reads_original)
+            raw_reads = RAWREADSVALIDATERENAME4PE.out.reads
+        }
+
         clean_reads = Channel.empty()
         contig = Channel.empty()
+
     }else{
         raw_reads = Channel.empty()
         clean_reads_original = input_rows.map{ it -> //[id, [clean_reads1, clean_reads2]] or [id, clean_se]
@@ -146,10 +123,16 @@ workflow INPUT_CHECK {
             }                    
 
         // For input clean reads, check if the filename meets the requirements.
-        CLEANREADSRENAME(clean_reads_original)
-        clean_reads = CLEANREADSRENAME.out.reads
-
-
+        // Clean reads validate and rename
+        clean_reads = Channel.empty()
+        if(params.single_end){
+            CLEANREADSVALIDATERENAME4SE(type, clean_reads_original)
+            clean_reads = CLEANREADSVALIDATERENAME4SE.out.reads
+        }else{
+            CLEANREADSVALIDATERENAME4PE(type, clean_reads_original)
+            clean_reads = CLEANREADSVALIDATERENAME4PE.out.reads
+        }
+        
         // Parse contig data in modes 4/5.
         if (params.mode in [ 4, 5 ]){
             contig = input_rows.map{ it -> [it[0], it[-1]] } // [id, contig]
@@ -159,6 +142,10 @@ workflow INPUT_CHECK {
 
     }
 
+    if(params.webhookurl){
+        content = "🎉 Congratulations! Input verification for Project ID: ${params.Account} has been successfully completed. ${params.pipeline_prefix} is now initiating the analysis. 🚀"
+        NOTIFICATION(content, samplesheet)
+    }
 
     emit:
     raw_reads           // channel: [ val(id), [ raw reads1, raw reads2 ] ]

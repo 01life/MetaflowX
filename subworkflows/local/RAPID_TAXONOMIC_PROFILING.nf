@@ -8,7 +8,7 @@ include { METAPHLANV40 } from '../../modules/local/marker/metaphlan_v4_0'
 include { METAPHLANV41 } from '../../modules/local/marker/metaphlan_v4_1'
 include { MERGEMPA } from '../../modules/local/marker/merge_mpa'
 include { SBG2GTDB } from '../../modules/local/marker/sbg2gtdb'
-include { MPAEXTRAABUN } from '../../modules/local/marker/mpa_extra_abun'
+include { MPAEXTRAABUN as MPAEXTRAABUN4MPA} from '../../modules/local/marker/mpa_extra_abun'
 include { MPAEXTRAABUN as MPAEXTRAABUN4HUMANN } from '../../modules/local/marker/mpa_extra_abun'
 include { MERGEMPAEXTRAABUN } from '../../modules/local/marker/merge_mpa_extra_abun'
 include { KRAKEN2 } from '../../modules/local/marker/kraken2'
@@ -94,9 +94,9 @@ workflow RAPID_TAXONOMIC_PROFILING {
         if(params.mpa_extra_abun_method){
             
             ch_mpa_extra_method = Channel.of(params.mpa_extra_abun_method.split(","))
-            MPAEXTRAABUN(ch_mpa_extra_method.combine(ch_mpa_bowtie2out), ch_mpa_db)
+            MPAEXTRAABUN4MPA(ch_mpa_extra_method.combine(ch_mpa_bowtie2out), ch_mpa_db)
 
-            MERGEMPAEXTRAABUN(MPAEXTRAABUN.out.profile.groupTuple())   
+            MERGEMPAEXTRAABUN(MPAEXTRAABUN4MPA.out.profile.groupTuple())   
 
         }
      
