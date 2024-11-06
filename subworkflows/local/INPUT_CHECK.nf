@@ -7,8 +7,6 @@ include { READSVALIDATERENAME4SE as RAWREADSVALIDATERENAME4SE } from '../../modu
 include { READSVALIDATERENAME4PE as CLEANREADSVALIDATERENAME4PE } from '../../modules/local/common/reads_validate_rename'
 include { READSVALIDATERENAME4SE as CLEANREADSVALIDATERENAME4SE } from '../../modules/local/common/reads_validate_rename'
 
-include { NOTIFICATION } from '../../modules/local/common/notification'
-
 //Check for duplicate sample IDs.
 def checkID(file){
 
@@ -140,11 +138,6 @@ workflow INPUT_CHECK {
             contig = Channel.empty()
         }
 
-    }
-
-    if(params.webhookurl){
-        content = "🎉 Congratulations! Input verification for Project ID: ${params.Account} has been successfully completed. ${params.pipeline_prefix} is now initiating the analysis. 🚀"
-        NOTIFICATION(content, samplesheet)
     }
 
     emit:
