@@ -113,7 +113,7 @@ The `assets` folder contains demo input file. These files consist of paired-end 
    ```bash
    nextflow run MetaflowX \
       -profile test \
-      --outdir test_result 
+      --outdir test_result
    ```
 
 
