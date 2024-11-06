@@ -56,9 +56,9 @@ process FASTP {
         """
 
         fastp \\
-        --in1 ${id}_1.fq.gz \\
+        --in1 ${id}_raw_1.fq.gz \\
         --out1 ${id}_paired_1.fq \\
-        --in2 ${id}_2.fq.gz \\
+        --in2 ${id}_raw_2.fq.gz \\
         --out2 ${id}_paired_2.fq \\
         --thread ${task.cpus} \\
         --adapter_fasta ${adapters} \\

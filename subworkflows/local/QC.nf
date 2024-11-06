@@ -5,7 +5,6 @@
 
 include { params2Channel } from '../../modules/local/common/utils'
 include { checkEssentialParams } from '../../modules/local/common/utils'
-include { RAWREADSRENAME } from '../../modules/local/common/raw_reads_rename'
 include { TRIM } from '../../modules/local/qc/trim'
 include { FASTP } from '../../modules/local/qc/fastp'
 include { FASTQSTAT } from '../../modules/local/qc/fastq_stat'
@@ -31,21 +30,18 @@ workflow QC {
 
     ch_host_db = params2Channel(params.host_db)
     ch_adapters = params2Channel(params.adapters)
-    
-    RAWREADSRENAME(raw_reads)
-    renamed_reads = RAWREADSRENAME.out.reads
 
     fastp_json = Channel.empty()
 
     if (params.qc_tool == "fastp") {
-        FASTP(renamed_reads, ch_host_db, ch_adapters)
+        FASTP(raw_reads, ch_host_db, ch_adapters)
         clean_reads = FASTP.out.clean_reads
         stat_info = FASTP.out.stat_info
         fastp_json = FASTP.out.fastp_json.collect()
     } 
     
     if (params.qc_tool == "trimmomatic") {
-        TRIM(renamed_reads, ch_host_db, ch_adapters)
+        TRIM(raw_reads, ch_host_db, ch_adapters)
         clean_reads = TRIM.out.clean_reads
         stat_info = TRIM.out.stat_info
     }

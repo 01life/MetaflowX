@@ -1,12 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/metassembly
+    nf-core/metaflowx
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/metassembly
-
-    Website: https://nf-co.re/metassembly
-    Slack  : https://nfcore.slack.com/channels/metassembly
+    Github : https://github.com/01life/MetaflowX
 ----------------------------------------------------------------------------------------
 */
 
@@ -54,7 +51,6 @@ workflow NFCORE_METASSEMBLY {
 
 //
 // WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
     NFCORE_METASSEMBLY ()

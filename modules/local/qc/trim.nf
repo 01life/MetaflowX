@@ -51,7 +51,7 @@ process TRIM {
         #Raw reads information statistics.
         fastq_stat.pl -s ${id} -a ${id}_1.fq.gz -b ${id}_2.fq.gz -o ${id}_raw.txt
 
-        trimmomatic PE -threads ${task.cpus} ${id}_1.fq.gz ${id}_2.fq.gz ${id}_paired_1.fq ${id}_unpaired_1.fq ${id}_paired_2.fq ${id}_unpaired_2.fq ${ILLUMINACLIP} ${trim_options}
+        trimmomatic PE -threads ${task.cpus} ${id}_raw_1.fq.gz ${id}_raw_2.fq.gz ${id}_paired_1.fq ${id}_unpaired_1.fq ${id}_paired_2.fq ${id}_unpaired_2.fq ${ILLUMINACLIP} ${trim_options}
 
         rmhost_with_bowtie2.py -i1 ${id}_paired_1.fq -i2 ${id}_paired_2.fq -db ${host_db}/${params.host_db_index} -t ${task.cpus} -o ${id} ${bowtie2_options} 2>${id}_rmhost.log
 

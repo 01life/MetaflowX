@@ -1,5 +1,0 @@
-id,raw_reads1,raw_reads2
-test1,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test1_1.fastq.gz,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test1_2.fastq.gz
-test2,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test2_1.fastq.gz,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test2_2.fastq.gz
-test3,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test3_1.fastq.gz,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test3_2.fastq.gz
-test4,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test4_1.fastq.gz,https://github.com/01life/MetaFlowX/tree/main/assets/test/data/test4_2.fastq.gz
