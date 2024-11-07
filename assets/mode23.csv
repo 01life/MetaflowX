@@ -1,3 +1,3 @@
 id,clean_reads1,clean_reads2
-sample_0,/ehpcdata/PM/DATA/RD22040026/assembly/demo/01.CleanReads/sample_0/sample_0_clean_1.fq.gz,/ehpcdata/PM/DATA/RD22040026/assembly/demo/01.CleanReads/sample_0/sample_0_clean_2.fq.gz
-sample_10,/ehpcdata/PM/DATA/RD22040026/assembly/demo/01.CleanReads/sample_10/sample_10_clean_1.fq.gz,/ehpcdata/PM/DATA/RD22040026/assembly/demo/01.CleanReads/sample_10/sample_10_clean_2.fq.gz
+sample_0,/PATH/TO/CLEAN_READS/sample_0/sample_0_clean_1.fq.gz,/PATH/TO/CLEAN_READS/sample_0/sample_0_clean_2.fq.gz
+sample_10,/PATH/TO/CLEAN_READS/sample_10/sample_10_clean_1.fq.gz,/PATH/TO/CLEAN_READS/sample_10/sample_10_clean_2.fq.gz
