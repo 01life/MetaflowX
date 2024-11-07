@@ -24,7 +24,7 @@ WorkflowMain.initialise(workflow, params, log)
 */
 include { BESTBINNER } from './workflows/bestbinner'
 include { METASSEMBLY } from './workflows/metassembly'
-include { CUSTOMREASSEMBLY } from './workflows/customreassembly'
+// include { CUSTOMREASSEMBLY } from './workflows/customreassembly'
 
 //
 // WORKFLOW: Run main nf-core/metassembly analysis pipeline
@@ -35,8 +35,8 @@ workflow NFCORE_METASSEMBLY {
         METASSEMBLY ()
     }else if(params.function == "bbs"){
         BESTBINNER ()
-    }else if(params.function == "bra"){
-        CUSTOMREASSEMBLY()
+    // }else if(params.function == "bra"){
+    //     CUSTOMREASSEMBLY()
     }else{
         exit 1, "The parameter: function is invalid, allowed parameter values are mag, bbs and bra!"
     }

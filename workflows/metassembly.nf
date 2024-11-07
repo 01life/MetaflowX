@@ -49,9 +49,9 @@ include { BINNER } from '../subworkflows/local/BINNER'
 include { BINTAXONOMY } from '../subworkflows/local/BIN_TAXONOMY'
 include { BINFUNCTION } from '../subworkflows/local/BIN_FUNCTION'
 include { BINABUNDANCE } from '../subworkflows/local/BIN_ABUNDANCE'
-include { BINMAP } from '../subworkflows/local/BIN_MAP'
-include { BINREFINE } from '../subworkflows/local/BIN_REFINE'
-include { BINREASSEMBLY } from '../subworkflows/local/BIN_REASSEMBLY'
+// include { BINMAP } from '../subworkflows/local/BIN_MAP'
+// include { BINREFINE } from '../subworkflows/local/BIN_REFINE'
+// include { BINREASSEMBLY } from '../subworkflows/local/BIN_REASSEMBLY'
 include { POLISH } from '../subworkflows/local/POLISH'
 
 
@@ -278,27 +278,28 @@ workflow METASSEMBLY {
             ch_filter_bin_info = Channel.empty()
             ch_filter_bin_mash_fq = Channel.empty()
 
-            //Only supports PE data.
-            if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
+            // TEST?
+            // //Only supports PE data.
+            // if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
                 
-                //bin map
-                BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
-                ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
-                ch_binsample = BINMAP.out.binsample
+            //     //bin map
+            //     BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
+            //     ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
+            //     ch_binsample = BINMAP.out.binsample
 
-                // bin refine
-                if(params.bin_refine){
-                    BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
-                    ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
-                }
+            //     // bin refine
+            //     if(params.bin_refine){
+            //         BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
+            //         ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
+            //     }
 
-                //bin reassembly
-                if(params.bin_reassembly){
-                    BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
-                    ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
-                }
+            //     //bin reassembly
+            //     if(params.bin_reassembly){
+            //         BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
+            //         ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
+            //     }
 
-            }
+            // }
 
             break;
 
@@ -402,27 +403,28 @@ workflow METASSEMBLY {
                 ch_filter_bin_info = Channel.empty()
                 ch_filter_bin_mash_fq = Channel.empty()
 
-                //Only supports PE data.
-                if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
+                // TEST?
+                // //Only supports PE data.
+                // if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
                     
-                    //bin map
-                    BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
-                    ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
-                    ch_binsample = BINMAP.out.binsample
+                //     //bin map
+                //     BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
+                //     ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
+                //     ch_binsample = BINMAP.out.binsample
 
-                    // bin refine
-                    if(params.bin_refine){
-                        BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
-                        ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
-                    }
+                //     // bin refine
+                //     if(params.bin_refine){
+                //         BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
+                //         ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
+                //     }
 
-                    //bin reassembly
-                    if(params.bin_reassembly){
-                        BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
-                        ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
-                    }
+                //     //bin reassembly
+                //     if(params.bin_reassembly){
+                //         BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
+                //         ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
+                //     }
 
-                }
+                // }
 
             }
             
