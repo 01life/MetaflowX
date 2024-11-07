@@ -5,7 +5,6 @@
 
 include { MEGAHIT } from '../../modules/local/assembly/megahit'
 include { SWITCH2MEGAHIT } from '../../modules/local/assembly/switch2megahit'
-include { METASPADES } from '../../modules/local/assembly/metaspades'
 include { METASPADESM64 } from '../../modules/local/assembly/metaspades_m64'
 include { METASPADESM128 } from '../../modules/local/assembly/metaspades_m128'
 include { CONTIGSTAT } from '../../modules/local/assembly/contig_stat'
@@ -26,9 +25,6 @@ workflow ASSEMBLY {
     ch_warning_log = Channel.empty()
 
     if (params.assembly_tool == "metaspades") {
-        
-        // METASPADES (clean_reads)
-        // spades_contigs = METASPADES.out.contigs
 
         //metaspades q_32_64
         METASPADESM64(clean_reads)
