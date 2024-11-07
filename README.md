@@ -108,7 +108,7 @@ For more details and further functionality, please refer to the [usage documenta
 
 
 ### 3.2 Demo runs
-The `assets` folder contains demo input file. These files consist of paired-end (PE) reads in FASTQ format. The following command is used to test mode1, which corresponds to the Quality Control (QC) function.
+The `test` folder contains demo input file. These files consist of paired-end (PE) reads in FASTQ format. The following command is used to test mode1, which corresponds to the Quality Control (QC) function.
 
    ```bash
    nextflow run MetaflowX \
