@@ -13,8 +13,8 @@ process HUMANNV4 {
 
     output:
     path("${id}/${id}*"),emit:"profile"
-    tuple val(id),path("${id}/${id}_genefamilies_relab.xls"),emit:"gf_profile"
-    tuple val(id),path("${id}/${id}_ko_relab.xls"),emit:"ko_profile"
+    tuple val(id),path("${id}/${id}_2_genefamilies.xls"),emit:"gf_profile"
+    tuple val(id),path("${id}/${id}_ko_relab.xls"),emit:"ko_profile",optional:true
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,11 +29,11 @@ process HUMANNV4 {
 
     humann -i ${id}.fq -o ${id} --threads ${task.cpus} --o-log ${id}/${id}.log --nucleotide-database ${humann_chocophlan_db} --taxonomic-profile ${profile} --protein-database ${humann_protein_db} ${options1}
 
-    humann_renorm_table -i ${id}/${id}_2_genefamilies.tsv -u relab -o ${id}/${id}_genefamilies_relab.tsv
+    #humann_renorm_table -i ${id}/${id}_2_genefamilies.tsv -u relab -o ${id}/${id}_genefamilies_relab.tsv
 
-    parallel "humann_regroup_table ${options2} -i ${id}/${id}_genefamilies_relab.tsv -c ${humann_map_db}/map_{1}_uniref90.txt.gz -o ${id}/${id}_{1}_relab.tsv" ::: go pfam level4ec ko eggnog
+    #parallel "humann_regroup_table ${options2} -i ${id}/${id}_genefamilies_relab.tsv -c ${humann_map_db}/map_{1}_uniref90.txt.gz -o ${id}/${id}_{1}_relab.tsv" ::: go pfam level4ec ko eggnog
 
-    humann_renorm_table -i ${id}/${id}_4_pathabundance.tsv -u relab -o ${id}/${id}_MetaCyc_relab.tsv
+    #humann_renorm_table -i ${id}/${id}_4_pathabundance.tsv -u relab -o ${id}/${id}_MetaCyc_relab.tsv
     
     rename .tsv .xls ${id}/*
 
