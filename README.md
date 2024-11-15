@@ -11,6 +11,7 @@
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![run with slurm](https://img.shields.io/badge/run%20with-slurm-1AAEE8.svg?labelColor=000000)](https://www.schedmd.com)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.14166585-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.14166585)
 
 # MetaflowX User Manual
 
