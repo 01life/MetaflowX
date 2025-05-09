@@ -12,6 +12,7 @@ process BOWTIE2GENE {
 
     output:
     path("${id}_abundance.xls"),emit:"abundance"
+    path("${id}_total_abundance.xls"),emit:"total_abun"
     path("${id}_geneset_bowtie2_log.txt"),emit:"bowtie2_log"
 
     when:

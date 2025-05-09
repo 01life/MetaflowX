@@ -9,8 +9,8 @@ process METABINNER {
     tuple val(id),path(contigs),path(bin_depth)
 
     output:
-    tuple val(id),path("${id}/metabinner_bins/",type:'dir'),emit:"bins"
-    tuple val(id),path("metabinner.contigs2bin.tsv"),emit:"tsv"
+    tuple val(id),path("${id}/metabinner_bins/",type:'dir'), emit:"bins", optional: true
+    tuple val(id),path("metabinner.contigs2bin.tsv"), emit:"tsv", optional: true
 
 
     when:
@@ -27,18 +27,14 @@ process METABINNER {
 
     cut -f 1,4 ${bin_depth} > coverage_profile.tsv
 
-    run_metabinner.sh \
-        -p ${params.metabinner_path} \
-        -a \$PWD/${contigs} \
-        -t ${task.cpus} \
-        -d \$PWD/coverage_profile.tsv \
-        -k \$PWD/contigs_kmer_4_f${length}.csv \
-        -o \$PWD/${id} ${options}
+    run_metabinner.sh -p ${params.metabinner_path} -a \$PWD/${contigs} -t ${task.cpus} -d \$PWD/coverage_profile.tsv -k \$PWD/contigs_kmer_4_f${length}.csv -o \$PWD/${id} ${options} || echo "METABINNER task for sample ${id} failed ......" > ${id}.log
 
-    recover_binning_pro.py -t \$PWD/${id}/metabinner_res/metabinner_result.tsv -f ${contigs} -o \$PWD/${id}/metabinner_bins/ 
-    
+    if [ -e "${id}/metabinner_res/metabinner_result.tsv" ]; then
+        recover_binning_pro.py -t \$PWD/${id}/metabinner_res/metabinner_result.tsv -f ${contigs} -o \$PWD/${id}/metabinner_bins/ 
+    fi
+
     finish=0
-    if [ -d "${id}/metabinner_bins" ] ; then      
+    if [ -d "${id}/metabinner_bins" ] && [ ! -e "${id}.log" ]; then      
         finish=\$((ls -1 "./${id}/metabinner_bins") | wc -l)
     fi
 
@@ -52,8 +48,6 @@ process METABINNER {
 
         #sed -i 's%\\tbin%\\t${id}%g' metabinner.contigs2bin.tsv
     
-    else
-        touch metabinner.contigs2bin.tsv
     fi
 
 

@@ -19,23 +19,32 @@ process MERGEGENEPROFILE {
     script:
     """
     
-    echo -e "id\\tfile" > abundance.list
-    ls -d \$PWD/*_abundance.xls | awk -v pwd="\$PWD" '{sub(/.*\\//, "", \$0); sub(/_abundance\\.xls\$/, "", \$0); print \$0, pwd "/" \$0 "_abundance.xls"}' OFS='\\t' >> abundance.list
+    sed 1d ${samplesheet} | parallel -k --col-sep ',' "echo -e '{1}\\t{1}_abundance.xls'" > abundance.list
+    
+    merge_identical_rownames_tables.pl -table abundance.list -o ${params.pipeline_prefix}_merged_abundance.xls
 
-    merge.py -i abundance.list -p raw
+    mkdir -p genesetAbundance_report
+    ln -s ../${params.pipeline_prefix}_merged_abundance.xls genesetAbundance_report/genesetAbundance.xls
 
-    col_reorder.pl raw*.xls 1 1 <(sed 's/,/\\t/g' ${samplesheet}) 1 1 1 ${params.pipeline_prefix}_merged_abundance.xls
+
+    ###### old version ######
+    #echo -e "id\\tfile" > abundance.list
+    #ls -d \$PWD/*_abundance.xls | awk -v pwd="\$PWD" '{sub(/.*\\//, "", \$0); sub(/_abundance\\.xls\$/, "", \$0); print \$0, pwd "/" \$0 "_abundance.xls"}' OFS='\\t' >> abundance.list
+
+    #merge.py -i abundance.list -p raw
+
+    #col_reorder.pl raw*.xls 1 1 <(sed 's/,/\\t/g' ${samplesheet}) 1 1 1 ${params.pipeline_prefix}_merged_abundance.xls
 
     #Delete result files before sorting.
-    rm -f raw*.xls
+    #rm -f raw*.xls
 
-    mkdir genesetAbundance_report
-    cp ${params.pipeline_prefix}_*.xls genesetAbundance_report/genesetAbundance.xls 
+    #mkdir genesetAbundance_report
+    #cp ${params.pipeline_prefix}_*.xls genesetAbundance_report/genesetAbundance.xls 
 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
+        perl: \$(perl --version | sed 's/perl //g')
     END_VERSIONS
 
     """

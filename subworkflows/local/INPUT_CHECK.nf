@@ -2,10 +2,12 @@
 // SUBWORKFLOW: Read in samplesheet, validate and stage input files
 //
 
-include { READSVALIDATERENAME4PE as RAWREADSVALIDATERENAME4PE } from '../../modules/local/common/reads_validate_rename'
-include { READSVALIDATERENAME4SE as RAWREADSVALIDATERENAME4SE } from '../../modules/local/common/reads_validate_rename'
-include { READSVALIDATERENAME4PE as CLEANREADSVALIDATERENAME4PE } from '../../modules/local/common/reads_validate_rename'
-include { READSVALIDATERENAME4SE as CLEANREADSVALIDATERENAME4SE } from '../../modules/local/common/reads_validate_rename'
+include { READSVALIDATERENAME } from '../../modules/local/common/reads_validate_rename'
+include { PIPELINEEXIT } from '../../modules/local/common/pipeline_exit'
+include { MERGECHECKLOG } from '../../modules/local/common/merge_check_log'
+
+include { NOTIFICATION as NOTIFICATIONPASS } from '../../modules/local/common/notification'
+include { NOTIFICATION as NOTIFICATIONFAIL} from '../../modules/local/common/notification'
 
 //Check for duplicate sample IDs.
 def checkID(file){
@@ -71,6 +73,7 @@ def checkContent(LinkedHashMap row, String type) {
 workflow INPUT_CHECK {
     take:
     type
+    sample_number
     samplesheet     // file: /path/to/samplesheet.csv
 
     main:
@@ -89,6 +92,9 @@ workflow INPUT_CHECK {
             }
         }
 
+    all_error_logs = Channel.empty()
+    all_info_logs = Channel.empty()
+
     //Pass sequence data to the corresponding channel based on reads type.
     if(type == "raw"){
         raw_reads_original = input_rows.map{ it ->  //[id, [raw_reads1, raw_reads2]] or [id, [raw_se]]
@@ -99,15 +105,11 @@ workflow INPUT_CHECK {
                         }
                         
         // Raw reads validate and rename
-        raw_reads = Channel.empty()
-        if (params.single_end){
-            RAWREADSVALIDATERENAME4SE(type, raw_reads_original)
-            raw_reads = RAWREADSVALIDATERENAME4SE.out.reads
-        }else{
-            RAWREADSVALIDATERENAME4PE(type, raw_reads_original)
-            raw_reads = RAWREADSVALIDATERENAME4PE.out.reads
-        }
-
+        READSVALIDATERENAME(type, raw_reads_original)
+        raw_reads = READSVALIDATERENAME.out.reads
+        all_error_logs = READSVALIDATERENAME.out.error.collectFile(name:"reads_error.log", newLine:true)
+        all_info_logs = READSVALIDATERENAME.out.info
+        
         clean_reads = Channel.empty()
         contig = Channel.empty()
 
@@ -122,15 +124,11 @@ workflow INPUT_CHECK {
 
         // For input clean reads, check if the filename meets the requirements.
         // Clean reads validate and rename
-        clean_reads = Channel.empty()
-        if(params.single_end){
-            CLEANREADSVALIDATERENAME4SE(type, clean_reads_original)
-            clean_reads = CLEANREADSVALIDATERENAME4SE.out.reads
-        }else{
-            CLEANREADSVALIDATERENAME4PE(type, clean_reads_original)
-            clean_reads = CLEANREADSVALIDATERENAME4PE.out.reads
-        }
-        
+        READSVALIDATERENAME(type, clean_reads_original)
+        clean_reads = READSVALIDATERENAME.out.reads
+        all_error_logs = READSVALIDATERENAME.out.error.collectFile(name:"reads_error.log", newLine:true)
+        all_info_logs = READSVALIDATERENAME.out.info
+
         // Parse contig data in modes 4/5.
         if (params.mode in [ 4, 5 ]){
             contig = input_rows.map{ it -> [it[0], it[-1]] } // [id, contig]
@@ -138,6 +136,21 @@ workflow INPUT_CHECK {
             contig = Channel.empty()
         }
 
+    }
+
+    finish_number = all_info_logs.count()
+    MERGECHECKLOG(sample_number, finish_number, all_info_logs.collect())
+
+    if(params.webhookurl){
+        // Validate failed, then notification and exit
+        fail_content = "❌ Oops! Input verification hit a little snag, and ${params.pipeline_prefix} is taking a break. Please refer to the log file to check the input file. 🫨"
+        NOTIFICATIONFAIL("INPUT_CHECK", fail_content, all_error_logs)
+        PIPELINEEXIT(NOTIFICATIONFAIL.out.log)
+
+        // Validate pass notification
+        pass_content = "🎉 Congratulations! Input verification for Project ID: ${params.Account} has been successfully completed. ${params.pipeline_prefix} is now initiating the analysis. 🚀"
+        NOTIFICATIONPASS("INPUT_CHECK", pass_content, MERGECHECKLOG.out.info) 
+        
     }
 
     emit:

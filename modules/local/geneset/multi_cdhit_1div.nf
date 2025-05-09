@@ -15,9 +15,11 @@ process CDHITDIV {
     def split_num = task_num.getSimpleName().toInteger()
     
     """
-    mkdir div_tmp
-    ln -s ${allcds} all.cds.fa
-    cd-hit-div -i all.cds.fa -o div_tmp/all.cds.fa.div -div ${split_num}
+    #mkdir div_tmp
+    psort2div.pl --input ${allcds} --output div_tmp --cpu ${task.cpus} -prefix all.cds.fa.div -number ${split_num}
+
+    #ln -s ${allcds} all.cds.fa
+    #cd-hit-div -i all.cds.fa -o div_tmp/all.cds.fa.div -div ${split_num}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

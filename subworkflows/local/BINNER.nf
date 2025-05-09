@@ -35,7 +35,6 @@ include { NOBINSWARNING } from '../../modules/local/binning/no_bins_warning'
 
 workflow BINNER {
     take:
-    sample_number
     contigs           // channel: [ val(id), [ contigs ] ]
     clean_reads       // channel: [ val(id), [ reads1, read2 ] ]
     prodigal_faa      // channel: [ val(id), path(faa) ]
@@ -81,6 +80,7 @@ workflow BINNER {
     //For binning tools other than maxbin, first execute prebinning.
     if( preFlag.size() > 0 ){
         PREBINNING(bin_input)
+        contig_bowtie2 = PREBINNING.out.bowtie2_log.collect()
         concoct_input =  contigs.join(PREBINNING.out.sorted_bam).join(PREBINNING.out.sorted_bam_csi)
         metabat_input =  contigs.join(PREBINNING.out.bin_depth)
         metabinner_input = metabat_input
@@ -185,15 +185,35 @@ workflow BINNER {
             combine_bin_tsv = COMBINEBINNER.out.combine_bin_tsv
 
             // checkm2 input , create unique id [id,floder]
+            // ch_combinecheck_in = COMBINEBINNER.out.combine_bin_fa
+            //                         .flatMap { id, folders ->
+            //                             folders.collect { folder ->
+            //                                 // Extract the folder name from the folder path
+            //                                 def foldername = folder.getName()
+            //                                 // Concatenate id with foldername and return the new tuple
+            //                                 tuple("${id}-${foldername}", folder)
+            //                             }
+            //                         }
+
             ch_combinecheck_in = COMBINEBINNER.out.combine_bin_fa
-                                    .flatMap { id, folders ->
-                                        folders.collect { folder ->
-                                            // Extract the folder name from the folder path
-                                            def foldername = folder.getName()
-                                            // Concatenate id with foldername and return the new tuple
-                                            tuple("${id}-${foldername}", folder)
-                                        }
-                                    }
+                .flatMap { id, folders ->
+                    // Handle multiple folders or single folder
+                    if (folders instanceof List) {
+                        // If folders is a list, process each folder
+                        return folders.collect { folder ->
+                            // Extract name from folder path
+                            def foldername = folder.getName()
+                            // Combine id and folder name, return new tuple
+                            tuple("${id}-${foldername}", folder)
+                        }
+                    } else {
+                        // If there's only one folder, process it directly
+                        def foldername = folders.getName()
+                        return [tuple("${id}-${foldername}", folders)]
+                    }
+                }
+
+            
             COMBINECHECKM2(ch_combinecheck_in, ch_checkm2_db)
 
             RENAMECHECKM2(COMBINECHECKM2.out.quality_report)
@@ -272,25 +292,42 @@ workflow BINNER {
     ch_pcik_in = ch_best_bin.join(ch_best_bin_qs)
 
     PICKPBODBO(optimizeBins_method, ch_pcik_in) 
+    bestBin = PICKPBODBO.out.bestBin
 
     //val(id),path(bins),path(quality_report)
-    filter_bins_input = PICKPBODBO.out.best
+    bestBin_report = PICKPBODBO.out.best
 
+    binner_log = multi_binner_log.mix(checkm2_log)
+
+    emit:
+    contig_bowtie2
+    bestBin
+    bestBin_report
+    binner_log
+
+}
+
+workflow BINNERCLEANUP {
+    take:
+    sample_number
+    bestBin        //PICKPBODBO.out.bestBin
+    bestBin_report  //PICKPBODBO.out.best
+
+    main:
 
     // Mapping relationship between sampleID and bin filenames, using the channel merged from the final DBO / PBO.
-    GETSAMPLEBINMAP(ch_best_bin)
+    GETSAMPLEBINMAP(bestBin)
     sample_bin_map = GETSAMPLEBINMAP.out.mapping.collectFile(name: 'all_sample_bin_mapping.txt')
 
     //filter
     //filter_bins_input = ch_checkm2_in.join(CHECKM2.out.quality_report,by:0)
-    FILTERBINS ( filter_bins_input )
+    FILTERBINS (bestBin_report)
     BIN_FILTER_WARNING("BinFilter", FILTERBINS.out.filtered_log.collect())
     filter_log = BIN_FILTER_WARNING.out.log
 
     //result 
     POSTBINNING (FILTERBINS.out.filter_bins.collect(), FILTERBINS.out.QS_quality_report.collect())
     binQS_report = POSTBINNING.out.rawbinQS
-    contig_bowtie2 = PREBINNING.out.bowtie2_log.collect()
     all_filtered_bins = POSTBINNING.out.final_bins
     qs_quality_report = POSTBINNING.out.qs_quality_report
 
@@ -324,10 +361,10 @@ workflow BINNER {
     bins_count = RENAMEBIN.out.count
     bins_info = RENAMEBIN.out.bins_info
 
-    binner_report = binQS_report.mix(binInfo_report, multi_binner_log, checkm2_log, filter_log, nobins_log).collect()
+    binner_report = binQS_report.mix(binInfo_report, filter_log, nobins_log)
 
     emit:
-    contig_bowtie2
+    
     qs_quality_report
     bins_folder
     final_genomes
@@ -337,5 +374,5 @@ workflow BINNER {
     bins_info
     binner_report
     sample_bin_map
-}
 
+}

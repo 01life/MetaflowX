@@ -1,10 +1,11 @@
 
 process REPORT {
 
-    label 'process_low'
+    label 'process_medium'
 
     input:
-    path(report)
+    path(result)
+    path(log)
     path(topic)
     path(order)
     path(template)

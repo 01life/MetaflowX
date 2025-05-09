@@ -9,8 +9,8 @@ process SEMIBIN2 {
     tuple val(id),path(contigs),path(sorted_bam)
 
     output:
-    tuple val(id),path("${id}/output_bins/",type:'dir'),emit:"bins"
-    tuple val(id),path("semibin2.contigs2bin.tsv"),emit:"tsv"
+    tuple val(id),path("${id}/output_bins/",type:'dir'), emit:"bins", optional: true
+    tuple val(id),path("semibin2.contigs2bin.tsv"), emit:"tsv", optional: true
 
 
     when:
@@ -21,14 +21,10 @@ process SEMIBIN2 {
     
     """
     
-    SemiBin2 single_easy_bin \
-        -p ${task.cpus} \
-        --input-fasta ${contigs} \
-        --input-bam ${sorted_bam} \
-        -o ${id} ${options}
+    SemiBin2 single_easy_bin -p ${task.cpus} --input-fasta ${contigs} --input-bam ${sorted_bam} -o ${id} ${options} || echo "SEMIBIN2 task for sample ${id} failed ......" > ${id}.log
 
     finish=0
-    if [ -d "${id}/output_bins" ] ; then      
+    if [ -d "${id}/output_bins" ] && [ ! -e "${id}.log" ]; then      
         finish=\$((ls -1 "./${id}/output_bins") | wc -l)
     fi
 
@@ -42,8 +38,6 @@ process SEMIBIN2 {
 
         #sed -i 's%\\tSemiBin_%\\t${id}.%g' semibin2.contigs2bin.tsv
     
-    else
-        touch semibin2.contigs2bin.tsv
     fi
 
 

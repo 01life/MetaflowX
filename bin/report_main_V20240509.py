@@ -70,7 +70,7 @@ def get_file_line_count(file_path):
 def check_data_frame_more_than_three(dataFrame):
     # check row and col number more than 2
     num_rows, num_cols = dataFrame.shape
-    if num_rows < 2 or num_cols < 2:
+    if num_rows <= 2 or num_cols <= 2:
         return('''<p style="font-size: 12pt; color: red; font-style: italic;" >Oops! Number of Smaple less than 2, nor item less than 2.  Socouldn't show this figure.<br></p>''')
     else:
         return('Pass')

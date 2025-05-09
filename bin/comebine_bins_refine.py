@@ -12,7 +12,7 @@ def parse_args():
 	parser.add_argument('-c', '--contig', required=True, help="Paths to contigs fa.")
 	parser.add_argument('-info', required=True, help="Paths to contigs squeence information file which including squences length.")
 	parser.add_argument('-i','--sample', required=True, help="sampleID")
-	parser.add_argument('-bins', nargs='+', required=True, help="Paths to binner contigs2bin.tsv file. Provide at least two.")
+	parser.add_argument('-bins', nargs='+', required=True, help="Paths to binner contigs2bin.tsv file.")
 	parser.add_argument('-o', '--output', required=False,default=os.getcwd(), help="Output directory.")
 	parser.add_argument('-ms', '--min_size', type=float, default=0.5, help="Minimum size of refined bins in Mbp (default=0.5 Mbp).")
 	parser.add_argument('-mx', '--max_size', type=float, default=20, help="Maximum size of refined bins in Mbp (default=20 Mbp).")
@@ -34,7 +34,7 @@ def get_contig_lengths(contig_info_file):
 		header = cf.readline()
 		for contig in cf:
 			cl = contig.strip().split("\t")
-			len_dir[cl[0]] =  int(cl[1])
+			len_dir[cl[0]] =  int(float(cl[1]))
 	return(len_dir)
 
 
@@ -165,10 +165,36 @@ def write_refined_bins(refined_bins, output_dir, contigDir, threads, sample):
 			print(future.result())
 
 
+def process_single_biner_output(binner_list,total_binner_bin_contig_dir,output_dir,contigDir,sample):
+	n = 0
+	for binner_name, bin_contig in total_binner_bin_contig_dir.items():
+		for oldBinid, one_bin_contig in bin_contig.items():
+
+			binID = f"{sample}_{binner_name}:onlyOneBiner.{n}"
+			
+			n += 1
+			create_output_dir(os.path.join(output_dir,f"{binner_name}:onlyOneBiner"))
+			onebinFa_path = os.path.join(output_dir,f"{binner_name}:onlyOneBiner", f"{binID}.fa")
+
+			# Open FASTA file for writing contigs
+			with open(onebinFa_path, 'w') as onebinFa, open(os.path.join(output_dir, f"{sample}_allcontigs2bin.txt"), 'a') as contigbinF, open(os.path.join(output_dir, f"{sample}_{binner_name}__onlyOneBiner.contigs2bin.tsv"), 'a') as outfile:
+				for contig in one_bin_contig:
+					# Write to .contigs2bin.tsv
+					outfile.write(f"{contig}\t{binID}\n")
+					
+					# Write contig sequence to FASTA file
+					onebinFa.write(f">{contig}\n{contigDir[contig]}\n")
+					
+					#save contig:[binid ]
+					contigbinF.write(f"{contig}\t{binID}\n")
+					
+
 def main():
 	args = parse_args()
 	if len(args.bins) < 2:
-		raise ValueError("At least two bin folders are required.")
+		print("Only get one Binner result, MetaflowX will not combine bins.")
+
+		# raise ValueError("At least two bin folders are required.")
 	
 	create_output_dir(args.output)
 
@@ -200,25 +226,34 @@ def main():
 
 			total_binner_bin_contig_dir.update(binner_bin_contig_dir)
 
+	if len(binner_list) > 1:
 
-	# 3 # get binner combination and merge bin
-	all_binner_combinations = []
-	for r in range(2, len(binner_list) + 1):
-		combinations = list(itertools.combinations(binner_list, r))
-		all_binner_combinations.extend(combinations)
+		# 3 # get binner combination and merge bin
+		all_binner_combinations = []
+		for r in range(2, len(binner_list) + 1):
+			combinations = list(itertools.combinations(binner_list, r))
+			all_binner_combinations.extend(combinations)
 
-	
-	print(all_binner_combinations)
-	with ProcessPoolExecutor(max_workers=args.threads) as executor:
-		futures = []
-		for bin_combination in all_binner_combinations:
-			futures.append(executor.submit(refine_bins, bin_combination, total_contig_bin_dir, total_binner_bin_contig_dir, sorted_contig_lengths, args.min_size, args.max_size, args.sample))
+		
+		print(all_binner_combinations)
+		with ProcessPoolExecutor(max_workers=args.threads) as executor:
+			futures = []
+			for bin_combination in all_binner_combinations:
+				futures.append(executor.submit(refine_bins, bin_combination, total_contig_bin_dir, total_binner_bin_contig_dir, sorted_contig_lengths, args.min_size, args.max_size, args.sample))
 
-		for future in as_completed(futures):
-			combine_refine_bin = future.result()
-			total_combine_refine_bin.update(combine_refine_bin)
+			for future in as_completed(futures):
+				combine_refine_bin = future.result()
+				total_combine_refine_bin.update(combine_refine_bin)
 
-	write_refined_bins(total_combine_refine_bin, args.output,contigDir,args.threads,args.sample)
+		write_refined_bins(total_combine_refine_bin, args.output,contigDir,args.threads,args.sample)
+
+	else:
+		print(binner_list)
+		process_single_biner_output(binner_list,total_binner_bin_contig_dir,args.output,contigDir,args.sample)
+		# print(contig_bin_dir)
+		# print(total_contig_bin_dir)
+		# print(total_binner_bin_contig_dir)
+
 
 if __name__ == "__main__":
 	main()

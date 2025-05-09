@@ -13,7 +13,7 @@ process RENAMEBIN {
     path("${params.pipeline_prefix}_HQ_unique_bins_rename_map.xls"),emit:"name_map"
     path("${params.pipeline_prefix}_HQ_unique_bins_info.xls"),emit:"bins_info"
     path("*.txt"),emit:"count"
-    path("bin.fa.list"),emit:"list"
+    path("HQUniqueBins/folder*"),emit:"list"
 
     when:
     task.ext.when == null || task.ext.when

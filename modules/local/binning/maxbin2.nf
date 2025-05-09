@@ -8,9 +8,8 @@ process MAXBIN2 {
     tuple val(id),path(contigs),path(reads)
 
     output:
-    // tuple val(id),path("bins/*.fa"),emit:"fasta"
-    tuple val(id),path("bins",type:'dir'),emit:"bins"
-    tuple val(id),path("maxbin.contigs2bin.tsv"),emit:"tsv"
+    tuple val(id),path("bins",type:'dir'), emit:"bins", optional: true
+    tuple val(id),path("maxbin.contigs2bin.tsv"), emit:"tsv", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,10 +20,10 @@ process MAXBIN2 {
     
     """
     mkdir bins
-    run_MaxBin.pl -contig ${contigs} -out bins/${id} ${reads_args} -thread ${task.cpus} ${options}
+    run_MaxBin.pl -contig ${contigs} -out bins/${id} ${reads_args} -thread ${task.cpus} ${options} || echo "MAXBIN2 task for sample ${id} failed ......" > ${id}.log
 
     finish=0
-    if [ -d "bins" ] ; then      
+    if [ -d "bins" ] && [ ! -e "${id}.log" ] ; then      
         finish=\$((ls -1 "./bins") | wc -l)
     fi
 
@@ -36,8 +35,6 @@ process MAXBIN2 {
 
         Fasta_to_Contig2Bin.sh -i bins -e fa > maxbin.contigs2bin.tsv
     
-    else
-        touch maxbin.contigs2bin.tsv
     fi
 
     cat <<-END_VERSIONS > versions.yml

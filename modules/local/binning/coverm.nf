@@ -21,7 +21,7 @@ process COVERM {
     script:
     def options = params.coverm_options ?: ""
     """
-    coverm genome -b ${sorted_bam} -d ${genomes} -m ${method} -t ${task.cpus} -o ${params.pipeline_prefix}_CoverM_bins_${method}_raw.xls ${options}
+    coverm genome -b ${sorted_bam} -f ${genomes} -m ${method} -t ${task.cpus} -o ${params.pipeline_prefix}_CoverM_bins_${method}_raw.xls ${options}
 
     standardize_coverm_outfile.py -i ${params.pipeline_prefix}_CoverM_bins_${method}_raw.xls -o ${params.pipeline_prefix}_CoverM_bins_${method}_rename.xls -m ${method}
 
