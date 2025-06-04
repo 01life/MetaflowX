@@ -8,6 +8,7 @@ process METASPADESM128 {
 
     output:
     tuple val(id),path("${id}_contigs.fa"), emit: "contigs", optional: true
+    tuple val(id),path("${id}_scaffolds.fa"), emit: "scaffolds", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,6 +27,13 @@ process METASPADESM128 {
         seqtk seq -L ${params.min_contig_len} ${id}/contigs.fasta > ${id}/seq.contigs.fa
     
         seqtk rename ${id}/seq.contigs.fa "${id}|" > ${id}_contigs.fa
+
+        if [ -e "${id}/scaffolds.fasta" ]; then
+
+            seqtk seq -L ${params.min_contig_len} ${id}/scaffolds.fasta > ${id}/seq.scaffolds.fasta
+            seqtk rename ${id}/seq.scaffolds.fasta "${id}|" > ${id}_scaffolds.fa
+        
+        fi
 
         rm -rf ${id} 
     fi

@@ -33,6 +33,9 @@ workflow BINNING {
     annotation
     vfdb_anno
     card_anno
+    contig_taxonomy   // channel: [ val(id), path(taxonomy) ]
+    contig_map     // channel: [ val(id), path(contig_map) ]
+
 
     main:
 
@@ -72,7 +75,7 @@ workflow BINNING {
         bestBin = bestBin_report.map{ it -> [it[0], it[1]]}
     }else{
         //Bining
-        BINNER(contigs, clean_reads, prodigal_faa)
+        BINNER(contigs, clean_reads, prodigal_faa,contig_taxonomy,contig_map)
         binning_bowtie2 = binning_bowtie2.mix(BINNER.out.contig_bowtie2)
         binner_log = BINNER.out.binner_log
         bestBin = BINNER.out.bestBin

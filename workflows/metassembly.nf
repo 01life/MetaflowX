@@ -62,15 +62,17 @@ include { SVFLOWINPUT } from '../subworkflows/local/SVFLOW_INPUT'
 /* -----   Define channel for SUBWORKFLOW -----   */
 ////////////////////////////////////////////////////      
 
-ch_raw_reads    = Channel.empty()
-ch_clean_reads  = Channel.empty()
+ch_raw_reads        = Channel.empty()
+ch_clean_reads      = Channel.empty()
 
-ch_prodigal_faa = Channel.empty()
-ch_cdhit_clstr  = Channel.empty()
-ch_gene_info    = Channel.empty()
-ch_annotation   = Channel.empty()
-ch_vfdb_anno    = Channel.empty()
-ch_card_anno    = Channel.empty()
+ch_prodigal_faa     = Channel.empty()
+ch_cdhit_clstr      = Channel.empty()
+ch_gene_info        = Channel.empty()
+ch_annotation       = Channel.empty()
+ch_vfdb_anno        = Channel.empty()
+ch_card_anno        = Channel.empty()
+ch_contig_taxonomy  = Channel.empty()
+ch_contig_map       = Channel.empty()  
 
 //html report input
 ch_report_input = Channel.empty()
@@ -144,7 +146,9 @@ workflow METASSEMBLY {
     ch_clean_reads = INPUT_CHECK.out.clean_reads        
     
     CONTIGFILTER(INPUT_CHECK.out.contig)
-    ch_contig = CONTIGFILTER.out.contigs
+    ch_contig     = CONTIGFILTER.out.contigs
+    ch_contig_map = CONTIGFILTER.out.contigs_map
+    ch_contig_map.view()
 
     //Submodule Execution.
     switch(params.mode){
@@ -169,6 +173,8 @@ workflow METASSEMBLY {
 
             ASSEMBLY(sample_number, ch_clean_reads)
             ch_report_input = ch_report_input.mix(ASSEMBLY.out.assembly_report)
+            ch_contig_taxonomy =ASSEMBLY.out.contigs_taxonomy
+            
             break;
         }
         //reads marker
@@ -251,7 +257,8 @@ workflow METASSEMBLY {
                 ch_report_input = ch_report_input.mix(GENEPREDICTION.out.prodigal_log)
             }
 
-            BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
+
+            BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno,ch_contig_taxonomy,ch_contig_map)
             ch_bins_list = BINNING.out.bins_list
             ch_bins_folder = BINNING.out.bins_folder
             ch_bins_count = BINNING.out.bins_count
@@ -281,6 +288,7 @@ workflow METASSEMBLY {
             ch_contig = ASSEMBLY.out.contigs
             ch_report_input = ch_report_input.mix(ASSEMBLY.out.assembly_report)
             ch_contig_info = ASSEMBLY.out.contig_info
+            ch_contig_taxonomy =ASSEMBLY.out.contigs_taxonomy
 
             if(!params.skip_marker){
                 RAPID_TAXONOMIC_PROFILING(sample_number, ch_clean_reads, ch_input)
@@ -301,7 +309,8 @@ workflow METASSEMBLY {
             
             if(!params.skip_binning){
                 //Bining
-                BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
+                // BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
+                BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno,ch_contig_taxonomy,ch_contig_map)
                 ch_bins_list = BINNING.out.bins_list
                 ch_bins_folder = BINNING.out.bins_folder
                 ch_bins_count = BINNING.out.bins_count

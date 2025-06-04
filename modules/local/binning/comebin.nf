@@ -11,7 +11,7 @@ process COMEBIN {
     output:
     tuple val(id),path("${id}/comebin_res/comebin_res_bins/",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("comebin.contigs2bin.tsv"), emit:"tsv", optional: true
-
+    tuple val(id),path("${id}_COMEBin_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -39,6 +39,8 @@ process COMEBIN {
         cd ../../..
 
         Fasta_to_Contig2Bin.sh -i ${id}/comebin_res/comebin_res_bins/ -e fa > comebin.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tCOMEBin"}' comebin.contigs2bin.tsv > ${id}_COMEBin_BinsContigs.tsv
 
         #sed -i 's%\\tbin%\\t${id}%g' comebin.contigs2bin.tsv
     

@@ -87,7 +87,13 @@
                 },
                 "pipeline_assets": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public",
                     "description": "Assets path of project"
+                },
+                "webhookurl": {
+                    "type": "string",
+                    "description": "The Webhook Address for the Enterprise WeChat Group Robot",
+                    "default": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ee63c501-631a-4af7-bc04-c6ab1223a6e4"
                 }
             }
         },
@@ -115,6 +121,7 @@
                 "adapters": {
                     "type": "string",
                     "description": "Adapter file for trim",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/TruSeq3-PE.fa",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
@@ -143,6 +150,7 @@
                 },
                 "host_db": {
                     "type": "string",
+                    "default": "/share/database/Homo_sapiens/hg38_bowtie2_index",
                     "description": "Index filename prefix of host database (minus trailing .X.bt2)",
                     "help_text": "Human genome reference database  for removing host(default: hg38)\nDownload link: http://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
                     "fa_icon": "fas fa-database",
@@ -186,6 +194,18 @@
                     "description": "Options for metaSPAdes",
                     "default": "--meta"
                 },
+                "spades4downstream_analysis": {
+                    "type": "string",
+                    "default": "scaffolds",
+                    "description": "Specify whether to use contigs or scaffolds assembled by SPAdes, the choices enabled are: scaffolds,contigs",
+                    "help_text": "Be default the SPAdes documentation recommends using scaffolds rather than contigs, as these are longer as they combine multiple contigs. However there is an increased risk of misassemblies or chimeras. Use this flag to specify to just use contigs for downstream processes such as binning. Reference by nf-mag.",
+                    "enum": [
+                        "scaffolds",
+                        "contigs"
+                    ],
+                    "fa_icon": "fas fa-tools"
+                },
+
                 "megahit_options": {
                     "type": "string",
                     "default": "--min-contig-len 2000",
@@ -226,6 +246,7 @@
                     "fa_icon": "far fa-folder-open",
                     "description": "Folder containing the MetaPhlAn database",
                     "help_text": "The folder contain the MetaPhlAn database, you can download by the following command: \"metaphlan --install --bowtie2db <database folder>\".",
+                    "default": "/share/database/metaphlan/mpa_vJan21",
                     "format": "directory-path"
                 },
                 "mpa_index": {
@@ -263,6 +284,7 @@
                 },
                 "kraken2_db": {
                     "type": "string",
+                    "default": "/share/database/Kraken2/standard",
                     "fa_icon": "far fa-folder-open",
                     "description": "Path to Kraken2 database",
                     "help_text": "To create the standard Kraken 2 database, you can use the following command:\nkraken2-build --standard --db $DBNAME",
@@ -301,6 +323,7 @@
                 },
                 "humann_chocophlan_db": {
                     "type": "string",
+                    "default": "/share/database/humann/v201901b/chocophlan",
                     "description": "Directory containing the nucleotide database",
                     "help_text": "you can download like this: \"humann_databases --download chocophlan full $INSTALL_LOCATION\"",
                     "format": "directory-path",
@@ -308,6 +331,7 @@
                 },
                 "humann_protein_db": {
                     "type": "string",
+                    "default": "/share/database/humann/v201901b/uniprot/uniref_annotated/uniref90",
                     "description": "Directory containing the protein database",
                     "help_text": "you can download like this: \"humann_databases --download uniref uniref90_diamond $INSTALL_LOCATION\".",
                     "format": "directory-path",
@@ -315,6 +339,7 @@
                 },
                 "humann_map_db": {
                     "type": "string",
+                    "default": "/share/database/humann/v201901b/full_mapping",
                     "description": "Directory containing the humann utility mapping other database ID file",
                     "help_text": "humann full mapping file, you can download them like this:\" humann_databases --download utility_mapping full $INSTALL_LOCATION\".",
                     "format": "directory-path",
@@ -394,6 +419,18 @@
                     "fa_icon": "fas fa-filter",
                     "description": "Options for Prodigal"
                 },
+                "prodigal_output": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "description": "The prodigal output includes predicted protein and nucleic acid information. This parameter configures a CSV file that must include the following columns: id, faa, cds",
+                    "help_text": "This parameter configures a CSV file that must include the following columns: id, faa, cds."
+                },
+                "geneset_construction": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene set construction analysis"
+                },
                 "gene_min_length": {
                     "type": "integer",
                     "default": 150,
@@ -424,6 +461,11 @@
                     "description": "Gene count of each cd-hit split task",
                     "fa_icon": "fas fa-columns"
                 },
+                "gene_function": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene function analysis"
+                },
                 "eggnog_protein_chunk_size": {
                     "type": "integer",
                     "default": 10000,
@@ -432,6 +474,7 @@
                 },
                 "eggnog_diamond_db": {
                     "type": "string",
+                    "default": "/share/app/SOP/nf-core/database/metagenome/eggnog_5.0/bact_arch/bact_arch.dmnd",
                     "description": "Path to DIAMOND-compatible database for eggNOG-mapper",
                     "fa_icon": "fas fa-database",
                     "help_text": "You can execute the following command to get the database files.\ncreate_dbs.py -m diamond --dbname bacteria --taxa Bacteria --data_dir /path/to/eggnog databse/ -y",
@@ -439,6 +482,7 @@
                 },
                 "eggnog_mapper_db": {
                     "type": "string",
+                    "default": "/share/database/eggnog/emapperdb-5.0.2",
                     "description": "Path to eggNOG-mapper database",
                     "fa_icon": "fas fa-database",
                     "help_text": "You can execute the following command to download the database.\ndownload_eggnog_data.py --data_dir /path/to/eggnog emapperdb -y ",
@@ -482,6 +526,7 @@
                 },
                 "bigspace_path": {
                     "type": "string",
+                    "default": "/share/app/BiG-SCAPE",
                     "description": "Name of the path to bigscape.py",
                     "fa_icon": "far fa-folder-open"
                 },
@@ -545,6 +590,11 @@
                     "default": "-e 1e-5 --id 40",
                     "description": "Options for DIAMOND to use custom protein database to get gene functional annotation",
                     "fa_icon": "fas fa-filter"
+                },
+                "gene_abundance_calculation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene abundance calculation analysis"
                 },
                 "save_geneset_abundance": {
                     "type": "boolean",
@@ -619,6 +669,7 @@
                 },
                 "metabinner_path": {
                     "type": "string",
+                    "default": "/share/app/miniconda3/envs/mymetabinner/bin",
                     "fa_icon": "fas fa-filter",
                     "description": "Path of MetaBinner"
                 },
@@ -634,6 +685,7 @@
                 },
                 "binny_path": {
                     "type": "string",
+                    "default": "/share/app/binny",
                     "fa_icon": "fas fa-filter",
                     "description": "Path of binny"
                 },
@@ -665,6 +717,7 @@
                 },
                 "checkm2_db": {
                     "type": "string",
+                    "default": "/share/database/CheckM2/uniref100.KO.1.dmnd",
                     "fa_icon": "fas fa-file",
                     "description": "Provide a location for the CheckM2 database for a given predict run",
                     "help_text": "You can execute the following command to get the database files.\ncheckm2 database --download --path /path/to/CheckM2 database",
@@ -732,13 +785,24 @@
                 },
                 "PermutationBinOptimizer": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Set permutation-based Bin Optimizer or not"
                 },
                 "similarity_ratio": {
                     "type": "number",
                     "default": 0.8,
                     "description": "Similarity bins threshold"
+                },
+                "rawbin_info": {
+                    "type": "string",
+                    "help_text": "This parameter configures a CSV file that must include the following columns: id,rawbin_folder,quality_report.",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "description": "Path to raw bin  information includes the raw bin folder and the quality report. This parameter configures a CSV file that must include the following columns: id,rawbin_folder,quality_report."
+                },
+                "HQ_unique_bins": {
+                    "type": "string",
+                    "description": "Path to all high-quality unique bins, and the file extension for these bins in the directory should be .fa."
                 },
                 "bin_taxonomy": {
                     "type": "boolean",
@@ -748,6 +812,7 @@
                 },
                 "gtdbtk_db": {
                     "type": "string",
+                    "default": "/share/database/gtdbtk/release214",
                     "description": "Path to GTDB-Tk database",
                     "help_text": "wget https://data.gtdb.ecogenomic.org/releases/latest/auxillary_files/gtdbtk_data.tar.gz\nor\nwget https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/auxillary_files/gtdbtk_data.tar.gz\ntar xvzf gtdbtk_data.tar.gz",
                     "format": "directory-path",
@@ -755,6 +820,7 @@
                 },
                 "mash_db": {
                     "type": "string",
+                    "default": "/share/database/gtdbtk/release214/mash",
                     "description": "Path to save/read (if exists) the Mash reference sketch database (.msh)  for GTDB-Tk",
                     "fa_icon": "fas fa-database",
                     "help_text": "\nPlease refer the following command to build mash database:\nmkdir /path/to/gtdbtk_db\ncd /path/to/gtdbtk_db\nwget https://data.gtdb.ecogenomic.org/releases/latest/auxillary_files/gtdbtk_data.tar.gz\nwget https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/auxillary_files/gtdbtk_data.tar.gz\ntar xvzf gtdbtk_data.tar.gz\n\nperl -alne 'print \"/path/to/gtdbtk_db/fastani/$F[1]$F[0]\";' /path/to/gtdbtk_db/fastani/genome_paths.tsv > tmp.txt\nmash sketch -l -p 16 tmp.txt -o gtdb_ref_sketch.msh -k 16 -s 5000",
@@ -768,6 +834,7 @@
                 },
                 "gtdb_archaeal_metadata": {
                     "type": "string",
+                    "default": "/share/app/SOP/nf-core/database/metagenome/gtdbtk_R214/metadata/ar53_metadata_r214.tsv.gz",
                     "description": "GTDB archaeal metadata file",
                     "help_text": "Download link: https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/ar53_metadata.tsv.gz",
                     "format": "file-path",
@@ -775,6 +842,7 @@
                 },
                 "gtdb_bacterial_metadata": {
                     "type": "string",
+                    "default": "/share/app/SOP/nf-core/database/metagenome/gtdbtk_R214/metadata/bac120_metadata_r214.tsv.gz",
                     "description": "GTDB bacterial metadata file",
                     "help_text": "Download link: https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/bac120_metadata.tsv.gz",
                     "format": "file-path",
@@ -836,24 +904,28 @@
                 },
                 "kegg_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/ko_category.txt",
                     "description": "Category information of KEGG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "go_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/GO_ontology.txt",
                     "description": "Category information of GO database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cazy_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cazy_category.txt",
                     "description": "Category information of CAZy database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cog_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cog_level.txt",
                     "description": "Category information of COG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
@@ -888,6 +960,7 @@
                 },
                 "genome_paths": {
                     "type": "string",
+                    "default": "/share/database/gtdbtk/release214/fastani/genome_paths.tsv",
                     "description": "Genome path file of  GTDB-Tk",
                     "fa_icon": "fas fa-file-alt"
                 },
@@ -899,6 +972,7 @@
                 },
                 "deepurify_db": {
                     "type": "string",
+                    "default": "/share/database/Deepurify2/Deepurify-DB/",
                     "fa_icon": "fas fa-database",
                     "description": "Path to deepurify database"
                 },
@@ -995,6 +1069,39 @@
             },
             "fa_icon": "fas fa-chalkboard"
         },
+        "svflow_options": {
+            "title": "SVflow options",
+            "type": "object",
+            "description": "Options to generate the input file to run SVflow",
+            "default": "",
+            "properties": {
+                "stat": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Generate the input file to run SVflow or not.",
+                    "fa_icon": "fas fa-toggle-on"
+                },
+                "path_map": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/svflow/path_map.csv",
+                    "description": "Mapping file of analysis name and result path",
+                    "fa_icon": "fas fa-layer-group"
+                },
+                "profile_template": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/svflow/profile_template.csv",
+                    "description": "Template file to run SVflow",
+                    "fa_icon": "fas fa-file"
+                }
+            },
+            "fa_icon": "fab fa-artstation"
+        },
         "minitools_options": {
             "title": "Minitools options",
             "type": "object",
@@ -1039,18 +1146,22 @@
             "properties": {
                 "report_topic": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/topic.txt",
                     "description": "Path to topic information file"
                 },
                 "report_order": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/report.order.txt",
                     "description": "Path to figure order file"
                 },
                 "report_template": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/template_V20240307.html",
                     "description": "Path to HTML template file"
                 },
                 "report_images": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/img",
                     "description": "Path to images of HTML template"
                 }
             }
@@ -1240,6 +1351,9 @@
         },
         {
             "$ref": "#/definitions/binning_options"
+        },
+        {
+            "$ref": "#/definitions/svflow_options"
         },
         {
             "$ref": "#/definitions/minitools_options"

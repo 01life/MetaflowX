@@ -11,7 +11,7 @@ process SEMIBIN2 {
     output:
     tuple val(id),path("${id}/output_bins/",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("semibin2.contigs2bin.tsv"), emit:"tsv", optional: true
-
+    tuple val(id),path("${id}_SemiBin2_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -35,6 +35,8 @@ process SEMIBIN2 {
         cd ../..
 
         Fasta_to_Contig2Bin.sh -i ${id}/output_bins -e fa > semibin2.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tSemiBin2"}' semibin2.contigs2bin.tsv  > ${id}_SemiBin2_BinsContigs.tsv
 
         #sed -i 's%\\tSemiBin_%\\t${id}.%g' semibin2.contigs2bin.tsv
     

@@ -11,7 +11,7 @@ process METABINNER {
     output:
     tuple val(id),path("${id}/metabinner_bins/",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("metabinner.contigs2bin.tsv"), emit:"tsv", optional: true
-
+    tuple val(id),path("${id}_MetaBinner_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -45,6 +45,8 @@ process METABINNER {
         cd ../..
 
         Fasta_to_Contig2Bin.sh -i ${id}/metabinner_bins/ -e fa > metabinner.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tMetaBinner"}' metabinner.contigs2bin.tsv  > ${id}_MetaBinner_BinsContigs.tsv
 
         #sed -i 's%\\tbin%\\t${id}%g' metabinner.contigs2bin.tsv
     

@@ -30,18 +30,19 @@ workflow QC {
 
     ch_host_db = params2Channel(params.host_db)
     ch_adapters = params2Channel(params.adapters)
+    ch_phix_db = params2Channel(params.phix_db)
 
     fastp_json = Channel.empty()
 
     if (params.qc_tool == "fastp") {
-        FASTP(raw_reads, ch_host_db, ch_adapters)
+        FASTP(raw_reads, ch_host_db, ch_adapters,ch_phix_db)
         clean_reads = FASTP.out.clean_reads
         stat_info = FASTP.out.stat_info
         fastp_json = FASTP.out.fastp_json.collect()
     } 
     
     if (params.qc_tool == "trimmomatic") {
-        TRIM(raw_reads, ch_host_db, ch_adapters)
+        TRIM(raw_reads, ch_host_db, ch_adapters,ch_phix_db)
         clean_reads = TRIM.out.clean_reads
         stat_info = TRIM.out.stat_info
     }

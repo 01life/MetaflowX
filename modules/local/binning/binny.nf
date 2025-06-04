@@ -11,7 +11,7 @@ process BINNY {
     output:
     tuple val(id),path("${id}/bins/",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("binny.contigs2bin.tsv"), emit:"tsv", optional: true
-
+    tuple val(id),path("${id}_binny_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -39,6 +39,8 @@ process BINNY {
         Fasta_to_Contig2Bin.sh -i ${id}/bins -e fa > binny.contigs2bin.tsv
 
         #sed -i 's%\\tbin%\\t${id}%g' binny.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tbinny"}' binny.contigs2bin.tsv  > ${id}_binny_BinsContigs.tsv
 
     fi
     

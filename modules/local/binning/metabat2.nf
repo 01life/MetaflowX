@@ -9,8 +9,9 @@ process METABAT2 {
     tuple val(id),path(contigs),path(bin_depth)
 
     output:
-    tuple val(id),path("bins",type:'dir'), emit:"bins", optional: true
+    tuple val(id),path("metabat2bins",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("metabat.contigs2bin.tsv"), emit:"tsv", optional: true
+    tuple val(id),path("${id}_MetaBAT2_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -19,20 +20,25 @@ process METABAT2 {
     def options = params.metabat2_options ?: ""
     """
 
-    metabat2 -t ${task.cpus} -i ${contigs} -a ${bin_depth} -o bins/${id} ${options} || echo "METABAT2 task for sample ${id} failed ......" > ${id}.log
+    metabat2 -t ${task.cpus} -i ${contigs} -a ${bin_depth} -o metabat2bins/${id} ${options} || echo "METABAT2 task for sample ${id} failed ......" > ${id}.log
 
     finish=0
-    if [ -d "bins" ] && [ ! -e "${id}.log" ]; then      
-        finish=\$((ls -1 "./bins") | wc -l)
+    if [ -d "metabat2bins" ] && [ ! -e "${id}.log" ]; then      
+        finish=\$((ls -1 "./metabat2bins") | wc -l)
     fi
 
     if [ \$finish -gt 0 ]; then
         
-        cd bins/
-        for file in *.fa; do mv "\$file" "metabat2_\${file}"; done
+        cd metabat2bins/
+        #for file in *.fa; do mv "\$file" "metabat2_\${file}"; done
+        i=1; for file in *; do new_name="metabat2_${id}_bin.\$i.fa"; mv "\$file" "\$new_name"; i=\$((i+1)); done
+
         cd ..
 
-        Fasta_to_Contig2Bin.sh -i bins -e fa > metabat.contigs2bin.tsv
+        Fasta_to_Contig2Bin.sh -i metabat2bins -e fa > metabat.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tMetaBAT2"}' metabat.contigs2bin.tsv  > ${id}_MetaBAT2_BinsContigs.tsv
+
     
     fi
 

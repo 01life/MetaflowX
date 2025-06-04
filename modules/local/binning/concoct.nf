@@ -11,7 +11,7 @@ process CONCOCT {
     output:
     tuple val(id),path("${id}_concoct_output/fasta_bins",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("concoct.contigs2bin.tsv"), emit:"tsv", optional: true
-
+    tuple val(id),path("${id}_CONCOCT_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -42,6 +42,8 @@ process CONCOCT {
         cd ../..
 
         Fasta_to_Contig2Bin.sh -i ${id}_concoct_output/fasta_bins -e fa > concoct.contigs2bin.tsv
+
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tCONCOCT"}' concoct.contigs2bin.tsv  > ${id}_CONCOCT_BinsContigs.tsv
 
         #perl -pe \"s/,/\t${id}./g;\" ${id}_concoct_output/clustering_merged.csv > concoct.contigs2bin.tsv
         #sed -i '1d' concoct.contigs2bin.tsv
