@@ -1,17 +1,17 @@
 
-process TAXOMETER2BIN { 
+process TAXVAMB2BIN { 
     
     tag "$id"
 
     label 'process_low'
     
     input:
-    tuple val(id),path(contigs),path(taxonomy)
+    tuple val(id),path(contigs),path(vaevae)
 
     output:
     tuple val(id),path("tomomaBins",type:'dir'), emit:"bins", optional: true
     tuple val(id),path("tomoma.contigs2bin.tsv"), emit:"tsv", optional: true
-    tuple val(id),path("tomoma_bin_taxonomy_info.tsv"), emit:"binTaxo", optional: true
+
 
 
     when:
@@ -20,6 +20,9 @@ process TAXOMETER2BIN {
     script:
 
     """
+
+    split_contigs_to_bins.py -b ${vaevae} -c ${contigs} -p ${id}_taxvamb -m 100000
+
     taxometer2Bin.py  -i ${taxonomy} -f ${contigs} -o tomomaBins -p tomoma_${id} || echo "TAXOMETER2BIN task for sample ${id} failed ......" > ${id}.log
 
     finish=0

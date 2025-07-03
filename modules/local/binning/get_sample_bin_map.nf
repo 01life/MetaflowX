@@ -6,7 +6,7 @@ process GETSAMPLEBINMAP {
     label 'process_low'
 
     input:
-    tuple val(id),path(bins)
+    tuple val(id),path(bins,stageAs:'tmp/*')
 
     output:
     path("${id}_bin_mapping.txt"), emit:"mapping"
@@ -16,12 +16,11 @@ process GETSAMPLEBINMAP {
 
     script:
 
-    def bin_list = bins instanceof List ? bins.join("/*.fa ") : "$bins/*.fa"
+    // def bin_list = bins instanceof List ? bins.join("/*.fa ") : "$bins/*.fa"
 
     """
-    mkdir tmp
-    cp -rf ${bin_list} ./tmp
-    ls tmp/*.fa |awk -F "/" '{print"${id}\\t"\$NF}' > ${id}_bin_mapping.txt
+
+    ls tmp/*/*.fa |awk -F "/" '{print"${id}\\t"\$NF}' > ${id}_bin_mapping.txt
 
     """
 

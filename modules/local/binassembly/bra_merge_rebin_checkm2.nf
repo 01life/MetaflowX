@@ -1,4 +1,4 @@
-process MERGEREBINCHECKM2 {
+libgcc=process MERGEREBINCHECKM2 {
 
     label 'process_single'
     

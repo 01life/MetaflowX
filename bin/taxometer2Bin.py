@@ -23,7 +23,7 @@ def split_fasta_by_taxonomy(fasta_path: Path, tax2contigs: dict, prefix: str, ou
     contig2seq = SeqIO.to_dict(SeqIO.parse(fasta_path, "fasta"))
     n=0
 
-    with open("bin_taxonomy_info.txt",'w') as bin_taxoF:
+    with open("tomoma_bin_taxonomy_info.tsv",'w') as bin_taxoF:
         bin_taxoF.write(f"BinID\tcontig_taxonomy\n")
         for tax, contigs in tax2contigs.items():
             bin_seqs = []

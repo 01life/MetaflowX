@@ -11,6 +11,8 @@ process TAXOMETERFILTER {
     output:
     tuple val(id), path("${id}_taxometer_0.95"),emit:"taxometer95"
     tuple val(id), path("${id}_taxometer_0.95/${id}_species.tsv"),emit:"taxometer95Species"
+    tuple val(id), path("${id}_taxometer_0.95/${id}_deepest_level.tsv"),emit:"taxometer95deepest"
+
     when:
     task.ext.when == null || task.ext.when
 
@@ -18,7 +20,7 @@ process TAXOMETERFILTER {
     def kraken_options = params.kraken2_contig_anno_options ?: ""
     """
 
-    filter_taxometer_score.py -i  ${taxometer}/results_taxometer.tsv -o ${id}_taxometer_0.95 -p ${id} --score_threshold 0.95
+    filter_taxometer_score.py -i  ${taxometer} -o ${id}_taxometer_0.95 -p ${id} --score_threshold 0.95
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -27,6 +27,10 @@ workflow ASSEMBLY {
 
     if (!(params.assembly_tool in ["metaspades", "megahit"])) { exit 1, "The parameter assembly_tool is invalid, supported values are:\n * metaspades \n * megahit" }
 
+    if (params.contig_taxonomy && !(params.kraken2_contig || params.cat_contig)) {
+        exit 1, "When enabling contig taxonomy analysis (--contig_taxonomy), you must set either --kraken2_contig or --cat_contig to true."
+    }
+
     ch_warning_log = Channel.empty()
     ch_assemblies  = Channel.empty()
     ch_contig_taxonomy = Channel.empty()
@@ -95,11 +99,24 @@ workflow ASSEMBLY {
 
     // contig taxonomy
     if(params.contig_taxonomy){
-        kraken2_flag = checkEssentialParams([params.kraken2_db])
-        if(!kraken2_flag) { exit 1, "The required parameter to run kraken2 is: --kraken2_db" }
-        ch_kraken2_db =  params2Channel(params.kraken2_db)
-        KRKEN2CONTIGTAXO(ch_contig,ch_kraken2_db)
-        ch_contig_taxonomy = KRKEN2CONTIGTAXO.out.kraken_taxonomy
+        // Krakens //
+        if (params.kraken2_contig){
+            kraken2_flag = checkEssentialParams([params.kraken2_db])
+            if(!kraken2_flag) { exit 1, "The required parameter to run kraken2 is: --kraken2_db" }
+            ch_kraken2_db =  params2Channel(params.kraken2_db)
+            KRKEN2CONTIGTAXO(ch_contig,ch_kraken2_db)
+            ch_contig_taxonomy = KRKEN2CONTIGTAXO.out.kraken_taxonomy
+        }
+        //  CAT //
+        if (params.cat_contig){
+            ch_cat_pack = params2Channel(params.cat_gtdb_db)
+            ch_cat_db = params2Channel(params.cat_pack)
+            prodigal_faa = Channel.value([])
+            // in mode 2 do not have protenins faa ,so need to create a empty faa file
+            ch_cat_in = contigs.map{ item -> tuple(item[0], item[1], [])}
+            CATCONTIG(ch_cat_in,ch_cat_db,ch_cat_pack)
+        }
+
     }
     
 

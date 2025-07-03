@@ -22,9 +22,14 @@ def parse_args():
 def create_output_dir(output_dir):
 	os.makedirs(output_dir, exist_ok=True)
 
-def parse_fats(contigF, contigDir):
+def parse_fats(contigF, contigDir,contig_lengths_Dir):
+	total_contig_num, total_contig_length = 0,0
 	for record in SeqIO.parse(contigF, "fasta"):
 		contigDir[record.id] =  record.seq
+		contig_lengths_Dir[record.id] =  len(record.seq)
+		total_contig_num += 1
+		total_contig_length += len(record.seq)
+	return total_contig_num, total_contig_length
 
 
 def get_contig_lengths(contig_info_file):
@@ -36,6 +41,23 @@ def get_contig_lengths(contig_info_file):
 			cl = contig.strip().split("\t")
 			len_dir[cl[0]] =  int(float(cl[1]))
 	return(len_dir)
+
+def check_contig2bin(contig2binFile,contig_lengths_Dir,total_contig_num, total_contig_length):
+	biner_contig_num = 0
+	biner_contig_length = 0
+	with open(contig2binFile,'r') as binerTsvF:
+		for i in binerTsvF:
+			contig_id, bin_id = i.strip().split("\t")
+
+			contig_len  = contig_lengths_Dir.get(contig_id,0)
+			
+			biner_contig_num += 1
+			biner_contig_length += contig_len
+	if int(biner_contig_num) >= int(total_contig_num)*0.5 or  int(biner_contig_length) >= int(total_contig_length)*0.5:   #*****  The condition that most affects the outcome  N50 C50*****
+		# print(f"{contig2binFile}\t{biner_contig_num}\t{total_contig_num}\t{biner_contig_length}\t{total_contig_length}")
+		return "PASS"
+	else:
+		return "BAD"
 
 
 def process_contigs2bin_file(contig2binFile,binner_name):
@@ -79,13 +101,13 @@ def refine_bins(binner_combination, total_contig_bin_dir, total_binner_bin_conti
 			
 			# Count occurrences and extract common contigs.
 			counter = Counter(bin_contig_list)
-			common_contig_list = [item for item, count in counter.items() if count == len(binner_list)]
+			common_contig_list = [item for item, count in counter.items() if count == len(binner_list)] # *****  The condition that most affects the outcome ***** 
 
 			binning_contig_list.update(common_contig_list)
 
 			# Only add to combine_bin when common_contig_list is not empty.
 			if common_contig_list:
-				refined_bin_size = sum(sorted_contig_lengths[contig] for contig in common_contig_list) / 1e6  # Convert to Mbp
+				refined_bin_size = sum(sorted_contig_lengths[contig] for contig in common_contig_list) / 1e6  # Convert to Mbp # *****  The condition that most affects the outcome ***** 
 				if refined_bin_size >= min_size and refined_bin_size <= max_size:
 					combine_bin[n] = common_contig_list
 					n += 1
@@ -199,7 +221,12 @@ def main():
 	create_output_dir(args.output)
 
 	contigDir = {}
-	parse_fats(args.contig, contigDir)
+	contig_lengths_Dir = {}
+	
+	total_contig_num, total_contig_length = parse_fats(args.contig, contigDir,contig_lengths_Dir)
+	print(f"total_contig_num  {total_contig_num}\t{total_contig_length}")
+
+	
 
 	# 1 # get all contig len
 	contig_lengths = get_contig_lengths(args.info)
@@ -212,9 +239,19 @@ def main():
 	total_binner_bin_contig_dir = {}
 	total_combine_refine_bin = {}
 
+	# 2.1 # check the contig2Bin quanlity
+	pass_contig2bin = []
+	for contig2bin in args.bins:
+		check_result = check_contig2bin(contig2bin,contig_lengths_Dir,total_contig_num, total_contig_length)
+		if check_result == "PASS":
+			pass_contig2bin.append(contig2bin)
+
+		print(f"{contig2bin}\t{check_result}")
+
+
 	with ProcessPoolExecutor(max_workers=args.threads) as executor:
 		futures = []
-		for contig2bin in args.bins:
+		for contig2bin in pass_contig2bin:
 			binner_name = os.path.basename(contig2bin).strip().split(".contigs2bin")[0]
 			binner_list.append(binner_name)
 			print(binner_name)

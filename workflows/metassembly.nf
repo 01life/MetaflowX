@@ -148,7 +148,6 @@ workflow METASSEMBLY {
     CONTIGFILTER(INPUT_CHECK.out.contig)
     ch_contig     = CONTIGFILTER.out.contigs
     ch_contig_map = CONTIGFILTER.out.contigs_map
-    ch_contig_map.view()
 
     //Submodule Execution.
     switch(params.mode){

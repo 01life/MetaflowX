@@ -31,7 +31,9 @@ process SEMIBIN2 {
     if [ \$finish -gt 0 ]; then
         
         cd ${id}/output_bins/
-        for file in *.fa; do mv "\$file" "${id}_\${file}"; done
+        #for file in *.fa; do mv "\$file" "${id}_\${file}"; done
+        i=1; for file in *; do new_name="SemiBin2_${id}_bin.\$i.fa"; mv "\$file" "\$new_name"; i=\$((i+1)); done
+
         cd ../..
 
         Fasta_to_Contig2Bin.sh -i ${id}/output_bins -e fa > semibin2.contigs2bin.tsv

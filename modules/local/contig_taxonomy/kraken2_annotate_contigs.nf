@@ -12,13 +12,14 @@ process KRKEN2CONTIGTAXO  {
     output:
     tuple val(id), path("${id}_kreport.xls"),emit:"kraken_report"
     tuple val(id), path("${id}_output.txt"),emit:"kraken_output"
-    tuple val(id), path("${id}_contig_Kraken2_taxonomy.txt"),emit:"kraken_taxonomy"
+    tuple val(id), path("${id}_contig_Kraken2_taxonomy.tsv"),emit:"kraken_taxonomy"
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def kraken_options = params.kraken2_contig_anno_options ?: ""
+    def bracken_options = params.bracken_options ?: ""
     """
 
     kraken2 --db ${kraken2_db} --use-names --memory-mapping  --threads ${task.cpus}  --report ${id}_kreport.xls --output ${id}_output.txt  ${contigs} ${kraken_options} 
