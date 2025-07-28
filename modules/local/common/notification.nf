@@ -37,5 +37,9 @@ process NOTIFICATION {
     cp ${notification} ${params.pipeline_prefix}_${step_name}_notification_log.txt
 
     """
+    stub:
+    """
+    touch "${params.pipeline_prefix}_${step_name}_notification_log.txt"
+    """
     
 }

@@ -60,4 +60,11 @@ process METADECODER {
         MetaDecoder: \$( metadecoder --version )
     END_VERSIONS
     """
+    stub:
+    """
+    mkdir -p ${id}_metadecoder_bins
+    touch ${id}_metadecoder_bins/MetaDecoder_${id}_bin.1.fa
+    touch MetaDecoder.contigs2bin.tsv
+    touch ${id}_MetaDecoder_BinsContigs.tsv
+    """
 }

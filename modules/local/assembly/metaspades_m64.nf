@@ -51,7 +51,7 @@ process METASPADESM64 {
 
     stub:
     """
-    touch ${id}_contigs.fa
-
+    echo ">contig1\nAAAAAAAATTTTTTTGGGGCCCC\n" > ${id}_contigs.fa
+    echo ">scaffold1\nAAAAAAAATTTTTTTGGGGCCCC\n" > ${id}_scaffolds.fa
     """
 }

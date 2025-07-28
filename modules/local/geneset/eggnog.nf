@@ -21,13 +21,20 @@ process EGGNOG {
     
     """
 
-    emapper.py -i ${pep} -o ${basename} --dmnd_db ${eggnog_diamond_db} --data_dir ${eggnog_mapper_db} --cpu ${task.cpus}
+    emapper.py -i ${pep} -o ${basename} --dmnd_db ${eggnog_diamond_db} --data_dir ${eggnog_mapper_db} --cpu ${task.cpus} ${options}
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         eggnog-mapper: \$(echo \$(emapper.py --version) | grep -o "emapper-[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+" | sed "s/emapper-//")
     END_VERSIONS
 
+    """
+
+    stub:
+    """
+    mkdir -p ${basename}.emapper.annotations
+    touch ${basename}.emapper.annotations/annotations.tsv
+    touch ${basename}.emapper.annotations/names.tsv
     """
     
 }

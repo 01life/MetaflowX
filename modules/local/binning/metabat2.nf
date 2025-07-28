@@ -48,4 +48,10 @@ process METABAT2 {
     END_VERSIONS
 
     """
+    stub:
+    """
+    mkdir -p metabat2bins
+    touch metabat.contigs2bin.tsv
+    touch ${id}_MetaBAT2_BinsContigs.tsv
+    """
 }

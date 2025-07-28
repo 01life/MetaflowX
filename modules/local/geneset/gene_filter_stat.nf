@@ -21,4 +21,12 @@ process GENEFILTERSTAT {
 
     """
 
+    stub:
+    """
+    touch ${id}_L${params.gene_min_length}_cds.fa
+    touch ${id}_L${params.gene_min_length}_protein.fa
+    touch ${id}_L${params.gene_min_length}_gene_stat.xls
+    touch ${id}_L${params.gene_min_length}_gene_info.xls
+    touch ${id}_L${params.gene_min_length}_gene_length.xls
+    """
 }

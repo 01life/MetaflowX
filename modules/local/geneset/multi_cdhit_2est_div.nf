@@ -22,5 +22,10 @@ process ESTDIV {
     END_VERSIONS
 
     """
+    stub:
+    """
+    mkdir -p ${div}-o
+
+    """ 
 
 }

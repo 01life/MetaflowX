@@ -35,7 +35,6 @@ process ANTISMASH {
     """
     mkdir all.bin
     touch ${id}.zip
-
     """
 
 }

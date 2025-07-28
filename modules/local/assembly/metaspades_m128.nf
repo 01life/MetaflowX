@@ -49,6 +49,7 @@ process METASPADESM128 {
     stub:
     """
     touch ${id}_contigs.fa
+    touch ${id}_scaffolds.fa
 
     """
 }

@@ -31,7 +31,7 @@ process METAPHLANV40 {
     
     stub:
     """
-    touch ${id}.xls 
+    echo "Metaphlanv40 not run, stub test" > ${id}.xls 
     touch ${id}_mpa_bowtie2.bz2
 
     """

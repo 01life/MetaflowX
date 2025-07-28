@@ -26,4 +26,9 @@ process BIGMAPWARNING {
 
     """
     
+    stub:
+    """
+    touch BiG-MAP_warning.log
+    """
+    
 }

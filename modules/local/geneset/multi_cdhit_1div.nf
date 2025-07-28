@@ -28,4 +28,20 @@ process CDHITDIV {
 
     """
 
+    stub:
+    """
+    mkdir -p div_tmp
+    touch div_tmp/all.cds.fa.div-1
+    touch div_tmp/all.cds.fa.div-2
+    touch div_tmp/all.cds.fa.div-3
+    touch div_tmp/all.cds.fa.div-4
+    touch div_tmp/all.cds.fa.div-5
+    touch div_tmp/all.cds.fa.div-6
+    touch div_tmp/all.cds.fa.div-7
+    touch div_tmp/all.cds.fa.div-8
+    touch div_tmp/all.cds.fa.div-9
+    touch div_tmp/all.cds.fa.div-10
+    touch div_tmp/all.cds.fa.div-11
+    """
+
 }

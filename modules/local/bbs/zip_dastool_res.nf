@@ -1,15 +1,15 @@
 
 process ZIPDASTOOLRES {
     
+    tag "$id"
+    
     label 'process_low'
 
     input:
-    path(all_eval)
-    path(contig2bin)
-    path(contig_list)
+    tuple val(id),path(all_eval),path(contig2bin)
 
     output:
-    path("DASTool.tar.gz")
+    path("*tar.gz")
 
     when:
     task.ext.when == null || task.ext.when
@@ -17,17 +17,17 @@ process ZIPDASTOOLRES {
     script:
     """
 
-    mkdir DASTool
-    cp ${all_eval} DASTool/
-    cp ${contig2bin} DASTool/
+    mkdir ${id}_DASTool
+    cp ${all_eval} ${id}_DASTool
+    cp ${contig2bin} ${id}_DASTool
 
-    cd DASTool
-    awk -F "\\t" '{print "mkdir "\$1"\\n mv "\$1"*.t* ./"\$1}' ../${contig_list} |sh
-    cd ..
+    tar -zcf ${id}_DASTool.tar.gz ${id}_DASTool
+    rm -rf ${id}_DASTool
 
-    tar -zcf DASTool.tar.gz DASTool
-    rm -rf DASTool
-
+    """
+    stub:
+    """
+    touch ${id}_DASTool.tar.gz
     """
 
 }

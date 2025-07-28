@@ -34,4 +34,10 @@ process REBINVERIFY {
 
     """
 
+    stub:
+    """
+    touch Bins_Reassembly_Optimization_evaluation_info.xls
+    mkdir bin_res_report
+    """
+
 }

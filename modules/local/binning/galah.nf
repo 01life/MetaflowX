@@ -28,4 +28,12 @@ process GALAH {
     END_VERSIONS 
 
     """
+
+    stub:
+    """
+    mkdir -p Galah_cluster
+    touch Galah_cluster/representative.fa
+    touch all.checkm2-quality-report.tsv
+    """
+
 }

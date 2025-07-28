@@ -113,4 +113,15 @@ process FASTP {
 
     ${cleanupCmd}
     """
+
+    stub:
+    """
+    touch ${id}_clean1.fq.gz
+    touch ${id}_clean2.fq.gz
+    touch ${id}_fastp.json
+    touch ${id}_fastp.html
+    touch ${id}_rmhost.log
+    touch ${id}_rmphix.log
+    touch ${id}.md5
+    """
 }

@@ -54,4 +54,17 @@ process MULTICDHIT {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_protein.fa
+    touch ${params.pipeline_prefix}_geneset_gene.fa
+    touch ${params.pipeline_prefix}_geneset_gene_length.xls
+    touch ${params.pipeline_prefix}_geneset_gene_ID_mapping.xls
+    touch ${params.pipeline_prefix}_geneset_cdhit_clstr.txt
+    mkdir -p split
+    touch split/empty_file.fa
+    mkdir -p geneset_Gene_report
+    touch geneset_Gene_report/genesetLenStat.xls
+    """
+
 }

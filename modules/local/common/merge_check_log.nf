@@ -20,4 +20,9 @@ process MERGECHECKLOG {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_INPUT_CHECK_log_info.txt
+    """
+
 }

@@ -49,4 +49,13 @@ process SELECTPERMUTATION {
     OUTLOG
     fi
     """
+
+    stub:
+    """
+    touch ${id}_PBO_quality_report.tsv
+    mkdir ${id}_PBO_best_bins
+    touch PermutationBest.contigs2bin.tsv
+    touch ${id}_PBO_BinsContigs.tsv
+    touch ${id}_PBO_Tool_warning.log
+    """
 }

@@ -127,7 +127,7 @@
                 },
                 "fastp_options": {
                     "type": "string",
-                    "default": "-g -q 5 -u 50 -n 15 -l 75 --overlap_diff_limit 1 --overlap_diff_percent_limit 10 --detect_adapter_for_pe --cut_front --cut_right",
+                    "default": "--cut_front --cut_front_window_size 1 --cut_front_mean_quality 5 --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 5 --cut_right --cut_right_mean_quality 15 --length_required 50 --detect_adapter_for_pe",
                     "description": "Options for fastp",
                     "fa_icon": "fas fa-filter"
                 },
@@ -161,6 +161,16 @@
                     "default": "hg38.index",
                     "description": "Index filename prefix (minus trailing .X.bt2).",
                     "fa_icon": "fab fa-slack-hash"
+                },
+                "phix_db": {
+                    "type": "string",
+                    "default": "/aimigene/lianglifeng/1.DataBase/Phix/phix_bowtie2_index",
+                    "description": "Bowtie2 index directory for PhiX reference genome"
+                },
+                "phix_db_index": {
+                    "type": "string",
+                    "default": "GCA_002596845.1_ASM259684v1_genomic.index",
+                    "description": "Filename of PhiX genomic index file"
                 }
             },
             "fa_icon": "fas fa-broom",
@@ -205,12 +215,51 @@
                     ],
                     "fa_icon": "fas fa-tools"
                 },
-
                 "megahit_options": {
                     "type": "string",
                     "default": "--min-contig-len 2000",
                     "description": "Options for MEGAHIT",
                     "fa_icon": "fas fa-filter"
+                },
+                "metaquast_options": {
+                    "type": "string",
+                    "default": "--rna-finding --max-ref-number 0",
+                    "description": "Options for MetaQuast"
+                },
+                "contig_taxonomy": {
+                    "type": "boolean",
+                    "description": "Performs taxonomic classification of contigs"
+                },
+                "kraken2_contig": {
+                    "type": "boolean",
+                    "description": "Run Kraken2 for contig classification"
+                },
+                "kraken2_contig_anno_options": {
+                    "type": "string",
+                    "description": "Custom Kraken2 parameters for contig classification"
+                },
+                "contig_taxonomy_output": {
+                    "type": "string",
+                    "description": "The results of contig taxonomy"
+                },
+                "cat_contig": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Executes CAT tool for contig annotation"
+                },
+                "cat_contig_options": {
+                    "type": "string",
+                    "description": "Custom CAT annotation parameters"
+                },
+                "cat_gtdb_db": {
+                    "type": "string",
+                    "default": "/share/database/CAT_pack/GTDB/release226/",
+                    "description": "GTDB reference database directory for CAT"
+                },
+                "cat_pack": {
+                    "type": "string",
+                    "default": "/share/app/CAT_pack/CAT_pack/",
+                    "description": "Installation path of CAT software package"
                 }
             },
             "fa_icon": "fas fa-align-left"
@@ -297,7 +346,7 @@
                 },
                 "bracken_options": {
                     "type": "string",
-                    "default": "-r 150",
+                    "default": "-r 150 -t 1 ",
                     "description": "Options for Bracken",
                     "fa_icon": "fas fa-filter"
                 },
@@ -778,14 +827,8 @@
                     "description": "Options for dRep",
                     "fa_icon": "fas fa-filter"
                 },
-                "DASToolBinOptimizer": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Set DASTool-based Bin Optimizer or not"
-                },
                 "PermutationBinOptimizer": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Set permutation-based Bin Optimizer or not"
                 },
                 "similarity_ratio": {
@@ -1065,6 +1108,66 @@
                     "type": "string",
                     "default": "--meta --only-assembler",
                     "description": "Options of hybridSPAdes"
+                },
+                "vamb": {
+                    "type": "boolean",
+                    "description": "Run VAMB binning tool"
+                },
+                "vamb_options": {
+                    "type": "string",
+                    "default": " -m 2000 --minfasta 10000 ",
+                    "description": "Options of VAMB"
+                },
+                "metadecoder": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run MetaDecoder or not"
+                },
+                "metadecoder_options": {
+                    "type": "string",
+                    "default": " --min_sequence_length 2000  ",
+                    "description": "Options of MetaDecoder"
+                },
+                "taxvamb": {
+                    "type": "boolean",
+                    "description": "Run TaxVamb taxonomic binning"
+                },
+                "taxvamb_options": {
+                    "type": "string",
+                    "default": " -m 2000 --minfasta 10000 ",
+                    "description": "Options of TaxVamb"
+                },
+                "magscot_folder": {
+                    "type": "string",
+                    "default": "/share/app/MAGScoT/",
+                    "description": "Installation directory of MAGScoT binning toolkit"
+                },
+                "magscot_options": {
+                    "type": "string",
+                    "description": "Custom MAGScoT parameters"
+                },
+                "galah_options": {
+                    "type": "string",
+                    "default": "--min-completeness 50  --max-contamination 10 ",
+                    "description": "Options of galah"
+                },
+                "ScoreBasedOptimizer": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Activate score-based bin optimization - DAS Tool"
+                },
+                "ContigTaxonomyOptimizer": {
+                    "type": "boolean",
+                    "description": "Run taxonomy-guided bin optimization"
+                },
+                "binner_integrator": {
+                    "type": "string",
+                    "default": "dastool",
+                    "description": "Specify the tool for binning integration framework",
+                    "enum": [
+                        "dastool",
+                        "magscot"
+                    ]
                 }
             },
             "fa_icon": "fas fa-chalkboard"
@@ -1077,7 +1180,6 @@
             "properties": {
                 "stat": {
                     "type": "boolean",
-                    "default": true,
                     "description": "Generate the input file to run SVflow or not.",
                     "fa_icon": "fas fa-toggle-on"
                 },

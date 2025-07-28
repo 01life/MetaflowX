@@ -50,7 +50,7 @@ process HUMANNV4 {
     """
 
     mkdir ${id}
-    touch ${id}/${id}_genefamilies_relab.xls
+    touch ${id}/${id}_2_genefamilies.xls
     touch ${id}/${id}_ko_relab.xls
 
     """

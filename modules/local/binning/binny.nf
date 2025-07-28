@@ -48,4 +48,12 @@ process BINNY {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}/bins
+    touch ${id}.log
+    touch binny.contigs2bin.tsv
+    touch ${id}_binny_BinsContigs.tsv
+    """
+
 }

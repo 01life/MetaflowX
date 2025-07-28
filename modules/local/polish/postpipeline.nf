@@ -23,4 +23,12 @@ process POSTPIPELINE {
 
     """
 
+    stub:
+    """
+    mkdir ${id}
+    touch ${id}/reads.fq.gz
+    touch ${id}/report.txt
+    touch ${id}/status.txt
+    """
+
 }

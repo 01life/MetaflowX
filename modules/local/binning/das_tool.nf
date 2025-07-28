@@ -45,4 +45,11 @@ process DASTOOL {
     END_VERSIONS
     """
 
+    stub:
+    """
+    mkdir ${id}_DASTool_bins
+    touch ${id}_DASTool_bins/bin1.fa
+    touch ${id}_allBins_eval.tsv
+    """
+
 }

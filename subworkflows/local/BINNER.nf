@@ -20,13 +20,15 @@ include { FILTERBINS as FILTESBORBINS} from '../../modules/local/binning/filter_
 
 include { MULTIBINNERWARNING } from '../../modules/local/binning/multi_binner_warning'
 include { COMBINEBINNER } from '../../modules/local/binning/combine_binner_contig2tsv'
-include { RENAMECHECKM2 } from '../../modules/local/binning/renamecheckm2'
+include { RENAMECHECKM2 as SBORENAMECHECKM2} from '../../modules/local/binning/renamecheckm2'
+include { RENAMECHECKM2 as PBORENAMECHECKM2} from '../../modules/local/binning/renamecheckm2'
 include { CHECKM2 as COMBINECHECKM2 } from '../../modules/local/binning/checkm2'
+include { MULTICHECKM2 } from '../../modules/local/binning/multi_checkm2'
 include { SELECTPERMUTATION } from '../../modules/local/binning/select_bin_permutation'
 
 include { GALAHMULTIBIN } from '../../modules/local/binning/galah_multi_bin_floder'
 
-include { CONTIGS_TAXONOMY } from './CONTIGS_TAXONOMY'
+// include { CONTIGS_TAXONOMY } from './CONTIGS_TAXONOMY'
 
 include { GETSAMPLEBINMAP } from '../../modules/local/binning/get_sample_bin_map'
 include { CHECKM2 } from '../../modules/local/binning/checkm2'
@@ -50,11 +52,12 @@ include { NOBINSWARNING } from '../../modules/local/binning/no_bins_warning'
 
 workflow BINNER {
     take:
+    sample_number
     contigs           // channel: [ val(id), [ contigs ] ]
     clean_reads       // channel: [ val(id), [ reads1, read2 ] ]
     prodigal_faa      // channel: [ val(id), path(faa) ]
-    contig_taxonomy   // channel: [ val(id), path(taxonomy) ]
-    contig_map        // channel: [ val(id), path(contig_map) ]
+    // contig_taxonomy   // channel: [ val(id), path(taxonomy) ]
+    // contig_map        // channel: [ val(id), path(contig_map) ]
 
     main:
 
@@ -76,8 +79,6 @@ workflow BINNER {
     def ch_binner_list = [params.maxbin2, params.metabat2, params.concoct, params.metabinner, params.semibin2, params.binny, params.comebin, params.vamb,params.metadecoder].findAll{ it==true }
 
     def binner_number = ch_binner_list.size()
-
-    println("Binner number is : " + binner_number + "!!!!!")
 
     def single_binner_result = Channel.empty()
 
@@ -253,8 +254,10 @@ workflow BINNER {
             CHECKM2 (sbo_bin, ch_checkm2_db)
             CHECKM2_WARNING("CheckM2", CHECKM2.out.checkm2_error.collect())
             checkm2_log = CHECKM2_WARNING.out.log
+            
+            SBORENAMECHECKM2(CHECKM2.out.quality_report,"SBO")
 
-            FILTESBORBINS (sbo_bin.join(CHECKM2.out.quality_report))
+            FILTESBORBINS (sbo_bin.join(SBORENAMECHECKM2.out.new_quality_report))
             ch_SBO_bin = FILTESBORBINS.out.bins
             ch_SBO_qs  = FILTESBORBINS.out.qs
 
@@ -272,36 +275,47 @@ workflow BINNER {
             COMBINEBINNER(ch_combinebin_in)
             combine_bin_tsv = COMBINEBINNER.out.combine_bin_tsv
 
-            // checkm2 input , create unique id [id,floder]
-            ch_combinecheck_in = COMBINEBINNER.out.combine_bin_fa
-                .flatMap { id, folders ->
-                    // Handle multiple folders or single folder
-                    if (folders instanceof List) {
-                        // If folders is a list, process each folder
-                        return folders.collect { folder ->
-                            // Extract name from folder path
-                            def foldername = folder.getName()
-                            // Combine id and folder name, return new tuple
-                            tuple("${id}-${foldername}", folder)
+            if(sample_number > 500){
+                // [id,[folde1, .......]]
+                MULTICHECKM2(COMBINEBINNER.out.combine_bin_fa, ch_checkm2_db, "PBO")
+                ch_new_quality_report = MULTICHECKM2.out.new_quality_report
+                ch_permution_in = COMBINEBINNER.out.allcontigs2bin.join( ch_new_quality_report ).join(contigs)
+            }else{
+                // checkm2 input , create unique id [id,floder]
+                ch_combinecheck_in = COMBINEBINNER.out.combine_bin_fa
+                    .flatMap { id, folders ->
+                        // Handle multiple folders or single folder
+                        if (folders instanceof List) {
+                            // If folders is a list, process each folder
+                            return folders.collect { folder ->
+                                // Extract name from folder path
+                                def foldername = folder.getName()
+                                // Combine id and folder name, return new tuple
+                                tuple("${id}-${foldername}", folder)
+                            }
+                        } else {
+                            // If there's only one folder, process it directly
+                            def foldername = folders.getName()
+                            return [tuple("${id}-${foldername}", folders)]
                         }
-                    } else {
-                        // If there's only one folder, process it directly
-                        def foldername = folders.getName()
-                        return [tuple("${id}-${foldername}", folders)]
                     }
-                }
-            COMBINECHECKM2(ch_combinecheck_in, ch_checkm2_db)
-            RENAMECHECKM2(COMBINECHECKM2.out.quality_report)
 
-            //[id, [qs list]]
-            ch_combin_check_report = RENAMECHECKM2.out.new_quality_report
-                .map { id, filepath ->
-                    // Extract the base identifier by splitting at the first underscore
-                    def base_id = id.split('-')[0]
-                    // Return the new tuple with the base_id and the original filepath
-                    tuple(base_id, filepath)
+                //  one sample split multi task run //
+                COMBINECHECKM2(ch_combinecheck_in, ch_checkm2_db)
+                // COMBINEBINNER.out.combine_bin_fa for checkm2
+                PBORENAMECHECKM2(COMBINECHECKM2.out.quality_report,"PBO")
+                ch_new_quality_report = PBORENAMECHECKM2.out.new_quality_report
+                //[id, [qs list]]
+                ch_combin_check_report = ch_new_quality_report
+                    .map { id, filepath ->
+                        // Extract the base identifier by splitting at the first underscore
+                        def base_id = id.split('-')[0]
+                        // Return the new tuple with the base_id and the original filepath
+                        tuple(base_id, filepath)
                     }.groupTuple(by: 0)
-            ch_permution_in = COMBINEBINNER.out.allcontigs2bin.join( ch_combin_check_report ).join(contigs)
+                ch_permution_in = COMBINEBINNER.out.allcontigs2bin.join( ch_combin_check_report ).join(contigs)
+                //  one sample split multi task run //
+            }
 
             // pick the best combination [id,[tsvs],[qs reports],contig]
             SELECTPERMUTATION(ch_permution_in)
@@ -315,29 +329,15 @@ workflow BINNER {
 
         }
 
-        if ( params.ContigTaxonomyOptimizer ){
-
-            println "contig_taxonomy: !!!!!!!!!!!!!!!"
-
-            CONTIGS_TAXONOMY(contigs,PREBINNING.out.bin_depth,clean_reads,contig_taxonomy,contig_map,prodigal_faa)
-
-        }
-
-
         if (  params.ScoreBasedOptimizer && params.PermutationBinOptimizer ){
-
-            println "SBO-PBO: !!!!!!!!!!!!!!!"
 
             optimizeBins_method = 'SBO-PBO'
 
             ch_multi_bin = ch_SBO_bin.mix(ch_PBO_bin).groupTuple(by: 0)
 
             //bins qs channel [id, [DBO bins qs list, PBO bins qs list]]
-            ch_SBO_qs.view()
-            ch_PBO_qs.view()
 
             ch_multi_qs = ch_SBO_qs.mix(ch_PBO_qs).groupTuple(by: 0)
-            ch_multi_qs.view()
 
             // using galah to merge the best bins from SBO and PBO
             GALAHMULTIBIN(ch_multi_bin.join(ch_multi_qs))
@@ -362,28 +362,6 @@ workflow BINNER {
     }
     
 
-    // 这里全放回前面条件里面执行，只需要造出 ch_pick_in 
-    //During quality control, if dastool encounters an exception, a log will be output, and no checkm2 task will be generated.
-
-        // CHECKM2(ch_checkm2_in, ch_checkm2_db)
-        // CHECKM2_WARNING("CheckM2", CHECKM2.out.checkm2_error.collect())
-        // checkm2_log = CHECKM2_WARNING.out.log
-        // ch_SBO_qs = CHECKM2.out.quality_report
-
-        // QUAST_SAMPLE_BINS(ch_checkm2_in)
-
-        // //pick best bins result
-        // //bins floders channel [id, [DBO bins floder, PBO bins floders]]
-        // ch_best_bin = ch_SBO_bin.mix(ch_PBO_bin).groupTuple()
-
-        // //bins qs channel [id, [DBO bins qs list, PBO bins qs list]]
-        // ch_best_bin_qs = ch_SBO_qs.mix(ch_PBO_qs).groupTuple()
-
-
-        // ch_pick_in = ch_best_bin.join(ch_best_bin_qs)
-
-
-    // 这里全放回前面条件里面执行，只需要造出 ch_pick_in 
     ch_bestBin          = Channel.empty()
     ch_bestBin_report   = Channel.empty()
     switch(optimizeBins_method) {
@@ -412,6 +390,10 @@ workflow BINNER {
 
     // //val(id),path(quality_report)
     bestBin_report = RENAMEBEXTBIN.out.bestBinQS
+
+
+    // quast bin quality control
+    QUAST_SAMPLE_BINS(bestBin)
 
     binner_log = multi_binner_log.mix(checkm2_log).mix(ch_PBO_log).mix(ch_SBO_log)
 

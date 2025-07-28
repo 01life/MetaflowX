@@ -1,7 +1,9 @@
 //Parse parameter configuration into a channel.
 def params2Channel(parameter){
+    def ch_parameter
     if(parameter){
-        fparam = file(parameter)
+        def fparam = file(parameter)
+        // fparam = file(parameter)
         if(fparam.exists()){
             ch_parameter = Channel.value(fparam)
         }else{
@@ -14,15 +16,8 @@ def params2Channel(parameter){
 }
 
 //Check necessary parameters for module execution.
-def checkEssentialParams(list){
-    def flag = true
-    for (param in list) {
-        if (!param) {
-            flag = false
-            break;
-        }
-    }
-    return flag
+def checkEssentialParams(List list) {
+    return list && list.every { it }  // 包括非空检查
 }
 
 // Minitools check .fa files.

@@ -27,7 +27,14 @@ process PICKREREFINE {
     cat ./merger_floder/*/deepurify_rename.QS.txt  > ReAss_ReBin_ReRefine_checkm2.txt
 
     bra_pick_HQ_re-refine_bin_deepurify.py --mergeQS ${rebining_checkm2} --deepurify_info ReAss_ReBin_ReRefine_checkm2.txt --deepurify_fa tmp --failed ReAss_ReBin_ReRefine_Unimprove_Bin_ID.txt --improve ReRefine_improve_info.txt
+    """
 
-
+    stub:
+    """
+    touch ReAss_ReBin_ReRefine_checkm2.txt
+    touch ReRefine_improve_info.txt
+    touch ReAss_ReBin_ReRefine_Unimprove_Bin_ID.txt
+    touch ReAss_ReBin_ReRefine_1.txt
+    touch ReAss_ReBin_ReRefine1.fa
     """
 }

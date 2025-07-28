@@ -42,7 +42,10 @@ process BOWTIE2GENE {
 
     stub:
     """
-    touch ${id}_abundance.xls
+    echo "ID\tGene\tAssigned_Reads\tAssigned_Pct" > ${id}_abundance.xls
+    echo "${id}\tAA\tBB\t100" >> ${id}_abundance.xls
+    cp ${id}_abundance.xls  ${id}_total_abundance.xls
+    touch ${id}.sam
     touch ${id}_geneset_bowtie2_log.txt
     
     """

@@ -52,4 +52,12 @@ process SEMIBIN2 {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}/output_bins
+    touch ${id}/output_bins/SemiBin2_${id}_bin.1.fa
+    touch semibin2.contigs2bin.tsv
+    touch ${id}_SemiBin2_BinsContigs.tsv
+    """
+
 }

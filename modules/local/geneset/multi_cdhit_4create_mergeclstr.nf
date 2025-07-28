@@ -76,4 +76,10 @@ process CDHITCLSTR {
 
     """
 
+    stub:
+    """
+    touch clstr_order.txt
+    touch unique.fa
+    """
+
 }

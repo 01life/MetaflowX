@@ -2,18 +2,20 @@
 
 import argparse
 import pandas as pd
-from pathlib import Path
+import os
 
-def extract_bin_ids_from_fa(input_dir: Path) -> set[str]:
+def extract_bin_ids_from_fa(input_dir):
     """
-    Traverse the input directory recursively and extract all .fa filenames (without the .fa extension).
+    Recursively find all .fa files in the input directory and return a set of filenames without the extension.
     """
-    bin_ids = {
-        fa.stem for fa in input_dir.rglob("*.fa")
-    }
+    bin_ids = set()
+    for root, _, files in os.walk(input_dir):
+        for f in files:
+            if f.endswith(".fa"):
+                bin_ids.add(os.path.splitext(f)[0])
     return bin_ids
 
-def filter_checkm2_results(checkm2_file: Path, bin_ids: set[str]) -> pd.DataFrame:
+def filter_checkm2_results(checkm2_file, bin_ids):
     """
     Read the checkm2 TSV result file and filter rows where the 'Name' field ends with any of the bin IDs.
     """
@@ -23,9 +25,9 @@ def filter_checkm2_results(checkm2_file: Path, bin_ids: set[str]) -> pd.DataFram
 
 def main():
     parser = argparse.ArgumentParser(description="Extract checkm2 results for bins found in .fa files under a directory")
-    parser.add_argument("-i", "--input_dir", type=Path, required=True, help="Input directory containing .fa files")
-    parser.add_argument("-c", "--checkm2", type=Path, required=True, help="Path to checkm2 result TSV file")
-    parser.add_argument("-o", "--output", type=Path, required=True, help="Path to output filtered result TSV file")
+    parser.add_argument("-i", "--input_dir", required=True, help="Input directory containing .fa files")
+    parser.add_argument("-c", "--checkm2", required=True, help="Path to checkm2 result TSV file")
+    parser.add_argument("-o", "--output", required=True, help="Path to output filtered result TSV file")
 
     args = parser.parse_args()
 

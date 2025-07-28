@@ -37,4 +37,9 @@ process COVERM {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_CoverM_bins_${method}.xls
+    mkdir coverm_${method}_report
+    """
 }

@@ -23,4 +23,10 @@ process  RENAMEBEXTBIN {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}_${optimizeBins_method}_Best_Bin
+    touch ${id}_${optimizeBins_method}_Best_Bin_quality_report.tsv
+    """
+
 }

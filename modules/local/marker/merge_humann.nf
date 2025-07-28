@@ -59,4 +59,16 @@ process MERGEHUMANN {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_HUMAnN_eggnog.xls
+    touch ${params.pipeline_prefix}_HUMAnN_go.xls
+    touch ${params.pipeline_prefix}_HUMAnN_ko.xls
+    touch ${params.pipeline_prefix}_HUMAnN_level4ec.xls
+    touch ${params.pipeline_prefix}_HUMAnN_pfam.xls
+    touch ${params.pipeline_prefix}_HUMAnN_MetaCyc_relab_unstratified.xls        
+    mkdir humann_report
+    cp ${params.pipeline_prefix}_HUMAnN_MetaCyc_relab_unstratified.xls humann_report/metacyc.xls
+    """ 
+
 }

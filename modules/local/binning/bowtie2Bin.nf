@@ -44,4 +44,12 @@ process BOWTIE2BIN {
 
     """
 
+    stub:
+    """
+    touch ${id}_bin_bowtie2_log.txt
+    echo "${id} bam stub test" > ${id}.sorted.bam
+    touch ${id}_depth.xls
+    touch ${id}_depth.list
+    """
+
 }

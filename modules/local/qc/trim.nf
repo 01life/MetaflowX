@@ -110,4 +110,16 @@ process TRIM {
     ${removeCmd}
     ${cleanupCmd}
     """
+
+
+    stub:
+    """
+    touch ${id}_clean1.fq.gz
+    touch ${id}_clean2.fq.gz
+    touch ${id}.md5
+    touch ${id}_raw.txt
+    touch ${id}_trimmomatic.log
+    touch ${id}_rmhost.log
+    touch ${id}_rmphix.log
+    """
 }

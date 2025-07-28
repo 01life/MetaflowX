@@ -30,4 +30,12 @@ process PRODIGAL {
     END_VERSIONS
 
     """
+
+    stub:
+    """
+    echo ">${id}_gene" > ${id}_gene.fa
+    echo "ATGCGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAG" >> ${id}_gene.fa
+    echo ">${id}_protein" > ${id}_protein.fa
+    echo "MDGSFCTGAGS" >> ${id}_protein.fa
+    """
 }

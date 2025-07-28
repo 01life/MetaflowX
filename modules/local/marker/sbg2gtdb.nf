@@ -31,6 +31,5 @@ process SBG2GTDB {
     stub:
     """
     touch ${id}_sgb2gtdb.xls
-    
     """
 }

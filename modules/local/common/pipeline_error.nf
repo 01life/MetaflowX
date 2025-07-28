@@ -47,5 +47,9 @@ process PIPELINEERROR {
     fi
 
     """
+    stub:
+    """
+    touch "${params.pipeline_prefix}_${step_name}_error_log.txt"
+    """
 
 }

@@ -23,4 +23,10 @@ process MERGEQUAST {
     
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_quast_report.txt
+    touch ${params.pipeline_prefix}_quast_report.html
+    mkdir quast_report
+    """
 }

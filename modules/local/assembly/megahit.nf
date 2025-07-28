@@ -31,7 +31,7 @@ process MEGAHIT {
     stub:
     """
     mkdir ${id}
-    touch ${id}/${id}_contigs.fa
+    echo ">contig1\nAAAAAAAATTTTTTTGGGGCCCC\n" > ${id}/${id}_contigs.fa
 
     """
 

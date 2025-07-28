@@ -61,4 +61,28 @@ process GENEPROFILE {
     END_VERSIONS
 
     """
+
+
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_function_emapper_org_annotation.xls
+    touch ${params.pipeline_prefix}_geneset_gene_abundance.xls
+    mkdir genesetFunction_report
+    touch genesetFunction_report/genesetCOG.txt
+    touch genesetFunction_report/genesetGO.txt
+    touch genesetFunction_report/genesetKEGG.txt
+    touch genesetFunction_report/genesetCAZY.txt
+    touch ${params.pipeline_prefix}_geneset_COG_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_GO_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_KEGG_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_CAZy_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_cog_catF_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_GOs_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_KEGG_ko_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_CAZy_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_cog_category.xls
+    touch ${params.pipeline_prefix}_geneset_function_GOs_category.xls
+    touch ${params.pipeline_prefix}_geneset_function_KEGG_ko_category.xls       
+    touch ${params.pipeline_prefix}_geneset_function_CAZy_category.xls
+    """
 }

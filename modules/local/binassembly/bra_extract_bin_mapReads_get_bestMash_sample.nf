@@ -38,5 +38,12 @@ process EXTRACTREADSMASHSAMPLE {
 	END_VERSIONS
 
 	"""
+	stub:
+	"""
+	mkdir BRA_${bin_id}
+	touch BRA_${bin_id}/${bin_id}_bwa_mash_1.fq.gz
+	touch BRA_${bin_id}/${bin_id}_bwa_mash_2.fq.gz
+	touch BRA_${bin_id}/${bin_id}_Top_10_sample.txt
+	"""
 
 }

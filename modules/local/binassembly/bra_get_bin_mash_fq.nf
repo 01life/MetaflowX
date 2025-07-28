@@ -35,5 +35,9 @@ process GETBINMASHFQ {
 
 
     """
+    stub:
+    """
+    touch ${params.pipeline_prefix}_bin_mash_fq.txt
+    """
 
 }

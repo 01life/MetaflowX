@@ -29,6 +29,12 @@ process BRAMETABAT2 {
     "${task.process}":
         metabat2: \$( metabat2 --help 2>&1 | head -n 2 | tail -n 1| sed 's/.*\\:\\([0-9]*\\.[0-9]*\\).*/\\1/' )
     END_VERSIONS
+    """
 
+    stub:
+    """
+    mkdir bins
+    touch bins/${id}.fa
+    touch ${id}_metabat.contigs2bin.tsv
     """
 }

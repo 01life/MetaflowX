@@ -29,4 +29,10 @@ process METAQUAST {
         metaquast: \$(metaquast.py --version | sed "s/QUAST v//; s/ (MetaQUAST mode)//")
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${id}.tar.gz
+    touch ${id}_transposed_report.tsv
+    """
 }

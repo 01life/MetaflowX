@@ -28,5 +28,13 @@ process MERGEGENEINFO {
 
 
     """
+    stub:
+    """
+    mkdir -p geneset_sampleStat_report
+    echo "test" >> geneset_sampleStat_report/genesetSampleStat.txt
+    touch "multi.cdhit.task"
+    touch "single.cdhit.task"
+    touch "geneset_sampleStat_report/genesetSampleStat.txt"
+    """
 
 }

@@ -35,4 +35,14 @@ process OUTHQBIN {
     cp ${checkm2report} ReAss_checkm2.txt
 
     """
+    stub:
+    """
+    mkdir 01.ReAss_HQ
+    mkdir LQ_RAB
+    touch lq_bin_id.txt
+    touch ReAss_checkm2.txt
+    touch ReAss_improved_info.txt
+    touch ReAss_1.txt
+    touch ReAss_1.fa
+    """
 }

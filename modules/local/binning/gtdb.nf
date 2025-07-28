@@ -67,4 +67,15 @@ process GTDB {
     END_VERSIONS
 
     """
+
+    stub:
+    """
+    mkdir gtdb_output_${baseName}
+    touch gtdb_output_${baseName}/gtdbtk.bac120.summary.tsv
+    touch gtdb_output_${baseName}/gtdbtk.ar53.summary.tsv
+    touch gtdb2ncbi_${baseName}.txt
+    touch ${baseName}.bac120.gtdbtk.tsv
+    touch ${baseName}.ar53.gtdbtk.tsv
+    touch ${baseName}.empty.gtdbtk.tsv
+    """
 }

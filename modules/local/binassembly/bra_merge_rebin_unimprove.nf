@@ -14,8 +14,11 @@ process MERGEREBINUNIMPROVEBIN {
     script:
    
     """
-
     ls ${unimprovefa} | sed 's/^ReAss_ReBin_Unimprove_//g' |sed 's/.fa//g' > ReAss_ReBin_Unimprove_Bin_ID.txt
-
+    """
+    
+    stub:
+    """
+    touch ReAss_ReBin_Unimprove_Bin_ID.txt
     """
 }

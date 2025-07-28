@@ -49,4 +49,12 @@ process GALAHMULTIBIN {
     END_VERSIONS 
 
     """
+
+    stub:
+    """
+    mkdir -p ${id}_Galah_cluster
+    touch ${id}_all.checkm2-quality-report_galah_selected.tsv
+    """
+
+
 }

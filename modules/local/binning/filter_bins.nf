@@ -51,7 +51,13 @@ process FILTERBINS {
     OUTLOG
 
     fi
+    """
 
-    
+    stub:
+    """
+    mkdir ${id}
+    touch ${id}/${id}_bin1.fa
+    touch ${id}_QS_quality_report.tsv
+    touch ${id}_filtered_quality_report.tsv
     """
 }

@@ -170,7 +170,7 @@ workflow BINREASSEMBLY {
     
     // valid_das_bins_error.collect().view()
     // BRADASTOOL_WARNING("BRA_DASTool", valid_das_bins_error.collect())
-    BRADASTOOL.out.das_bins_error.collect().view()
+    BRADASTOOL.out.das_bins_error.collect()
     BRADASTOOL_WARNING("BRA_DASTool", BRADASTOOL.out.das_bins_error.collect())
 
     

@@ -41,4 +41,11 @@ process CHECKM2 {
         
     """
 
+    stub:
+    """
+    mkdir -p ${id}
+    touch ${id}/quality_report.tsv
+    touch ${id}_checkm2_error.txt
+    """
+
 }

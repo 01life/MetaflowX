@@ -30,8 +30,13 @@ process MERGEHUMANNEXPAND {
     
     rm -f ${params.pipeline_prefix}_HUMAnN_{1}_relab.xls ${params.pipeline_prefix}_HUMAnN_${name}_raw.txt
 
-    echo ${name},${ch_output}/102.HUMAnN/${params.pipeline_prefix}_HUMAnN_${name}_relab_unstratified.xls,DAs > ${name}.csv
-
+    """
+    stub:
+    """
+    mkdir tables
+    touch ${params.pipeline_prefix}_HUMAnN_${name}_relab.xls
+    touch ${params.pipeline_prefix}_HUMAnN_${name}_raw.txt
+    touch ${name}.csv
     """
 
 }

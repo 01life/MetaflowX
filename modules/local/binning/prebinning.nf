@@ -37,4 +37,13 @@ process PREBINNING {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}
+    touch ${id}.sorted.bam
+    touch ${id}.sorted.bam.csi
+    touch ${id}_contig_depth.txt
+    touch ${id}_contig_bowtie2_log.txt
+    """
+
 }

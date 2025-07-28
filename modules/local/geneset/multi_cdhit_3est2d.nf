@@ -56,4 +56,12 @@ process CDHITEST2D {
 
     """
 
+    stub:
+    """
+    mkdir clstr_tmp
+    mkdir est_tmp
+    touch est_tmp/dev-1.clstr
+    mkdir -p est_tmp/all.cds.fa.div-1-o
+    """
+
 }

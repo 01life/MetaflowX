@@ -50,4 +50,12 @@ process VAMBBIN {
     END_VERSIONS
 
     """
+
+    stub:
+    """
+    mkdir -p ${id}/VambBins
+    touch ${id}/VambBins/vamb_${id}_bin.1.fa
+    touch vamb.contigs2bin.tsv
+    touch ${id}_Vamb_BinsContigs.tsv
+    """
 }

@@ -58,4 +58,12 @@ process CONCOCT {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}_concoct_output/fasta_bins
+    touch ${id}_concoct_output/fasta_bins/bin1.fa
+    touch concoct.contigs2bin.tsv
+    touch ${id}_CONCOCT_BinsContigs.tsv
+    """
+
 }

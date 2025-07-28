@@ -55,4 +55,12 @@ process COMEBIN {
 
     """
 
+    stub:
+    """
+    mkdir -p ${id}/comebin_res/comebin_res_bins/
+    touch ${id}/comebin_res/comebin_res_bins/bin1.fa
+    touch comebin.contigs2bin.tsv
+    touch ${id}_COMEBin_BinsContigs.tsv
+    """
+
 }

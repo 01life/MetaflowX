@@ -44,5 +44,18 @@ process CDHIT {
     cp -rf ${orig_report} geneset_Gene_report
 
     """
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_protein.fa
+    touch ${params.pipeline_prefix}_geneset_gene.fa
+    touch ${params.pipeline_prefix}_geneset_gene_length.xls
+    touch ${params.pipeline_prefix}_geneset_gene_info.xls
+    touch ${params.pipeline_prefix}_geneset_cdhit_clstr.txt
+    touch ${params.pipeline_prefix}_geneset_cdhit_split.fa
+    mkdir split
+    touch split/${params.pipeline_prefix}_geneset_cdhit_split.fa
+    touch geneset_Gene_report
+    touch geneset_Gene_report/genesetLenStat.xls
+    """
 
 }

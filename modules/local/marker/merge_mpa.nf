@@ -44,4 +44,11 @@ process MERGEMPA {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_MetaPhlAn_abundance_table.xls
+    mkdir mpa_report    
+    echo -e "sampleID\tphylum\tclass\torder\tfamily\tgenus\tspecies" >> ${params.pipeline_prefix}_MetaPhlAn_abundance_table.xls
+    touch mpa.sunburst.txt
+    """
 }

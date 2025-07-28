@@ -30,4 +30,9 @@ process CONTIGFILTER {
     contig_rename.py -t seq.contigs.fa -s ${id} -m ${id}_contig_rename_mapping.xls -o ${id}_contig_${params.min_contig_len}.fa
 
     """
+    stub:
+    """
+    touch ${id}_contig_${params.min_contig_len}_1.fa
+    touch ${id}_contig_rename_mapping.xls
+    """ 
 }

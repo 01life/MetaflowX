@@ -40,4 +40,11 @@ process QUAST_SAMPLE_BINS {
         metaquast: \$(metaquast.py --version | sed "s/QUAST v//; s/ (MetaQUAST mode)//")
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p QUAST
+    touch ${id}.QUAST.tar.gz
+    touch ${id}_Bins_merged_qsast_summary.tsv
+    """
 }

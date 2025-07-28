@@ -74,4 +74,11 @@ process READSVALIDATERENAME {
     fi
 
     """
+
+    stub:
+    """
+    mkdir -p ${id}
+    touch ${id}/sample1_reads1.fq.gz
+    touch ${id}/sample1_reads2.fq.gz
+    """
 }

@@ -64,6 +64,12 @@ OUTLOG
     END_VERSIONS
 
     """
-
+    stub:
+    """
+    mkdir eachBinFunction_report
+    touch eachBinFunction_report/eachBinFunction.xls
+    touch get_bin_function_error_log.txt
+    touch ${params.pipeline_prefix}_0.xls
+    """
 
 }

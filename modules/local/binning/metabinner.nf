@@ -56,5 +56,11 @@ process METABINNER {
     rm -rf ${id}/metabinner_res/intermediate_result ${id}/metabinner_res/ensemble_res ${id}/metabinner_res/unitem_profile
 
     """
+    stub:
+    """
+    mkdir -p ${id}/metabinner_bins
+    touch metabinner.contigs2bin.tsv
+    touch ${id}_MetaBinner_BinsContigs.tsv
+    """
 
 }

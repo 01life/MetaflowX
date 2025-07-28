@@ -32,10 +32,8 @@ if (params.outdir) { ch_output = new File(params.outdir).getAbsolutePath()  } el
 //
 include { params2Channel } from '../modules/local/common/utils'
 include { checkEssentialParams } from '../modules/local/common/utils'
-// include { PRODIGAL } from '../modules/local/geneset/prodigal'
 include { CONTIGFILTER } from '../modules/local/common/contig_filter'
 include { CONTIGSTAT } from '../modules/local/assembly/contig_stat'
-// include { MERGEBINABUNTAXON } from '../modules/local/binning/merge_bin_abun_taxon'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -47,32 +45,22 @@ include { RAPID_TAXONOMIC_PROFILING } from '../subworkflows/local/RAPID_TAXONOMI
 include { GENESET } from '../subworkflows/local/GENESET'
 include { GENEPREDICTION } from '../subworkflows/local/GENE_PREDICTION'
 include { BINNING } from '../subworkflows/local/BINNING'
-// include { BINNER } from '../subworkflows/local/BINNER'
-// include { BINTAXONOMY } from '../subworkflows/local/BIN_TAXONOMY'
-// include { BINFUNCTION } from '../subworkflows/local/BIN_FUNCTION'
-// include { BINABUNDANCE } from '../subworkflows/local/BIN_ABUNDANCE'
-// include { BINMAP } from '../subworkflows/local/BIN_MAP'
-// include { BINREFINE } from '../subworkflows/local/BIN_REFINE'
-// include { BINREASSEMBLY } from '../subworkflows/local/BIN_REASSEMBLY'
 include { POLISH } from '../subworkflows/local/POLISH'
-include { SVFLOWINPUT } from '../subworkflows/local/SVFLOW_INPUT'
 
 
 ////////////////////////////////////////////////////
 /* -----   Define channel for SUBWORKFLOW -----   */
 ////////////////////////////////////////////////////      
 
-ch_raw_reads        = Channel.empty()
-ch_clean_reads      = Channel.empty()
+ch_raw_reads    = Channel.empty()
+ch_clean_reads  = Channel.empty()
 
-ch_prodigal_faa     = Channel.empty()
-ch_cdhit_clstr      = Channel.empty()
-ch_gene_info        = Channel.empty()
-ch_annotation       = Channel.empty()
-ch_vfdb_anno        = Channel.empty()
-ch_card_anno        = Channel.empty()
-ch_contig_taxonomy  = Channel.empty()
-ch_contig_map       = Channel.empty()  
+ch_prodigal_faa = Channel.empty()
+ch_cdhit_clstr  = Channel.empty()
+ch_gene_info    = Channel.empty()
+ch_annotation   = Channel.empty()
+ch_vfdb_anno    = Channel.empty()
+ch_card_anno    = Channel.empty()
 
 //html report input
 ch_report_input = Channel.empty()
@@ -146,13 +134,12 @@ workflow METASSEMBLY {
     ch_clean_reads = INPUT_CHECK.out.clean_reads        
     
     CONTIGFILTER(INPUT_CHECK.out.contig)
-    ch_contig     = CONTIGFILTER.out.contigs
-    ch_contig_map = CONTIGFILTER.out.contigs_map
+    ch_contig = CONTIGFILTER.out.contigs
 
     //Submodule Execution.
     switch(params.mode){
         //QC
-        case 1 : {
+        case 1: {
             QC(sample_number, ch_raw_reads)
             ch_report_input = ch_report_input.mix(QC.out.qc_report)
             ch_clean_reads = QC.out.clean_reads
@@ -172,8 +159,6 @@ workflow METASSEMBLY {
 
             ASSEMBLY(sample_number, ch_clean_reads)
             ch_report_input = ch_report_input.mix(ASSEMBLY.out.assembly_report)
-            ch_contig_taxonomy =ASSEMBLY.out.contigs_taxonomy
-            
             break;
         }
         //reads marker
@@ -256,8 +241,7 @@ workflow METASSEMBLY {
                 ch_report_input = ch_report_input.mix(GENEPREDICTION.out.prodigal_log)
             }
 
-
-            BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno,ch_contig_taxonomy,ch_contig_map)
+            BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
             ch_bins_list = BINNING.out.bins_list
             ch_bins_folder = BINNING.out.bins_folder
             ch_bins_count = BINNING.out.bins_count
@@ -287,7 +271,6 @@ workflow METASSEMBLY {
             ch_contig = ASSEMBLY.out.contigs
             ch_report_input = ch_report_input.mix(ASSEMBLY.out.assembly_report)
             ch_contig_info = ASSEMBLY.out.contig_info
-            ch_contig_taxonomy =ASSEMBLY.out.contigs_taxonomy
 
             if(!params.skip_marker){
                 RAPID_TAXONOMIC_PROFILING(sample_number, ch_clean_reads, ch_input)
@@ -308,8 +291,7 @@ workflow METASSEMBLY {
             
             if(!params.skip_binning){
                 //Bining
-                // BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
-                BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno,ch_contig_taxonomy,ch_contig_map)
+                BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
                 ch_bins_list = BINNING.out.bins_list
                 ch_bins_folder = BINNING.out.bins_folder
                 ch_bins_count = BINNING.out.bins_count
@@ -326,13 +308,6 @@ workflow METASSEMBLY {
             break;
         
         }
-
-    }
-
-    //SVFlow input generated.
-    if(params.stat){
- 
-        SVFLOWINPUT(ch_output, ch_contig_info, ch_marker_profile, ch_geneset_profile, ch_bins_list, ch_bins_folder, ch_bins_count, ch_qs_quality_report, ch_bins_info, ch_bins_rename_map, ch_gtdb_result, ch_depth_list, ch_bins_rel_abun)
 
     }
 

@@ -26,10 +26,10 @@ process BINSPECIFIEDFUNCTION {
     -q  ${params.pipeline_prefix}_bin_function \
     -d  ${database} \
     -o  ./
-
-
-
     """
 
-
+    stub: 
+    """
+    touch ${params.pipeline_prefix}_bin_function_${database}_annotation.xls
+    """
 }

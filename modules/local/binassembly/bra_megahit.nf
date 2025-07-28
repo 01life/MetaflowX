@@ -28,5 +28,10 @@ process MEGAHIT {
     END_VERSIONS    
 
     """
+    stub:
+    """
+    mkdir ${id}
+    touch ${id}/${id}_contigs.fa
+    """
 
 }

@@ -19,4 +19,15 @@ process BUILD4GENE {
 
     """
 
+    stub:
+    """
+    mkdir index
+    touch index/index.1.bt2
+    touch index/index.2.bt2
+    touch index/index.3.bt2
+    touch index/index.4.bt2
+    touch index/index.rev.1.bt2
+    touch index/index.rev.2.bt2
+    """
+
 }

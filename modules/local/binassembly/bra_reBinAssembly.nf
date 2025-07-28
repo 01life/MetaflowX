@@ -34,6 +34,11 @@ process REBINASSEMBLY {
 	rm -rf bra_tmp
 
     """
+	stub:
+	"""
+	mkdir ${bin_id} 
+	touch ${bin_id}/${bin_id}_reassembly_contigs.fa
+	"""
 
 }
 

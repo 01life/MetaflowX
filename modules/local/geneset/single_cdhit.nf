@@ -56,4 +56,16 @@ process SINGLECDHIT {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_protein.fa
+    touch ${params.pipeline_prefix}_geneset_gene.fa
+    touch ${params.pipeline_prefix}_geneset_gene_length.xls
+    touch ${params.pipeline_prefix}_geneset_cdhit_clstr.txt
+    touch ${params.pipeline_prefix}_geneset_gene_ID_mapping.xls
+    mkdir split
+    mkdir geneset_Gene_report
+    touch split/chunk1.fa
+    """
+
 }

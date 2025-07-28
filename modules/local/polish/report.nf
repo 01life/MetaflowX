@@ -45,4 +45,8 @@ process REPORT {
     fi
 
     """
+    stub:
+    """
+    touch ${params.pipeline_prefix}_report.html
+    """
 }

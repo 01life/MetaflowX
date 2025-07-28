@@ -24,4 +24,8 @@ process GETSAMPLEBINMAP {
 
     """
 
+    stub:
+    """
+    echo -e "${id}\tbin1" > ${id}_bin_mapping.txt
+    """
 }

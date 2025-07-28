@@ -1,8 +1,0 @@
-mpa,/101.MetaPhlAn/
-humann,/102.HUMAnN/
-genesetProfile,/04.GenesetProfile/
-binsetAnnotation,/05.BinSet/052.Annotation/eachBin/
-binsetGTDB,/05.BinSet/052.Annotation/GTDB/
-binsetProfile,/06.BinsetProfile/061.BinAbundance/
-binsetInfo,/05.BinSet/051.UniqueBin/
-binsetTaxon,/06.BinsetProfile/062.TaxonomyAbundance/

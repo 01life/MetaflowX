@@ -4,19 +4,23 @@ process COMBINEBINNER {
 
     input:
     path(contig2bin)
-    path(protein_list)
-    path(contig_list)
 
     output:
-    path("binner_combination.txt"),emit:"binner_combination"
+    path("AllSample/*"),emit:"binner_combination"
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
-    combineBinner2DASTools.py -t ${contig2bin} -p ${protein_list} -c ${contig_list}
+    create_multiDASTools_input.py -t ${contig2bin} -o AllSample
 
+    """
+    stub:
+    """
+    mkdir -p AllSample/Sample1
+    mkdir -p AllSample/Sample2
+    mkdir -p AllSample/Sample3
     """
     
 }

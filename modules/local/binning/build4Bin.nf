@@ -27,5 +27,16 @@ process BUILD4BIN {
     END_VERSIONS
 
     """
+    
+    stub:
+    """
+    touch all.bin.fa
+    touch all.bin.fa.1.bt2
+    touch all.bin.fa.2.bt2
+    touch all.bin.fa.3.bt2
+    touch all.bin.fa.4.bt2
+    touch all.bin.fa.rev.1.bt2
+    touch all.bin.fa.rev.2.bt2
+    """
 
 }

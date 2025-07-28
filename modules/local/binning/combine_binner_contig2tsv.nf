@@ -42,4 +42,14 @@ process COMBINEBINNER {
     fi
 
     """
+
+    stub:
+    """
+    mkdir -p MetaDecoder:semibin2
+    mkdir -p semibin2:metabinner
+    touch ${id}_allcontigs2bin.txt
+    touch ${id}_MetaDecoder__semibin2.contigs2bin.tsv
+    touch ${id}_semibin2__metabinner.contigs2bin.tsv
+    """
+    
 }

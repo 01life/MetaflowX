@@ -36,5 +36,11 @@ process BRADEPTH {
     END_VERSIONS
 
     """
+    
+    stub:
+    """
+    touch ${binid}_${sampleid}.sorted.bam
+    touch ${binid}_${sampleid}_contig_depth.txt
+    """
 
 }

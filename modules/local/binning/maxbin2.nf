@@ -32,7 +32,7 @@ process MAXBIN2 {
         
         cd maxbin2bins
         #for file in *.fasta; do mv "\$file" "maxbin2_\${file%.fasta}.fa"; done
-        i=1; for file in *; do new_name="maxbin2_${id}_bin.\$i.fa"; mv "\$file" "\$new_name"; i=\$((i+1)); done
+        i=1; for file in *.fasta; do new_name="maxbin2_${id}_bin.\$i.fa"; mv "\$file" "\$new_name"; i=\$((i+1)); done
 
         cd ..
 
@@ -48,5 +48,12 @@ process MAXBIN2 {
         maxbin2: \$( run_MaxBin.pl -v | head -n 1 | sed 's/MaxBin //' )
     END_VERSIONS
 
+    """
+    stub:
+    """
+    mkdir maxbin2bins
+    touch maxbin2bins/${id}.log
+    touch maxbin.contigs2bin.tsv
+    touch ${id}_MaxBin2_BinsContigs.tsv
     """
 }

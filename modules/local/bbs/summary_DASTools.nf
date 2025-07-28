@@ -13,15 +13,20 @@ process SUMMARYRESULT {
 
     script:
     """
-
-    ls ${dastool_eval} | while read a ;do tail -n +2 \$a  ;done > all_eval.xls
-
-    sed -i '1i sampleID\\tbinner\\tbin\\tbin_set\\tunique_SCGs\\tredundant_SCGs\\tSCG_set\\tsize\\tcontigs\\tN50\\tbin_score\\tSCG_completeness\\tSCG_redundancy' all_eval.xls
+    
+    echo -e "sampleID\\tbinner\\tbin\\tbin_set\\tunique_SCGs\\tredundant_SCGs\\tSCG_set\\tsize\\tcontigs\\tN50\\tbin_score\\tSCG_completeness\\tSCG_redundancy" > header.xls
+    
+    cat header.xls ${dastool_eval} > all_eval.xls
 
     summaryDASToolsPlot.R all_eval.xls ${params.pipeline_prefix}
 
     """
-    
+    stub:
+    """
+    touch ${params.pipeline_prefix}_1.pdf
+    touch ${params.pipeline_prefix}_1.png
+    touch ${params.pipeline_prefix}_1.xls
+    """
 }
 
 

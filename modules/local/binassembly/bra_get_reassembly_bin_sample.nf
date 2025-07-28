@@ -25,7 +25,10 @@ process GETBINSAMPLE {
         --prefix ${params.pipeline_prefix} \\
         --gtdb_genome_paths_file ${params.genome_paths}  \\
         ${get_bin_assembly_options}
-        
-
+    """
+    
+    stub:
+    """
+    touch ${params.pipeline_prefix}_pick4optimize_bin_sample.txt
     """
 }
