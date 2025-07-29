@@ -65,11 +65,12 @@
                     "type": "string",
                     "default": "mag",
                     "description": "Function of the pipeline, the choices enabled are: mag, bbs, bra",
-                    "help_text": "{mag, bbs, bra}\nChoose to perform a metagenome analysis workflow or execute mini tools.",
+                    "help_text": "{mag, bbs, bra, test}\nChoose to perform a metagenome analysis workflow or execute mini tools.",
                     "enum": [
                         "mag",
                         "bbs",
-                        "bra"
+                        "bra",
+                        "test"
                     ],
                     "fa_icon": "fas fa-magnet"
                 },

@@ -24,7 +24,7 @@ if (params.outdir) { ch_output = new File(params.outdir).getAbsolutePath()  } el
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { FASTP } from '../modules/nf-core/fastp/main'
+include { FASTP as FASTPONLY } from '../modules/nf-core/fastp/main'
 
 
 /*
@@ -40,13 +40,16 @@ workflow FASTPTEST {
     ch_raw_reads = Channel.from(file(params.input, checkIfExists: true))
         .splitCsv ( header:true, sep:',' )
         .map {
-            def id = it.id
+            def meta = [:]
+            meta.id = it.id
+            meta.single_end = params.single_end
+            
             def fq1 = it.raw_reads1
             def fq2 = it.raw_reads2
-            return [id, [fq1, fq2]]
+            return [meta, [fq1, fq2]]
         }
 
-    FASTP(ch_raw_reads)
+    FASTPONLY(ch_raw_reads, [],  false, [], [])
 
 }
 
