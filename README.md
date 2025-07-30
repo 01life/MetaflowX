@@ -74,7 +74,7 @@ git clone git@github.com:01life/MetaflowX.git
 This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). It requires **only Nextflow**, no Docker or Conda.
 
 ```bash
-nextflow -bg run ./ -stub -profile test_stub --outdir stub_remote > stub1.out
+nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1.out
 ```
 
 #### 2️⃣ Test 2: Run a single module (`nf-core/fastp` only, requires **Docker**)
@@ -82,7 +82,7 @@ nextflow -bg run ./ -stub -profile test_stub --outdir stub_remote > stub1.out
 This test runs the built-in `nf-core/fastp` module with a demo input. It requires **Docker**.
 
 ```bash
-nextflow -bg run ./ -profile test --outdir remote > remote.out
+nextflow -bg run MetaflowX -profile test --outdir remote > remote.out
 ```
 
 💡 Both tests finish in a few minutes and produce logs and outputs under the specified `--outdir`.
