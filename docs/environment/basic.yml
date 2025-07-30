@@ -4,16 +4,13 @@ channels:
   - biobakery
   - main
   - defaults
-  - plotly
-  - bokeh
 dependencies:
-  - python=3.10
-  - openjdk=11.0.13
+  - python>=3.10
   - bedtools=2.31.0
   - biopython=1.78
   - blast=2.14.1
   - bokeh=3.3.4
-  - bowtie2=2.5.0
+  - bowtie2=2.5.4
   - bracken=2.8
   - bwa=0.7.17
   - cd-hit=4.8.1
@@ -22,6 +19,7 @@ dependencies:
   - diamond=2.0.15
   - drep=3.4.3
   - fastp=0.23.4
+  - trimmomatic
   - humann=3.6
   - jinja2=3.1.2
   - kraken2=2.1.3
@@ -34,7 +32,6 @@ dependencies:
   - perl=5.32.1
   - pigz=2.8
   - pip=23.2.1
-  - plotly=5.15.0
   - salmon=0.8.1
   - samtools=1.17
   - scikit-learn=1.1.3
@@ -54,7 +51,6 @@ dependencies:
   - prodigal>=2.6.2
   - gcc
   - cobra-meta
-  - awscli
   - r-ggpubr 
   - r-ggplot2 
   - r-ggprism 
@@ -62,6 +58,13 @@ dependencies:
   - r-tidyverse 
   - r-dplyr 
   - r-reshape2 
+  - r-optparse
+  - r-readr
+  - r-funr
+  - r-digest
+  - vamb
+  - galah=0.4.2
+  - pandas
   - pip:
       - eggnog-mapper==2.1.3
-      - gtdbtk==2.3.2
+      - gtdbtk==2.4.0

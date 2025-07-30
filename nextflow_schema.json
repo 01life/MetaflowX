@@ -41,7 +41,6 @@
                 },
                 "Account": {
                     "type": "string",
-                    "default": "NO12345",
                     "fa_icon": "fab fa-adn",
                     "description": "Slurm account",
                     "help_text": "you must input slurm account, otherwise it will come to error."
@@ -88,7 +87,6 @@
                 },
                 "pipeline_assets": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public",
                     "description": "Assets path of project"
                 },
                 "webhookurl": {
@@ -122,7 +120,6 @@
                 "adapters": {
                     "type": "string",
                     "description": "Adapter file for trim",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/TruSeq3-PE.fa",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
@@ -151,7 +148,6 @@
                 },
                 "host_db": {
                     "type": "string",
-                    "default": "/share/database/Homo_sapiens/hg38_bowtie2_index",
                     "description": "Index filename prefix of host database (minus trailing .X.bt2)",
                     "help_text": "Human genome reference database  for removing host(default: hg38)\nDownload link: http://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
                     "fa_icon": "fas fa-database",
@@ -165,7 +161,6 @@
                 },
                 "phix_db": {
                     "type": "string",
-                    "default": "/aimigene/lianglifeng/1.DataBase/Phix/phix_bowtie2_index",
                     "description": "Bowtie2 index directory for PhiX reference genome"
                 },
                 "phix_db_index": {
@@ -254,12 +249,10 @@
                 },
                 "cat_gtdb_db": {
                     "type": "string",
-                    "default": "/share/database/CAT_pack/GTDB/release226/",
                     "description": "GTDB reference database directory for CAT"
                 },
                 "cat_pack": {
                     "type": "string",
-                    "default": "/share/app/CAT_pack/CAT_pack/",
                     "description": "Installation path of CAT software package"
                 }
             },
@@ -296,7 +289,6 @@
                     "fa_icon": "far fa-folder-open",
                     "description": "Folder containing the MetaPhlAn database",
                     "help_text": "The folder contain the MetaPhlAn database, you can download by the following command: \"metaphlan --install --bowtie2db <database folder>\".",
-                    "default": "/share/database/metaphlan/mpa_vJan21",
                     "format": "directory-path"
                 },
                 "mpa_index": {
@@ -334,7 +326,6 @@
                 },
                 "kraken2_db": {
                     "type": "string",
-                    "default": "/share/database/Kraken2/standard",
                     "fa_icon": "far fa-folder-open",
                     "description": "Path to Kraken2 database",
                     "help_text": "To create the standard Kraken 2 database, you can use the following command:\nkraken2-build --standard --db $DBNAME",
@@ -373,7 +364,6 @@
                 },
                 "humann_chocophlan_db": {
                     "type": "string",
-                    "default": "/share/database/humann/v201901b/chocophlan",
                     "description": "Directory containing the nucleotide database",
                     "help_text": "you can download like this: \"humann_databases --download chocophlan full $INSTALL_LOCATION\"",
                     "format": "directory-path",
@@ -381,7 +371,6 @@
                 },
                 "humann_protein_db": {
                     "type": "string",
-                    "default": "/share/database/humann/v201901b/uniprot/uniref_annotated/uniref90",
                     "description": "Directory containing the protein database",
                     "help_text": "you can download like this: \"humann_databases --download uniref uniref90_diamond $INSTALL_LOCATION\".",
                     "format": "directory-path",
@@ -389,7 +378,6 @@
                 },
                 "humann_map_db": {
                     "type": "string",
-                    "default": "/share/database/humann/v201901b/full_mapping",
                     "description": "Directory containing the humann utility mapping other database ID file",
                     "help_text": "humann full mapping file, you can download them like this:\" humann_databases --download utility_mapping full $INSTALL_LOCATION\".",
                     "format": "directory-path",
@@ -524,7 +512,6 @@
                 },
                 "eggnog_diamond_db": {
                     "type": "string",
-                    "default": "/share/app/SOP/nf-core/database/metagenome/eggnog_5.0/bact_arch/bact_arch.dmnd",
                     "description": "Path to DIAMOND-compatible database for eggNOG-mapper",
                     "fa_icon": "fas fa-database",
                     "help_text": "You can execute the following command to get the database files.\ncreate_dbs.py -m diamond --dbname bacteria --taxa Bacteria --data_dir /path/to/eggnog databse/ -y",
@@ -532,7 +519,6 @@
                 },
                 "eggnog_mapper_db": {
                     "type": "string",
-                    "default": "/share/database/eggnog/emapperdb-5.0.2",
                     "description": "Path to eggNOG-mapper database",
                     "fa_icon": "fas fa-database",
                     "help_text": "You can execute the following command to download the database.\ndownload_eggnog_data.py --data_dir /path/to/eggnog emapperdb -y ",
@@ -576,7 +562,6 @@
                 },
                 "bigspace_path": {
                     "type": "string",
-                    "default": "/share/app/BiG-SCAPE",
                     "description": "Name of the path to bigscape.py",
                     "fa_icon": "far fa-folder-open"
                 },
@@ -719,7 +704,6 @@
                 },
                 "metabinner_path": {
                     "type": "string",
-                    "default": "/share/app/miniconda3/envs/mymetabinner/bin",
                     "fa_icon": "fas fa-filter",
                     "description": "Path of MetaBinner"
                 },
@@ -735,7 +719,6 @@
                 },
                 "binny_path": {
                     "type": "string",
-                    "default": "/share/app/binny",
                     "fa_icon": "fas fa-filter",
                     "description": "Path of binny"
                 },
@@ -767,7 +750,6 @@
                 },
                 "checkm2_db": {
                     "type": "string",
-                    "default": "/share/database/CheckM2/uniref100.KO.1.dmnd",
                     "fa_icon": "fas fa-file",
                     "description": "Provide a location for the CheckM2 database for a given predict run",
                     "help_text": "You can execute the following command to get the database files.\ncheckm2 database --download --path /path/to/CheckM2 database",
@@ -856,7 +838,6 @@
                 },
                 "gtdbtk_db": {
                     "type": "string",
-                    "default": "/share/database/gtdbtk/release214",
                     "description": "Path to GTDB-Tk database",
                     "help_text": "wget https://data.gtdb.ecogenomic.org/releases/latest/auxillary_files/gtdbtk_data.tar.gz\nor\nwget https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/auxillary_files/gtdbtk_data.tar.gz\ntar xvzf gtdbtk_data.tar.gz",
                     "format": "directory-path",
@@ -864,7 +845,6 @@
                 },
                 "mash_db": {
                     "type": "string",
-                    "default": "/share/database/gtdbtk/release214/mash",
                     "description": "Path to save/read (if exists) the Mash reference sketch database (.msh)  for GTDB-Tk",
                     "fa_icon": "fas fa-database",
                     "help_text": "\nPlease refer the following command to build mash database:\nmkdir /path/to/gtdbtk_db\ncd /path/to/gtdbtk_db\nwget https://data.gtdb.ecogenomic.org/releases/latest/auxillary_files/gtdbtk_data.tar.gz\nwget https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/auxillary_files/gtdbtk_data.tar.gz\ntar xvzf gtdbtk_data.tar.gz\n\nperl -alne 'print \"/path/to/gtdbtk_db/fastani/$F[1]$F[0]\";' /path/to/gtdbtk_db/fastani/genome_paths.tsv > tmp.txt\nmash sketch -l -p 16 tmp.txt -o gtdb_ref_sketch.msh -k 16 -s 5000",
@@ -878,7 +858,6 @@
                 },
                 "gtdb_archaeal_metadata": {
                     "type": "string",
-                    "default": "/share/app/SOP/nf-core/database/metagenome/gtdbtk_R214/metadata/ar53_metadata_r214.tsv.gz",
                     "description": "GTDB archaeal metadata file",
                     "help_text": "Download link: https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/ar53_metadata.tsv.gz",
                     "format": "file-path",
@@ -886,7 +865,6 @@
                 },
                 "gtdb_bacterial_metadata": {
                     "type": "string",
-                    "default": "/share/app/SOP/nf-core/database/metagenome/gtdbtk_R214/metadata/bac120_metadata_r214.tsv.gz",
                     "description": "GTDB bacterial metadata file",
                     "help_text": "Download link: https://data.ace.uq.edu.au/public/gtdb/data/releases/latest/bac120_metadata.tsv.gz",
                     "format": "file-path",
@@ -1004,7 +982,6 @@
                 },
                 "genome_paths": {
                     "type": "string",
-                    "default": "/share/database/gtdbtk/release214/fastani/genome_paths.tsv",
                     "description": "Genome path file of  GTDB-Tk",
                     "fa_icon": "fas fa-file-alt"
                 },
@@ -1016,7 +993,6 @@
                 },
                 "deepurify_db": {
                     "type": "string",
-                    "default": "/share/database/Deepurify2/Deepurify-DB/",
                     "fa_icon": "fas fa-database",
                     "description": "Path to deepurify database"
                 },
@@ -1140,7 +1116,6 @@
                 },
                 "magscot_folder": {
                     "type": "string",
-                    "default": "/share/app/MAGScoT/",
                     "description": "Installation directory of MAGScoT binning toolkit"
                 },
                 "magscot_options": {
@@ -1172,38 +1147,6 @@
                 }
             },
             "fa_icon": "fas fa-chalkboard"
-        },
-        "svflow_options": {
-            "title": "SVflow options",
-            "type": "object",
-            "description": "Options to generate the input file to run SVflow",
-            "default": "",
-            "properties": {
-                "stat": {
-                    "type": "boolean",
-                    "description": "Generate the input file to run SVflow or not.",
-                    "fa_icon": "fas fa-toggle-on"
-                },
-                "path_map": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/svflow/path_map.csv",
-                    "description": "Mapping file of analysis name and result path",
-                    "fa_icon": "fas fa-layer-group"
-                },
-                "profile_template": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/svflow/profile_template.csv",
-                    "description": "Template file to run SVflow",
-                    "fa_icon": "fas fa-file"
-                }
-            },
-            "fa_icon": "fab fa-artstation"
         },
         "minitools_options": {
             "title": "Minitools options",
@@ -1454,9 +1397,6 @@
         },
         {
             "$ref": "#/definitions/binning_options"
-        },
-        {
-            "$ref": "#/definitions/svflow_options"
         },
         {
             "$ref": "#/definitions/minitools_options"
