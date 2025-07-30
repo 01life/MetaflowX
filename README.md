@@ -64,7 +64,7 @@ If **Nextflow** is already installed, you can quickly validate MetaflowX using d
 
 
 ```bash
-git clone git@github.com:01life/MetaflowX.git
+git clone https://github.com/01life/MetaflowX.git
 ```
 
 2. Run either of the following tests:
