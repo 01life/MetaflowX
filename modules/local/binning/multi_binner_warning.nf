@@ -18,7 +18,7 @@ process MULTIBINNERWARNING {
     script:
     """
     cat <<-OUTLOG > ${id}_binner_warning.log
-    
+
     ==========Start at : `date` ==========
     ### Step ${task.process} 
     ### Sample ${id}
@@ -27,6 +27,9 @@ process MULTIBINNERWARNING {
 
     OUTLOG
 
-   """
-
+    """
+    stub:
+    """
+    touch ${id}_binner_warning.log
+    """
 }

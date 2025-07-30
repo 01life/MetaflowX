@@ -1,10 +1,11 @@
 
 process REPORT {
 
-    label 'process_low'
+    label 'process_medium'
 
     input:
-    path(report)
+    path(result)
+    path(log)
     path(topic)
     path(order)
     path(template)
@@ -43,5 +44,9 @@ process REPORT {
         find ${workDir} -name "*.bt2" -type f -delete
     fi
 
+    """
+    stub:
+    """
+    touch ${params.pipeline_prefix}_report.html
     """
 }

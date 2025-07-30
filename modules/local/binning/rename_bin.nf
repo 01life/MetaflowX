@@ -13,7 +13,7 @@ process RENAMEBIN {
     path("${params.pipeline_prefix}_HQ_unique_bins_rename_map.xls"),emit:"name_map"
     path("${params.pipeline_prefix}_HQ_unique_bins_info.xls"),emit:"bins_info"
     path("*.txt"),emit:"count"
-    path("bin.fa.list"),emit:"list"
+    path("HQUniqueBins/folder*"),emit:"list"
 
     when:
     task.ext.when == null || task.ext.when
@@ -33,7 +33,17 @@ process RENAMEBIN {
 
     mkdir binInfo_report
     cp ${params.pipeline_prefix}_HQ_unique_bins_info.xls binInfo_report/binInfo.xls
-
-
     """
+
+    stub:
+    """
+    mkdir -p HQUniqueBins/folder1
+    touch HQUniqueBins/folder1/bin1.fa
+    mkdir binInfo_report
+    touch ${params.pipeline_prefix}_HQ_unique_bins_info.xls
+    touch ${params.pipeline_prefix}_HQ_unique_bins_rename_map.xls
+    touch count.txt
+    touch list.txt
+    """
+    
 }

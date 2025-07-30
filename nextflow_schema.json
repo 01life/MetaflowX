@@ -41,7 +41,6 @@
                 },
                 "Account": {
                     "type": "string",
-                    "default": "NO12345",
                     "fa_icon": "fab fa-adn",
                     "description": "Slurm account",
                     "help_text": "you must input slurm account, otherwise it will come to error."
@@ -65,11 +64,12 @@
                     "type": "string",
                     "default": "mag",
                     "description": "Function of the pipeline, the choices enabled are: mag, bbs, bra",
-                    "help_text": "{mag, bbs, bra}\nChoose to perform a metagenome analysis workflow or execute mini tools.",
+                    "help_text": "{mag, bbs, bra, test}\nChoose to perform a metagenome analysis workflow or execute mini tools.",
                     "enum": [
                         "mag",
                         "bbs",
-                        "bra"
+                        "bra",
+                        "test"
                     ],
                     "fa_icon": "fas fa-magnet"
                 },
@@ -88,6 +88,11 @@
                 "pipeline_assets": {
                     "type": "string",
                     "description": "Assets path of project"
+                },
+                "webhookurl": {
+                    "type": "string",
+                    "description": "The Webhook Address for the Enterprise WeChat Group Robot",
+                    "default": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ee63c501-631a-4af7-bc04-c6ab1223a6e4"
                 }
             }
         },
@@ -120,7 +125,7 @@
                 },
                 "fastp_options": {
                     "type": "string",
-                    "default": "-g -q 5 -u 50 -n 15 -l 75 --overlap_diff_limit 1 --overlap_diff_percent_limit 10 --detect_adapter_for_pe --cut_front --cut_right",
+                    "default": "--cut_front --cut_front_window_size 1 --cut_front_mean_quality 5 --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 5 --cut_right --cut_right_mean_quality 15 --length_required 50 --detect_adapter_for_pe",
                     "description": "Options for fastp",
                     "fa_icon": "fas fa-filter"
                 },
@@ -153,6 +158,15 @@
                     "default": "hg38.index",
                     "description": "Index filename prefix (minus trailing .X.bt2).",
                     "fa_icon": "fab fa-slack-hash"
+                },
+                "phix_db": {
+                    "type": "string",
+                    "description": "Bowtie2 index directory for PhiX reference genome"
+                },
+                "phix_db_index": {
+                    "type": "string",
+                    "default": "GCA_002596845.1_ASM259684v1_genomic.index",
+                    "description": "Filename of PhiX genomic index file"
                 }
             },
             "fa_icon": "fas fa-broom",
@@ -186,11 +200,60 @@
                     "description": "Options for metaSPAdes",
                     "default": "--meta"
                 },
+                "spades4downstream_analysis": {
+                    "type": "string",
+                    "default": "scaffolds",
+                    "description": "Specify whether to use contigs or scaffolds assembled by SPAdes, the choices enabled are: scaffolds,contigs",
+                    "help_text": "Be default the SPAdes documentation recommends using scaffolds rather than contigs, as these are longer as they combine multiple contigs. However there is an increased risk of misassemblies or chimeras. Use this flag to specify to just use contigs for downstream processes such as binning. Reference by nf-mag.",
+                    "enum": [
+                        "scaffolds",
+                        "contigs"
+                    ],
+                    "fa_icon": "fas fa-tools"
+                },
                 "megahit_options": {
                     "type": "string",
                     "default": "--min-contig-len 2000",
                     "description": "Options for MEGAHIT",
                     "fa_icon": "fas fa-filter"
+                },
+                "metaquast_options": {
+                    "type": "string",
+                    "default": "--rna-finding --max-ref-number 0",
+                    "description": "Options for MetaQuast"
+                },
+                "contig_taxonomy": {
+                    "type": "boolean",
+                    "description": "Performs taxonomic classification of contigs"
+                },
+                "kraken2_contig": {
+                    "type": "boolean",
+                    "description": "Run Kraken2 for contig classification"
+                },
+                "kraken2_contig_anno_options": {
+                    "type": "string",
+                    "description": "Custom Kraken2 parameters for contig classification"
+                },
+                "contig_taxonomy_output": {
+                    "type": "string",
+                    "description": "The results of contig taxonomy"
+                },
+                "cat_contig": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Executes CAT tool for contig annotation"
+                },
+                "cat_contig_options": {
+                    "type": "string",
+                    "description": "Custom CAT annotation parameters"
+                },
+                "cat_gtdb_db": {
+                    "type": "string",
+                    "description": "GTDB reference database directory for CAT"
+                },
+                "cat_pack": {
+                    "type": "string",
+                    "description": "Installation path of CAT software package"
                 }
             },
             "fa_icon": "fas fa-align-left"
@@ -275,7 +338,7 @@
                 },
                 "bracken_options": {
                     "type": "string",
-                    "default": "-r 150",
+                    "default": "-r 150 -t 1 ",
                     "description": "Options for Bracken",
                     "fa_icon": "fas fa-filter"
                 },
@@ -394,6 +457,18 @@
                     "fa_icon": "fas fa-filter",
                     "description": "Options for Prodigal"
                 },
+                "prodigal_output": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "description": "The prodigal output includes predicted protein and nucleic acid information. This parameter configures a CSV file that must include the following columns: id, faa, cds",
+                    "help_text": "This parameter configures a CSV file that must include the following columns: id, faa, cds."
+                },
+                "geneset_construction": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene set construction analysis"
+                },
                 "gene_min_length": {
                     "type": "integer",
                     "default": 150,
@@ -423,6 +498,11 @@
                     "default": 500000,
                     "description": "Gene count of each cd-hit split task",
                     "fa_icon": "fas fa-columns"
+                },
+                "gene_function": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene function analysis"
                 },
                 "eggnog_protein_chunk_size": {
                     "type": "integer",
@@ -545,6 +625,11 @@
                     "default": "-e 1e-5 --id 40",
                     "description": "Options for DIAMOND to use custom protein database to get gene functional annotation",
                     "fa_icon": "fas fa-filter"
+                },
+                "gene_abundance_calculation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable gene abundance calculation analysis"
                 },
                 "save_geneset_abundance": {
                     "type": "boolean",
@@ -725,20 +810,25 @@
                     "description": "Options for dRep",
                     "fa_icon": "fas fa-filter"
                 },
-                "DASToolBinOptimizer": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Set DASTool-based Bin Optimizer or not"
-                },
                 "PermutationBinOptimizer": {
                     "type": "boolean",
-                    "default": true,
                     "description": "Set permutation-based Bin Optimizer or not"
                 },
                 "similarity_ratio": {
                     "type": "number",
                     "default": 0.8,
                     "description": "Similarity bins threshold"
+                },
+                "rawbin_info": {
+                    "type": "string",
+                    "help_text": "This parameter configures a CSV file that must include the following columns: id,rawbin_folder,quality_report.",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "description": "Path to raw bin  information includes the raw bin folder and the quality report. This parameter configures a CSV file that must include the following columns: id,rawbin_folder,quality_report."
+                },
+                "HQ_unique_bins": {
+                    "type": "string",
+                    "description": "Path to all high-quality unique bins, and the file extension for these bins in the directory should be .fa."
                 },
                 "bin_taxonomy": {
                     "type": "boolean",
@@ -836,24 +926,28 @@
                 },
                 "kegg_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/ko_category.txt",
                     "description": "Category information of KEGG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "go_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/GO_ontology.txt",
                     "description": "Category information of GO database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cazy_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cazy_category.txt",
                     "description": "Category information of CAZy database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cog_db_category": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cog_level.txt",
                     "description": "Category information of COG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
@@ -991,6 +1085,65 @@
                     "type": "string",
                     "default": "--meta --only-assembler",
                     "description": "Options of hybridSPAdes"
+                },
+                "vamb": {
+                    "type": "boolean",
+                    "description": "Run VAMB binning tool"
+                },
+                "vamb_options": {
+                    "type": "string",
+                    "default": " -m 2000 --minfasta 10000 ",
+                    "description": "Options of VAMB"
+                },
+                "metadecoder": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run MetaDecoder or not"
+                },
+                "metadecoder_options": {
+                    "type": "string",
+                    "default": " --min_sequence_length 2000  ",
+                    "description": "Options of MetaDecoder"
+                },
+                "taxvamb": {
+                    "type": "boolean",
+                    "description": "Run TaxVamb taxonomic binning"
+                },
+                "taxvamb_options": {
+                    "type": "string",
+                    "default": " -m 2000 --minfasta 10000 ",
+                    "description": "Options of TaxVamb"
+                },
+                "magscot_folder": {
+                    "type": "string",
+                    "description": "Installation directory of MAGScoT binning toolkit"
+                },
+                "magscot_options": {
+                    "type": "string",
+                    "description": "Custom MAGScoT parameters"
+                },
+                "galah_options": {
+                    "type": "string",
+                    "default": "--min-completeness 50  --max-contamination 10 ",
+                    "description": "Options of galah"
+                },
+                "ScoreBasedOptimizer": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Activate score-based bin optimization - DAS Tool"
+                },
+                "ContigTaxonomyOptimizer": {
+                    "type": "boolean",
+                    "description": "Run taxonomy-guided bin optimization"
+                },
+                "binner_integrator": {
+                    "type": "string",
+                    "default": "dastool",
+                    "description": "Specify the tool for binning integration framework",
+                    "enum": [
+                        "dastool",
+                        "magscot"
+                    ]
                 }
             },
             "fa_icon": "fas fa-chalkboard"
@@ -1039,18 +1192,22 @@
             "properties": {
                 "report_topic": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/topic.txt",
                     "description": "Path to topic information file"
                 },
                 "report_order": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/report.order.txt",
                     "description": "Path to figure order file"
                 },
                 "report_template": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/template_V20240307.html",
                     "description": "Path to HTML template file"
                 },
                 "report_images": {
                     "type": "string",
+                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/img",
                     "description": "Path to images of HTML template"
                 }
             }

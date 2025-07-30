@@ -12,7 +12,6 @@ workflow BINABUNDANCE {
     sample_number
     clean_reads
     final_genomes       // RENAMEBIN.out.genomes
-    bins_folder         // RENAMEBIN.out.folder
     method4coverm
     samplesheet
     
@@ -32,8 +31,10 @@ workflow BINABUNDANCE {
     bam_number = BOWTIE2BIN.out.sorted_bam.collect().flatten().filter { file -> !file.isEmpty() }.count()
     
     ch_coverm_method = Channel.of(method4coverm.split(","))
+    
+    method_genomes = ch_coverm_method.combine(final_genomes.toList())
 
-    COVERM(sample_number, bam_number, ch_coverm_method.combine(bins_folder), BOWTIE2BIN.out.sorted_bam.collect(), samplesheet)
+    COVERM(sample_number, bam_number, method_genomes, BOWTIE2BIN.out.sorted_bam.collect(), samplesheet)
     totalRelativeAbun = COVERM.out.abundance.collect().flatten().filter{ it.name.contains("relative_abundance") }
     totalCountAbun = COVERM.out.abundance.collect().flatten().filter{ it.name.contains("count") }
     totalMeanAbun = COVERM.out.abundance.collect().flatten().filter{ it.name.contains("trimmed_mean") }

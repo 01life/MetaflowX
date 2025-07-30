@@ -67,4 +67,13 @@ process RGI {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_function_CARD1.xls
+    touch ${params.pipeline_prefix}_geneset_function_CARD_annotation.xls
+    touch ${params.pipeline_prefix}_geneset_function_RGI_annotation.xls
+    mkdir -p rgi_report
+    touch rgi_report/CARD.xls
+
+    """
 }

@@ -18,8 +18,13 @@ process CDHITEST2D {
     
     """
     mkdir est_tmp
-    cp ${div0} ./est_tmp
-    cp ${div_tmp}/* ./est_tmp
+
+    ln -s \$(readlink -f ${div0}) ./est_tmp
+
+    for file in ${div_tmp}/*; do
+    ln -s \$(readlink -f \$file) ./est_tmp/\$(basename \$file)
+    done
+
 
     i=${div_num}
     indiv=est_tmp/all.cds.fa.div
@@ -35,13 +40,13 @@ process CDHITEST2D {
     do
         jdb="\${indiv}-\${j}-o"
         idbo="clstr_tmp/all.cds.fa.div-\${i}.vs.\${j}"
-        cd-hit-est-2d -i \$jdb -i2 \$idb -o \$idbo ${cdhitoptions} >> \$idblog
+        cd-hit-est-2d -i \$jdb -i2 \$idb -o \$idbo -T ${task.cpus} ${cdhitoptions} >> \$idblog
 
         idb=\$idbo
     done
 
     # Self-comparing
-    cd-hit-est -i \$idb -o clstr_tmp/all.cds.fa.div-\${i}-o ${cdhitoptions} >> \$idblog
+    cd-hit-est -i \$idb -o clstr_tmp/all.cds.fa.div-\${i}-o -T ${task.cpus} ${cdhitoptions} >> \$idblog
 
 
     cat <<-END_VERSIONS > versions.yml
@@ -49,6 +54,14 @@ process CDHITEST2D {
         cdhit: \$(cd-hit-est 2>&1 | grep 'CD-HIT version' | sed 's/CD-HIT //')
     END_VERSIONS
 
+    """
+
+    stub:
+    """
+    mkdir clstr_tmp
+    mkdir est_tmp
+    touch est_tmp/dev-1.clstr
+    mkdir -p est_tmp/all.cds.fa.div-1-o
     """
 
 }

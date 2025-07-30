@@ -5,8 +5,11 @@
 
 include { MEGAHIT } from '../../modules/local/assembly/megahit'
 include { SWITCH2MEGAHIT } from '../../modules/local/assembly/switch2megahit'
+include { METASPADES } from '../../modules/local/assembly/metaspades'
 include { METASPADESM64 } from '../../modules/local/assembly/metaspades_m64'
 include { METASPADESM128 } from '../../modules/local/assembly/metaspades_m128'
+include { METAQUAST } from '../../modules/local/assembly/metaquast'
+include { MERGEQUAST } from '../../modules/local/assembly/merge_metaquast'
 include { CONTIGSTAT } from '../../modules/local/assembly/contig_stat'
 include { PIPELINEWARNING } from '../../modules/local/common/pipeline_warning'
 include { PIPELINEERROR } from '../../modules/local/common/pipeline_error'
@@ -25,6 +28,9 @@ workflow ASSEMBLY {
     ch_warning_log = Channel.empty()
 
     if (params.assembly_tool == "metaspades") {
+        
+        // METASPADES (clean_reads)
+        // spades_contigs = METASPADES.out.contigs
 
         //metaspades q_32_64
         METASPADESM64(clean_reads)
@@ -36,7 +42,7 @@ workflow ASSEMBLY {
         spades_m128_contigs = METASPADESM128.out.contigs
 
         // get samples which MetaSPAdes completed
-        spades_contigs = spades_m64_contigs.concat(spades_m128_contigs)
+        spades_contigs = spades_m64_contigs.concat(spades_m128_contigs).filter{ id, contigs -> contigs.size() > 0 }
 
         // get samples which MetaSPAdes failed and switch to MegaHit for assembly
         ch_spades_failed = clean_reads.join(spades_contigs, remainder: true).filter{ it[2] == null }.map{ it -> [it[0], it[1]]}
@@ -61,6 +67,10 @@ workflow ASSEMBLY {
     finish_number = all_contig.flatten().filter { file -> !file.isEmpty() }.count()
     
     // assembly completed successfully
+    // run the assembly validation step
+    METAQUAST (contigs)
+    MERGEQUAST(METAQUAST.out.report.collect())
+
     CONTIGSTAT(sample_number, finish_number, all_contig)
     contig_info = CONTIGSTAT.out.contig_info
     contig_report = CONTIGSTAT.out.contig_report
@@ -77,4 +87,3 @@ workflow ASSEMBLY {
     contig_info
     
 }
-

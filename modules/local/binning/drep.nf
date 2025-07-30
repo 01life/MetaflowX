@@ -42,4 +42,12 @@ process DREP {
     END_VERSIONS 
 
     """
+
+    stub:
+    """
+    mkdir -p drep_output/dereplicated_genomes
+    touch drep_output/dereplicated_genomes/genome1.fa
+    touch ${params.pipeline_prefix}_dRep_cluster.xls
+    """
+
 }

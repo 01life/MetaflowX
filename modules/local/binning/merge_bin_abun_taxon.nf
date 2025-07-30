@@ -20,5 +20,9 @@ process MERGEBINABUNTAXON {
     merge_bin_abundace_taxonomy.py -t ${gtdb_summary} -p ${bins_rel_abun} -q ${params.pipeline_prefix}
 
     """
-
+    stub:
+    """
+    touch ${params.pipeline_prefix}_bins_taxonomy.csv
+    touch ${params.pipeline_prefix}_bins_rel_abundance.csv
+    """
 }

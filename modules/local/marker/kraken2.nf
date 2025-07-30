@@ -25,7 +25,7 @@ process KRAKEN2 {
 
     kraken2 --db ${kraken2_db} --threads ${task.cpus} --report ${id}_kreport.xls ${paired} ${reads} ${kraken_options} > ${id}_kraken.xls
 
-    parallel --xapply "bracken -d ${kraken2_db} -i ${id}_kreport.xls -o ${id}_bracken_{2}.xls -l {1} -t ${task.cpus} ${bracken_options}; kreport2mpa.py --no-intermediate-ranks --display-header -r ${id}_kreport_bracken_{2}.xls -o ${id}_bracken_{2}_mpa.xls " ::: D P C O F G S ::: domains phylums classes orders families genuses species
+    parallel --xapply "bracken -d ${kraken2_db} -i ${id}_kreport.xls -o ${id}_bracken_{2}.xls -l {1} ${bracken_options}; kreport2mpa.py --no-intermediate-ranks --display-header -r ${id}_kreport_bracken_{2}.xls -o ${id}_bracken_{2}_mpa.xls " ::: D P C O F G S ::: domains phylums classes orders families genuses species
 
     rm -rf ${id}_kraken.xls
         

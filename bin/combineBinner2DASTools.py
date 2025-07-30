@@ -41,37 +41,43 @@ def getPep(pepF):
             pepDir[sampleID] = pepPath
 
 
+def parse_contig2bin(tsv_path: str, output_file: str, contig_map: dict, pep_map: dict):
+    """Generate binner combination TSV file for DASTools."""
+    sample_binner_map = {}
+    sample_ids = set()
+    binner_names = set()
 
-def parseContig2bin(tsvF,outF,contigDir,pepDir):
-    sampleList,binnerList =set(),set()
-    sampleBinnerDir={}
+    with open(tsv_path, 'r') as f:
+        for line in f:
+            sample_id, binner, bin_path = line.strip().split('\t')
+            sample_ids.add(sample_id)
+            binner_names.add(binner)
+            sample_binner_map.setdefault(sample_id, {})[binner] = os.path.abspath(bin_path)
+
+    if len(binner_names) < 2:
+        print("Less than 2 binners provided. DASTools requires multiple binners. Exiting.")
+        sys.exit(1)
+
     combinations = []
-    with open(tsvF,'r') as tsvFile, open(outF,'w') as outFile:
-        for a in tsvFile:
-            sampleID, binnerName, tsvPath = a.strip().split("\t")
-            sampleList.add(sampleID)
-            binnerList.add(binnerName)
-            sampleBinnerDir.setdefault(sampleID,{})[binnerName] = os.path.abspath(tsvPath)
-        
-        if len(binnerList) >= 2:
-            for r in range(2, len(binnerList) + 1):
-                combinations.extend(list(itertools.combinations(binnerList, r)))
-        else:
-            print("binner has less than 2 trees, DASTools not applicable. Program terminated.")
-            sys.exit()
-            
+    for r in range(2, len(binner_names) + 1):
+        combinations.extend(itertools.combinations(binner_names, r))
 
-        for sample in sampleList:
-            for oneCombination in combinations:
-                tsvlist = [sampleBinnerDir[sample][binner] for binner in oneCombination]
-                combinetxt = ",".join(tsvlist)
-                binnertxt = "_".join(oneCombination)
-                if sample in contigDir and sample in pepDir:
-                    outFile.write(f"{sample}\t{contigDir[sample]}\t{pepDir[sample]}\t{binnertxt}\t{combinetxt}\n")
-                else:
-                    print(f"do not get the protein file or contigfile of sample: {sample}, please check!!")
-                    sys.exit()
-                
+    with open(output_file, 'w') as out_f:
+        for sample_id in sample_ids:
+            if sample_id not in contig_map or sample_id not in pep_map:
+                print(f"[WARNING] Missing contig or protein file for sample: {sample_id}. Skipped.")
+                continue
+
+            for comb in combinations:
+                if not all(binner in sample_binner_map[sample_id] for binner in comb):
+                    missing = [b for b in comb if b not in sample_binner_map[sample_id]]
+                    # print(f"[INFO] Skipping combination {comb} for sample {sample_id} due to missing binner(s): {', '.join(missing)}")
+                    continue
+
+                bin_paths = [sample_binner_map[sample_id][b] for b in comb]
+                combined_bins = ",".join(bin_paths)
+                combo_name = "_".join(comb)
+                out_f.write(f"{sample_id}\t{contig_map[sample_id]}\t{pep_map[sample_id]}\t{combo_name}\t{combined_bins}\n")
 
 
 def main():
@@ -92,7 +98,7 @@ def main():
 
     outfile = f"{outpath}/binner_combination.txt"
 
-    parseContig2bin(pars['contig2bin'],outfile,contigDir,pepDir)
+    parse_contig2bin(pars['contig2bin'],outfile,contigDir,pepDir)
 
 if __name__ == '__main__':
     main()

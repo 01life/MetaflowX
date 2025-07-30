@@ -45,4 +45,14 @@ process CUSTOMPRODB {
     END_VERSIONS
 
     """
+
+    stub:
+    """
+    mkdir custompr_report
+    touch ${params.pipeline_prefix}_geneset_function_${params.proDB_name}_NO_RESULT_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_${params.proDB_name}_NO_RESULT_annotation.xls
+    touch custompr.report.list
+    touch ${params.pipeline_prefix}_geneset_function_${params.proDB_name}_annotation.xls
+    touch ${params.pipeline_prefix}_geneset_function_${params.proDB_name}_abundance.xls
+    """ 
 }

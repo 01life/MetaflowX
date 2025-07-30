@@ -24,4 +24,10 @@ process MULTIQC {
     
     """
 
+    stub:
+    """
+    touch ${type}.html
+    mkdir ${type}_data/
+    """
+
 }

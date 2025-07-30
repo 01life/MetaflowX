@@ -165,6 +165,7 @@ workflow RAPID_TAXONOMIC_PROFILING {
                 HUMANNEXPAND(ch_humann_expand)
 
                 // group the data by extended database name and combine the profiles of all samples
+                // Notes：need to ascertain the number of samples that have finished the HUMANNEXPAND task and the additional total samples required for analysis !!!
                 MERGEHUMANNEXPAND(HUMANNEXPAND.out.profile.groupTuple(), samplesheet)
                 
                 //merge all expand profile table 

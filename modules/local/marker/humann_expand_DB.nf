@@ -27,4 +27,8 @@ process HUMANNEXPAND {
         
     """
 
+    stub:
+    """
+    touch ${id}_${name}_relab.xls
+    """
 }

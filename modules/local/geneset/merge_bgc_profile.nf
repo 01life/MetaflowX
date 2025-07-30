@@ -27,5 +27,11 @@ process MERGEBGCPROFILE {
     cp ${params.pipeline_prefix}_BiG-MAP_RPKM.xls bigmap_report/antismash.xls
     
     """
+
+    stub:
+    """
+    mkdir -p bigmap_report
+    touch ${params.pipeline_prefix}_BiG-MAP_RPKM.xls
+    """
     
 }

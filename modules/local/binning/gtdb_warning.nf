@@ -25,5 +25,10 @@ process GTDBWARNING {
     OUTLOG
 
     """
-
+    
+    stub:
+    """
+    timestamp=\$(date '+%Y-%m-%d_%H-%M-%S')  
+    touch ${params.pipeline_prefix}_GTDBTk_warning_log_\$timestamp.txt
+    """
 }

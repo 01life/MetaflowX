@@ -21,10 +21,11 @@ process MULTICOV {
     def cov_list = covList instanceof List ? covList.join(" ") : "$covList"
 
     """
-
-
     bra_merge_converage.py  ${cov_list} > ${binID}_mulit_cov.txt
+    """
 
-
+    stub:
+    """
+    touch ${binID}_mulit_cov.txt
     """
 }

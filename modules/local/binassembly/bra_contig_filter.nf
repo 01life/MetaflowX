@@ -26,4 +26,10 @@ process BRACONTIGFILTER {
     contig_rename.py -t reassembly_bin_remove_outlier.fa -s ${id} -m ${id}_reassembly_contigs_rename_mapping.xls -o  ${id}_reassembly_contigs_${params.min_contig_len}.fa
 
     """
+    stub:
+    """
+    touch ${id}_reassembly_contigs_${params.min_contig_len}.fa
+    touch ${id}_reassembly_contigs_rename_mapping.xls
+    """
+
 }

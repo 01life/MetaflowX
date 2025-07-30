@@ -32,10 +32,8 @@ if (params.outdir) { ch_output = new File(params.outdir).getAbsolutePath()  } el
 //
 include { params2Channel } from '../modules/local/common/utils'
 include { checkEssentialParams } from '../modules/local/common/utils'
-include { PRODIGAL } from '../modules/local/geneset/prodigal'
 include { CONTIGFILTER } from '../modules/local/common/contig_filter'
 include { CONTIGSTAT } from '../modules/local/assembly/contig_stat'
-include { MERGEBINABUNTAXON } from '../modules/local/binning/merge_bin_abun_taxon'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -45,13 +43,8 @@ include { QC } from '../subworkflows/local/QC'
 include { ASSEMBLY } from '../subworkflows/local/ASSEMBLY'
 include { RAPID_TAXONOMIC_PROFILING } from '../subworkflows/local/RAPID_TAXONOMIC_PROFILING'
 include { GENESET } from '../subworkflows/local/GENESET'
-include { BINNER } from '../subworkflows/local/BINNER'
-include { BINTAXONOMY } from '../subworkflows/local/BIN_TAXONOMY'
-include { BINFUNCTION } from '../subworkflows/local/BIN_FUNCTION'
-include { BINABUNDANCE } from '../subworkflows/local/BIN_ABUNDANCE'
-include { BINMAP } from '../subworkflows/local/BIN_MAP'
-include { BINREFINE } from '../subworkflows/local/BIN_REFINE'
-include { BINREASSEMBLY } from '../subworkflows/local/BIN_REASSEMBLY'
+include { GENEPREDICTION } from '../subworkflows/local/GENE_PREDICTION'
+include { BINNING } from '../subworkflows/local/BINNING'
 include { POLISH } from '../subworkflows/local/POLISH'
 
 
@@ -73,6 +66,22 @@ ch_card_anno    = Channel.empty()
 ch_report_input = Channel.empty()
 ch_fastp_json = Channel.empty()
 ch_bowtie2_log = Channel.empty()
+
+//SVFLOWINPUT subworkflow input
+ch_contig_info = Channel.empty() //CONTIGSTAT.out.contig_info || ASSEMBLY.out.contig_info
+ch_marker_profile = Channel.empty() //RAPID_TAXONOMIC_PROFILING.out.ch_profile
+ch_geneset_profile = Channel.empty() //GENESET.out.ch_profile
+ch_bins_list = Channel.empty() //BINNER.out.bins_list
+ch_bins_folder = Channel.empty() //BINNER.out.bins_folder
+ch_bins_count = Channel.empty() //BINNER.out.bins_count
+ch_qs_quality_report = Channel.empty() //BINNER.out.qs_quality_report
+ch_bins_info = Channel.empty() //BINNER.out.bins_info 
+ch_bins_rename_map = Channel.empty() //BINNER.out.bins_rename_map
+ch_gtdb_result = Channel.empty() //BINTAXONOMY.out.gtdb_summary
+ch_depth_list = Channel.empty() //BINABUNDANCE.out.depth_list
+ch_bins_rel_abun = Channel.empty() //BINABUNDANCE.out.totalRelativeAbun
+ch_bins_count_abun = Channel.empty() //BINABUNDANCE.out.totalCountAbun
+ch_bins_mean_abun = Channel.empty() //BINABUNDANCE.out.totalMeanAbun
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,21 +111,21 @@ workflow METASSEMBLY {
     if( params.mode==1 || (params.mode==0 && !params.skip_qc) ){
         // println("raw_reads")
         if(columns.contains("raw")) {
-            INPUT_CHECK("raw", ch_input)
+            INPUT_CHECK("raw", sample_number, ch_input)
         }else{ exit 1, "Invalid input samplesheet: expects column raw_reads1 and raw_reads2 or raw_se !"}
     //Modes 2 and 3 can accept raw reads.
     }else if( params.mode in [2, 3] ){
         if(columns.contains("clean")) {
-            INPUT_CHECK("clean", ch_input)
+            INPUT_CHECK("clean", sample_number, ch_input)
         }else if(columns.contains("raw")){
-            INPUT_CHECK("raw", ch_input)
+            INPUT_CHECK("raw", sample_number, ch_input)
             raw_reads_flag = true
         }else{ exit 1, "Invalid input samplesheet: expects column raw_reads1,raw_reads2,raw_se or clean_reads1,clean_read2,clean_se !"}
     //For inputting clean reads.
     }else{
         // println("clean_reads")
         if(columns.contains("clean")) { 
-            INPUT_CHECK("clean", ch_input)
+            INPUT_CHECK("clean", sample_number, ch_input)
         }else{ exit 1, "Invalid input samplesheet: expects column clean_reads !"}
     }
     
@@ -130,7 +139,7 @@ workflow METASSEMBLY {
     //Submodule Execution.
     switch(params.mode){
         //QC
-        case 1 : {
+        case 1: {
             QC(sample_number, ch_raw_reads)
             ch_report_input = ch_report_input.mix(QC.out.qc_report)
             ch_clean_reads = QC.out.clean_reads
@@ -183,48 +192,34 @@ workflow METASSEMBLY {
             ch_contig_info = CONTIGSTAT.out.contig_info
 
             //Bining
-            PRODIGAL (ch_contig)
-            BINNER(sample_number, ch_contig, ch_clean_reads, PRODIGAL.out.faa)
-            ch_report_input = ch_report_input.mix(BINNER.out.binner_report)
-            ch_bowtie2_log = ch_bowtie2_log.mix(BINNER.out.contig_bowtie2)
-            ch_bins_list = BINNER.out.bins_list
-            ch_bins_folder = BINNER.out.bins_folder
-            ch_bins_count = BINNER.out.bins_count
-            ch_qs_quality_report = BINNER.out.qs_quality_report
-            ch_bins_info = BINNER.out.bins_info 
-            ch_bins_rename_map = BINNER.out.bins_rename_map
-            ch_bins_final_genomes = BINNER.out.final_genomes
-            ch_sample_bin_map = BINNER.out.sample_bin_map
+            // PRODIGAL (ch_contig)
 
-            //bin taxonomy
-            ch_gtdb_summary = "N"
-            ch_bin_QS_taxonomy = Channel.empty()
-            if(params.bin_taxonomy){
-                BINTAXONOMY(ch_bins_folder, ch_bins_rename_map, ch_qs_quality_report, ch_sample_bin_map)
-                ch_gtdb_summary = BINTAXONOMY.out.gtdb_summary.map{
-                    def summary = file(it)
-                    return "${summary.parent}/${summary.name}";
-                }
-                ch_report_input = ch_report_input.mix(BINTAXONOMY.out.gtdb_report) 
-                ch_gtdb_result = BINTAXONOMY.out.gtdb_summary
-                ch_bin_QS_taxonomy = BINTAXONOMY.out.bin_QS_taxonomy
+            def require_prodigal = true
+            if(params.HQ_unique_bins || params.rawbin_info){
+                require_prodigal = false
             }
 
-            //bin gene function
             if(params.bin_function){
-                
                 //Check Input Parameters.
                 extraParamsList = [ params.gene_info, params.cdhit_clstr, params.emapper_annotation ]
                 extra_flag = checkEssentialParams(extraParamsList)
                 
                 //When the required configuration files (three) exist, only execute prodigal; otherwise, execute the GENESET submodule.
                 if(extra_flag){
+                    //No bins available then use protein for binning.
+                    if(require_prodigal && !params.prodigal_output){ exit 1, "Error: the parameter --prodigal_output is required !"}
                     ch_gene_info = params2Channel(params.gene_info)
                     ch_cdhit_clstr = params2Channel(params.cdhit_clstr)
                     ch_annotation = params2Channel(params.emapper_annotation)
                     ch_vfdb_anno = params2Channel(params.vfdb_annotation)
                     ch_card_anno = params2Channel(params.card_annotation)
                 }else{
+                    
+                    if(params.HQ_unique_bins || params.rawbin_info){
+                        if(!params.prodigal_output){ exit 1, "Error: the parameter --prodigal_output is required !"}
+                    }
+
+                    require_prodigal = false
                     GENESET(sample_number, ch_contig, ch_clean_reads, ch_input)
                     ch_prodigal_faa = GENESET.out.prodigal_faa
                     ch_cdhit_clstr = GENESET.out.clstr
@@ -238,67 +233,26 @@ workflow METASSEMBLY {
                     ch_geneset_profile = GENESET.out.ch_profile
                 
                 }
-
-                BINFUNCTION(ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_bins_final_genomes,ch_vfdb_anno,ch_card_anno)
-                ch_report_input = ch_report_input.mix(BINFUNCTION.out.binFunction_geneID_report)
-
             }
 
-            //Bin Abundance Calculation.
-            if(params.bin_abundance_calculation){
-                ch_method4coverm = params.method4coverm
-                if(params.bin_reassembly){
-                    if(!params.method4coverm.contains("relative_abundance")){
-                        ch_method4coverm = ch_method4coverm.concat(",relative_abundance")
-                    }
-                    if(!params.method4coverm.contains("trimmed_mean")){
-                        ch_method4coverm = ch_method4coverm.concat(",trimmed_mean")
-                    }
-                    if(!params.method4coverm.contains("count")){
-                        ch_method4coverm = ch_method4coverm.concat(",count")
-                    }
-                }
-                BINABUNDANCE(sample_number, ch_clean_reads, ch_bins_final_genomes, ch_bins_folder, ch_method4coverm, ch_input)
-                ch_report_input = ch_report_input.mix(BINABUNDANCE.out.binAundance_report) 
-                ch_bowtie2_log = ch_bowtie2_log.mix(BINABUNDANCE.out.bin_bowtie2)
-                ch_depth_list = BINABUNDANCE.out.depth_list
-                ch_bins_rel_abun = BINABUNDANCE.out.totalRelativeAbun
-                ch_bins_count_abun = BINABUNDANCE.out.totalCountAbun
-                ch_bins_mean_abun = BINABUNDANCE.out.totalMeanAbun
+            if(require_prodigal){
+                GENEPREDICTION(sample_number, ch_contig)
+                ch_prodigal_faa = GENEPREDICTION.out.prodigal_faa
+                ch_report_input = ch_report_input.mix(GENEPREDICTION.out.prodigal_log)
             }
 
-            // Bin Taxonomy Classification.
-            ch_bins_taxon = Channel.empty()
-            MERGEBINABUNTAXON(ch_bin_QS_taxonomy, ch_bins_rel_abun)
-            ch_bins_taxon = MERGEBINABUNTAXON.out.taxon
-
-
-            //Bin Refinement and Reassembly.
-            ch_filter_bin  = Channel.empty()
-            ch_filter_bin_info = Channel.empty()
-            ch_filter_bin_mash_fq = Channel.empty()
-
-            //Only supports PE data.
-            if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
-                
-                //bin map
-                BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
-                ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
-                ch_binsample = BINMAP.out.binsample
-
-                // bin refine
-                if(params.bin_refine){
-                    BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
-                    ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
-                }
-
-                //bin reassembly
-                if(params.bin_reassembly){
-                    BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
-                    ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
-                }
-
-            }
+            BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
+            ch_bins_list = BINNING.out.bins_list
+            ch_bins_folder = BINNING.out.bins_folder
+            ch_bins_count = BINNING.out.bins_count
+            ch_qs_quality_report = BINNING.out.qs_quality_report
+            ch_bins_info = BINNING.out.bins_info
+            ch_bins_rename_map = BINNING.out.bins_rename_map
+            ch_gtdb_result = BINNING.out.gtdb_result
+            ch_depth_list = BINNING.out.depth_list
+            ch_bins_rel_abun = BINNING.out.bins_rel_abun
+            ch_report_input = ch_report_input.mix(BINNING.out.binning_report)
+            ch_bowtie2_log = ch_bowtie2_log.mix(BINNING.out.binning_bowtie2)
 
             break;
 
@@ -337,93 +291,18 @@ workflow METASSEMBLY {
             
             if(!params.skip_binning){
                 //Bining
-                BINNER(sample_number, ch_contig, ch_clean_reads, ch_prodigal_faa)
-                ch_report_input = ch_report_input.mix(BINNER.out.binner_report)
-                ch_bowtie2_log = ch_bowtie2_log.mix(BINNER.out.contig_bowtie2)
-                ch_bins_list = BINNER.out.bins_list
-                ch_bins_folder = BINNER.out.bins_folder
-                ch_bins_count = BINNER.out.bins_count
-                ch_qs_quality_report = BINNER.out.qs_quality_report
-                ch_bins_info = BINNER.out.bins_info 
-                ch_bins_rename_map = BINNER.out.bins_rename_map
-                ch_bins_final_genomes = BINNER.out.final_genomes
-                ch_sample_bin_map = BINNER.out.sample_bin_map
-
-                //bin taxonomy
-                ch_gtdb_summary = "N"
-                ch_bin_QS_taxonomy = Channel.empty()
-                if(params.bin_taxonomy){
-                    BINTAXONOMY(ch_bins_folder, ch_bins_rename_map, ch_qs_quality_report, ch_sample_bin_map)
-                    ch_gtdb_summary = BINTAXONOMY.out.gtdb_summary.map{
-                        def summary = file(it)
-                        return "${summary.parent}/${summary.name}";
-                    }
-                    ch_report_input = ch_report_input.mix(BINTAXONOMY.out.gtdb_report) 
-                    ch_gtdb_result = BINTAXONOMY.out.gtdb_summary
-                    ch_bin_QS_taxonomy = BINTAXONOMY.out.bin_QS_taxonomy
-                }
-
-                //bin gene function
-                if(params.bin_function){
-                    BINFUNCTION(ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_bins_final_genomes, ch_vfdb_anno, ch_card_anno)
-                    ch_report_input = ch_report_input.mix(BINFUNCTION.out.binFunction_geneID_report)
-                }
-
-                //Bin Abundance Calculation.
-                if(params.bin_abundance_calculation){
-                    ch_method4coverm = params.method4coverm
-                    if(params.bin_reassembly){
-                        if(!params.method4coverm.contains("relative_abundance")){
-                            ch_method4coverm = ch_method4coverm.concat(",relative_abundance")
-                        }
-                        if(!params.method4coverm.contains("trimmed_mean")){
-                            ch_method4coverm = ch_method4coverm.concat(",trimmed_mean")
-                        }
-                        if(!params.method4coverm.contains("count")){
-                            ch_method4coverm = ch_method4coverm.concat(",count")
-                        }
-                    }
-                    BINABUNDANCE(sample_number, ch_clean_reads, ch_bins_final_genomes, ch_bins_folder, ch_method4coverm, ch_input)
-                    ch_report_input = ch_report_input.mix(BINABUNDANCE.out.binAundance_report) 
-                    ch_bowtie2_log = ch_bowtie2_log.mix(BINABUNDANCE.out.bin_bowtie2)
-                    ch_depth_list = BINABUNDANCE.out.depth_list
-                    ch_bins_rel_abun = BINABUNDANCE.out.totalRelativeAbun
-                    ch_bins_count_abun = BINABUNDANCE.out.totalCountAbun
-                    ch_bins_mean_abun = BINABUNDANCE.out.totalMeanAbun
-                }
-                
-                // Bin Taxonomy Classification.
-                ch_bins_taxon = Channel.empty()
-                MERGEBINABUNTAXON(ch_bin_QS_taxonomy, ch_bins_rel_abun)
-                ch_bins_taxon = MERGEBINABUNTAXON.out.taxon
-                
-                //Bin Refinement and Reassembly.
-                ch_filter_bin  = Channel.empty()
-                ch_filter_bin_info = Channel.empty()
-                ch_filter_bin_mash_fq = Channel.empty()
-
-                //Only supports PE data.
-                if( !params.single_end && (params.bin_refine || params.bin_reassembly) ){
-                    
-                    //bin map
-                    BINMAP(ch_clean_reads, ch_bin_QS_taxonomy, ch_bins_count_abun, ch_bins_mean_abun, ch_bins_final_genomes)
-                    ch_pick_info = BINMAP.out.ch_bin_sample_ref_reads_binfa
-                    ch_binsample = BINMAP.out.binsample
-
-                    // bin refine
-                    if(params.bin_refine){
-                        BINREFINE(ch_clean_reads, ch_contig, ch_filter_bin, ch_filter_bin_info, ch_filter_bin_mash_fq)
-                        ch_filter_bin_mash_fq = BINREFINE.out.after_refine_bin_mash_fq
-                    }
-
-                    //bin reassembly
-                    if(params.bin_reassembly){
-                        BINREASSEMBLY(ch_pick_info, ch_binsample, ch_clean_reads, ch_bin_QS_taxonomy)
-                        ch_report_input = ch_report_input.mix(BINREASSEMBLY.out.rebin_report)
-                    }
-
-                }
-
+                BINNING(sample_number, ch_contig, ch_clean_reads, ch_input, ch_prodigal_faa, ch_gene_info, ch_cdhit_clstr, ch_annotation, ch_vfdb_anno, ch_card_anno)
+                ch_bins_list = BINNING.out.bins_list
+                ch_bins_folder = BINNING.out.bins_folder
+                ch_bins_count = BINNING.out.bins_count
+                ch_qs_quality_report = BINNING.out.qs_quality_report
+                ch_bins_info = BINNING.out.bins_info
+                ch_bins_rename_map = BINNING.out.bins_rename_map
+                ch_gtdb_result = BINNING.out.gtdb_result
+                ch_depth_list = BINNING.out.depth_list
+                ch_bins_rel_abun = BINNING.out.bins_rel_abun
+                ch_report_input = ch_report_input.mix(BINNING.out.binning_report)
+                ch_bowtie2_log = ch_bowtie2_log.mix(BINNING.out.binning_bowtie2)
             }
             
             break;

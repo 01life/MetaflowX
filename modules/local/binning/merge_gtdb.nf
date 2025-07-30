@@ -40,5 +40,15 @@ process MERGEGTDB {
     cp bin_QS_taxonomy_summary.xls gtdb_report/bintable.xls
 
     """
+    
+    stub:
+    """
+    touch gtdbtk.summary.tsv
+    touch gtdb2treemap.txt
+    mkdir gtdb_report
+    touch gtdb_report/gtdb.txt
+    touch bin_QS_taxonomy_summary.xls
+    touch gtdb_report/bintable.xls
+    """
 
 }

@@ -26,4 +26,9 @@ process MERGEMPAEXTRAABUN {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_MetaPhlAn_${method}.xls
+    """
+
 }

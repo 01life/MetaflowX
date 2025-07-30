@@ -49,7 +49,17 @@ workflow BESTBINNER {
 
     if(flag){ exit 1, "Invalid input: please check if the required parameters contig2bin, protein_list, and contig_list are configured, or if the configured files exist!" }
     
-    BEST_BINNER_SELECTOR (params.contig2bin, params.protein_list, params.contig_list )
+    ch_contig2bin = Channel.from(file(params.contig2bin))
+    
+    ch_protein = Channel.from(file(params.protein_list))
+        .splitCsv ( header:false, sep:',' )
+        .map { it -> [it[0], it[1]]}
+    
+    ch_contig = Channel.fromPath(file(params.contig_list))
+        .splitCsv ( header:false, sep:',' )
+        .map { it -> [it[0], it[1]]}
+
+    BEST_BINNER_SELECTOR (ch_contig2bin, ch_protein, ch_contig)
 
 }
 

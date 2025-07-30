@@ -35,4 +35,12 @@ process VFDB {
     #echo VFDB \$PWD/${params.pipeline_prefix}_geneset_function_VFDB_abundance.xls > vfdb.report.list
 
     """
+
+    stub:
+    """
+    touch ${params.pipeline_prefix}_geneset_function_VFDB_annotation.xls
+    mkdir vfdb_report
+    touch vfdb_report/VFDB.xls
+    touch vfdb.report.list
+    """
 }

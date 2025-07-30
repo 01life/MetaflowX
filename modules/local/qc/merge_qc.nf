@@ -35,4 +35,14 @@ process MERGEQC {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_all_sample_reads_stat.xls
+    mkdir qc_report
+    echo -e "sampleID\tclean_reads_path" > clean.reads.path.list
+    touch clean.reads.path.list
+    echo -e "sampleID\tclean_reads_path" > qc_report/readstat.xls
+    echo -e "sampleID\tclean_reads_path" >> qc_report/readstat.xls
+    """
+
 }

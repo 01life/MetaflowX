@@ -18,5 +18,9 @@ process PIPELINEWARNING {
     cat ${warning_log} > ${params.pipeline_prefix}_${step_name}_warning_log_\$timestamp.txt
 
     """
+    stub:
+    """
+    touch "${params.pipeline_prefix}_${step_name}_warning_log.txt"
+    """
 
 }

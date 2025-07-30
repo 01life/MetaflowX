@@ -10,6 +10,7 @@ process METASPADESM64 {
 
     output:
     tuple val(id),path("${id}_contigs.fa"), emit: "contigs", optional: true
+    tuple val(id),path("${id}_scaffolds.fa"), emit: "scaffolds", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,7 +30,14 @@ process METASPADESM64 {
     
         seqtk rename ${id}/seq.contigs.fa "${id}|" > ${id}_contigs.fa
 
-        rm -rf ${id} 
+        if [ -e "${id}/scaffolds.fasta" ]; then
+
+            seqtk seq -L ${params.min_contig_len} ${id}/scaffolds.fasta > ${id}/seq.scaffolds.fasta
+            seqtk rename ${id}/seq.scaffolds.fasta "${id}|" > ${id}_scaffolds.fa
+        
+        fi
+
+        rm -rf ${id}
 
     fi
 
@@ -43,7 +51,7 @@ process METASPADESM64 {
 
     stub:
     """
-    touch ${id}_contigs.fa
-
+    echo ">contig1\nAAAAAAAATTTTTTTGGGGCCCC\n" > ${id}_contigs.fa
+    echo ">scaffold1\nAAAAAAAATTTTTTTGGGGCCCC\n" > ${id}_scaffolds.fa
     """
 }

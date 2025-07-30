@@ -18,5 +18,9 @@ process PIPELINEEXIT {
     exit 1
 
     """
+    stub:
+    """
+    exit 0
+    """
 
 }

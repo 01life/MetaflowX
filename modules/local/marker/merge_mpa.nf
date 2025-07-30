@@ -19,7 +19,7 @@ process MERGEMPA {
     script:
     """
 
-    merge_metaphlan_tables.py ${abundance} > abundance_table.txt
+    merge_metaphlan_tables.py ${abundance} | metaphlan_fill_missing_species.pl - > abundance_table.txt
 
     col_reorder.pl abundance_table.txt 1 2 <(sed 's/,/\\t/g' ${samplesheet}) 1 1 1 ${params.pipeline_prefix}_MetaPhlAn_abundance_table.xls
 
@@ -44,4 +44,11 @@ process MERGEMPA {
 
     """
 
+    stub:
+    """
+    touch ${params.pipeline_prefix}_MetaPhlAn_abundance_table.xls
+    mkdir mpa_report    
+    echo -e "sampleID\tphylum\tclass\torder\tfamily\tgenus\tspecies" >> ${params.pipeline_prefix}_MetaPhlAn_abundance_table.xls
+    touch mpa.sunburst.txt
+    """
 }

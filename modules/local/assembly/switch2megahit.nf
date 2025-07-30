@@ -27,5 +27,10 @@ process SWITCH2MEGAHIT {
     ASSEMBLYLOG
 
     """
+    
+    stub:
+    """
+    touch ${id}_assembly_warning.log
+    """
 
 }

@@ -42,7 +42,7 @@ def move_files_to_subfolders(base_dir, num):
 
     # Create and distribute files among subfolders
     for i in range(num_files):
-        new_folder = os.path.join(base_dir, f'floder{i + 1}')
+        new_folder = os.path.join(base_dir, f'folder{i + 1}')
 
         if os.path.exists(new_folder):
             print(f"'{new_folder}' already exists, exiting to avoid conflicts.")

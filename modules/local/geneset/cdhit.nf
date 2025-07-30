@@ -58,5 +58,16 @@ process CDHIT {
     END_VERSIONS
 
     """
+    stub:
+    """
+    mkdir split
+    touch split/gene1.fa
+    touch ${params.pipeline_prefix}_geneset_protein.fa
+    touch ${params.pipeline_prefix}_geneset_gene.fa
+    touch ${params.pipeline_prefix}_geneset_gene_info.xls
+    touch ${params.pipeline_prefix}_geneset_cdhit_clstr.txt
+    touch ${params.pipeline_prefix}_geneset_gene_length.xls
+    mkdir geneset_Gene_report
+    """
 
 }

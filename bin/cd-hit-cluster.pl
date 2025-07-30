@@ -13,13 +13,14 @@
 
 use strict;
 use File::Basename;
+use FindBin qw($RealBin);
 use Getopt::Long;
 no strict "refs";
 
 my $script_name = $0;
 !system("which cd-hit > /dev/null") or die $!;
 
-my $in;
+my @in;
 my $out;
 my $print_help;
 my $para              = "";
@@ -36,7 +37,7 @@ my $prog_options      = "";
 my %stable_files = ();
 
 GetOptions("help|h" => \$print_help,
-           "i=s" => \$in,
+           "i=s{1,}" => \@in,
            "o=s" => \$out,
            "B=s" => \$para,
            "L=s" => \$local_cpu,
@@ -49,15 +50,18 @@ GetOptions("help|h" => \$print_help,
            "prog_options=s" => \$prog_options);
 
 !$print_help || print_usage();
-($in and $out) || print_usage();
+($#in > -1 and $out) || print_usage();
+
+die("exits $out") if -s $out;
 
 my $pwd            = `pwd`; chop($pwd);
-my $work_dir       = "$out.cd-hit-para-tmp";
+my $work_dir       = "$out.tmp";
 my $restart_file   = "$out.restart";
-my $indiv          = "$work_dir/$in.div";
+my $div            = "$work_dir/div";
 my @commands       = ();
 my @command_status = ();
 my $command_no     = 0;
+my $in = join(" ", @in);
 my $cmd;
 my ($i, $j, $k, $i1, $j1, $k1);
 
@@ -86,24 +90,14 @@ if ($local_cpu) {
 }
 die "no host" unless $host_no;
 
+`mkdir -p $work_dir`;
+
 if (-e $restart_in) {
   read_restart();
 }
 else {
-  $cmd = `mkdir -p $work_dir`;
-  assign_commands();
+  assign_commands(0);
   write_restart();
-}
-
-#dbdiv run on master node?
-if ($command_status[0] eq "wait") {
-  $cmd = `$commands[0]`;
-  $command_status[0] = "done";
-  write_restart();
-  for ($i=0; $i<$seg_no; $i++) {
-    my $idb    = "$indiv-$i";
-    $stable_files{$idb} = 1;
-  }
 }
 
 #main runing loop
@@ -113,16 +107,33 @@ while(1) {
   #check whether all jobs are done or not
   my $finish_flag = 1;
   my $status_change = 0;
-  for ($i=1; $i<$command_no; $i++) {
+  for ($i=0; $i<$command_no; $i++) {
     next if ($command_status[$i] eq "done");
     $finish_flag = 0;
     my $tcmd = $commands[$i];
     my $output = "";
-    if ($tcmd =~ / -o\s+(\S+)/) {
-      $output = $1;
-      if ((-s $output) or (-s "$output.clstr") or (-s "$output.done")) {
+    if ($i eq 0) {
+      $output = $div;
+      if (-e "$output.done") {
         $command_status[$i] = "done";
         $status_change = 1;
+        chomp($seg_no = `ls $output/* | wc -l`);
+        for (my $ii=0; $ii<$seg_no; $ii++) {
+          `touch $output/div-$ii.done`;
+        }
+        assign_commands(1);
+      }
+      if (-e "$output.error") {
+        die("error $output.sh !");
+      }
+    } elsif ($tcmd =~ / -o\s+(\S+)/) {
+      $output = $1;
+      if ((-e $output) or (-e "$output.clstr") or (-e "$output.done")) {
+        $command_status[$i] = "done";
+        $status_change = 1;
+      }
+      if (-e "$output.error") {
+        die("error $output.sh !");
       }
     }
   }
@@ -135,19 +146,22 @@ while(1) {
   last if $finish_flag;
 
   my $job_sent = 0;
-  for ($i=1; $i<$command_no; $i++) {
+  for ($i=0; $i<$command_no; $i++) {
     next if ($command_status[$i] eq "done");
     next if ($command_status[$i] eq "run");
     my $tcmd = $commands[$i];
     my $in1 = "";
     my $in2 = "";
-    my $out_done = "";
+    my $output = "";
     if ($tcmd =~ / -i\s+(\S+)/ ) {$in1 = $1;}
     if ($tcmd =~ / -i2\s+(\S+)/) {$in2 = $1;}
-    if ($tcmd =~ / -o\s+(\S+)/ ) {$out_done = "$1.done";}
+    if ($tcmd =~ / -o\s+(\S+)/ ) {$output = $1;}
     my $input_flag = 0;
 
-    if (($in1 =~ /\S/) and ($in2 =~ /\S/)) {
+    if ($i eq 0) {
+      $input_flag = 1;
+      $output = "$work_dir/div";
+    } elsif (($in1 =~ /\S/) and ($in2 =~ /\S/)) {
       $input_flag = 1 if ((-e $in1) and (-e $in2));
     }
     elsif ($in1 =~ /\S/) {
@@ -159,49 +173,45 @@ while(1) {
     next unless $input_flag;
 
     #now input files are ready, wait
-    wait_stable_file($in1);
+    wait_stable_file($in1) if ($in1 =~ /\S/);
     wait_stable_file($in2) if ($in2 =~ /\S/);
 
     my $thost_idx = wait_for_available_host();
     my $thost     = $hosts[$thost_idx];
-    my $tsh   = "$work_dir/$out.$$.$thost_idx.sh";
+    my $job   = basename($output);
+    my $tsh   = "$work_dir/$job.sh";
     my $tlock = "$work_dir/$out.$$.$thost_idx.lock";
-    my $trm   = "";
-       $trm   = "rm -f $in2" if ($in2 =~ /\S/);
     open(TSH, "> $tsh") || die;
     $cmd = `date > $tlock`;
-    print TSH <<EOD;
-date > $tlock
-$tcmd
-$trm
-rm -f $tlock
-date > $out_done
-EOD
+    print TSH "date > $tlock\n";
+    print TSH "( $tcmd && touch $output.done ) || touch $output.error\n";
+    print TSH "rm -f $tlock\n";
     close(TSH);
     if ($local_cpu) {
       $cmd = `sh $tsh  >/dev/null 2>&1 &`;
       $command_status[$i] = "run";
-      print "run at $thost $tcmd\n";
+      print "run at $thost $tsh\n";
     }
     elsif ($queue) {
-      my $t = "para-$thost_idx";
+      my $t = "cd-hit-$job";
+      my $dt = "$work_dir/$t";
       if ($queue_type eq "PBS") {
-        open QUEUE, ">$t.sh" or die $!;
+        open QUEUE, ">$dt.sh" or die $!;
         print QUEUE "cd $pwd\nsh $tsh\n";
         close QUEUE;
-        `qsub $queue_options -N $t -o $t.log -e $t.err $t.sh`;
+        `qsub $queue_options -N $t -o $dt.log -e $dt.err $dt.sh`;
       }
       elsif ($queue_type eq "SGE") {
-        open QUEUE, ">$t.sh" or die $!;
+        open QUEUE, ">$dt.sh" or die $!;
         print QUEUE "#!/bin/sh\n#$ -S /bin/bash\n#$ -v PATH\ncd $pwd\nsh $tsh\n";
         close QUEUE;
-        `qsub $queue_options -N $t $t.sh`;
+        `qsub $queue_options -N $t $dt.sh`;
       }
       elsif ($queue_type eq "slurm") {
-        open QUEUE, ">$t.sh" or die $!;
+        open QUEUE, ">$dt.sh" or die $!;
         print QUEUE "#!/bin/bash\ncd $pwd\nsh $tsh\n";
         close QUEUE;
-        `sbatch $queue_options -J $t -e $t.err -o $t.log $t.sh`;
+        `sbatch $queue_options -J $t -e $dt.err -o $dt.log $dt.sh`;
       } 
       else {
         die "not correct queue!";
@@ -211,11 +221,11 @@ EOD
     else {
       $cmd = `ssh -xqf $thost 'cd $pwd; sh $tsh  >/dev/null 2>&1 &'`;
       $command_status[$i] = "run";
-      print "run at $thost $tcmd\n";
+      print "run at $thost $tsh\n";
     }
     $sleep_time = 1;
-    $job_sent = 1;
-    last;
+    ++$job_sent;
+    last if $job_sent eq $host_no;
   }
 
   if ((not $job_sent) and ($sleep_time < 60)) {
@@ -231,25 +241,26 @@ if (not -s $out_clstr) {
 
   my @reps = ();
   for ($i=0; $i<$seg_no; $i++) {
-    my $master_clstr = "$indiv-$i-o.clstr";
+    my $master_clstr = "$work_dir/$i-o.clstr";
 #    die "No file $master_clstr\n" unless (-s $master_clstr);
     next unless (-s $master_clstr);
 
-    my $this_rep = "$indiv-$i-o";
+    my $this_rep = "$work_dir/$i-o";
     die "No rep $this_rep\n" unless (-e $this_rep);
     push(@reps, $this_rep);
 
     my @slave_clstr = ();
     for ($j=$i+1; $j<$seg_no; $j++) {
-      my $tclstr = "$indiv-$j.vs.$i.clstr";
+      my $tclstr = "$work_dir/$j.vs.$i.clstr";
       if (-s $tclstr) {push(@slave_clstr,$tclstr); }
       else {die "No file $tclstr\n";}
     }
 
     if (@slave_clstr) {
       my $tclstrs = join(" ", @slave_clstr);
-      print  "clstr_merge.pl $master_clstr $tclstrs >> $out_clstr\n";
-      $cmd = `clstr_merge.pl $master_clstr $tclstrs >> $out_clstr`;
+      $cmd = "clstr_merge.pl $master_clstr $tclstrs >> $out_clstr";
+      print  "$cmd\n";
+      !system($cmd) or die $!;
     }
     else { #this is the last piece
       print  "cat $master_clstr >> $out_clstr";
@@ -295,7 +306,9 @@ if (1) {
   }
   print "Total CPU time: $cpu\n";
 }
-
+if (-s $out and -s $out_clstr) {
+  `rm -rf $out.tmp $out.restart`;
+}
 
 sub wait_for_available_host {
   my ($i, $j, $k);
@@ -349,29 +362,37 @@ sub assign_commands {
   my ($i, $j, $k);
   my $cmd;
   my ($idb, $idbo, $jdb, $idbout, $idblog);
+  my $type = shift;
 
-  $command_no = 0;
-  $cmd = "cd-hit-div -i $in -o $indiv -div $seg_no";
-  push(@commands,         $cmd);
-  push(@command_status, "wait");
-  $command_no++;
+  if ($type eq 0) {
+    $command_no = 0;
+    my $cpu = 1;
+    if ($prog_options =~ /-T (\d+)/) {
+        $cpu = $1;
+    }
+    $cmd = "perl $RealBin/psort2div.pl -input $in -output $div -number $seg_no -preprocessed -cpu $cpu";
+    push(@commands,       $cmd);
+    push(@command_status, "wait");
+    $command_no++;
+    return 0;
+  }
 
   for ($i=0; $i<$seg_no; $i++) {
-    $idb    = "$indiv-$i";
-    $idblog = "$indiv-$i.log";
+    $idb    = "$div/div-$i";
+    $idblog = "$work_dir/$i.log";
     #compare to previous segs
     for ($j=0; $j<$i; $j++) {
-      $jdb = "$indiv-$j-o";
-      $idbo = "$indiv-$i.vs.$j";
-      $cmd = "$prog-2d -i $jdb -i2 $idb -o $idbo $prog_options >> $idblog";
-      push(@commands,         $cmd);
+      $jdb = "$work_dir/$j-o";
+      $idbo = "$work_dir/$i.vs.$j";
+      $cmd = "$prog-2d -i $jdb -i2 $idb -o $idbo $prog_options >> $idblog && rm -f $idb";
+      push(@commands,       $cmd);
       push(@command_status, "wait");
       $command_no++;
       $idb = $idbo;
     }
     #self comparing
-    $cmd = "$prog -i $idb -o $indiv-$i-o $prog_options >> $idblog";
-    push(@commands,         $cmd);
+    $cmd = "$prog -i $idb -o $work_dir/$i-o $prog_options >> $idblog && rm -f $idb";
+    push(@commands,       $cmd);
     push(@command_status, "wait");
     $command_no++;
   }

@@ -41,5 +41,9 @@ process BRASEMIBIN2 {
     END_VERSIONS
 
     """
-
+    stub:
+    """
+    touch ${id}_${sample}_semibin2.contigs2bin.tsv
+    mkdir -p ${id}/output_bins/
+    """
 }

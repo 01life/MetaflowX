@@ -28,4 +28,9 @@ process MPAEXTRAABUN {
         
     """
 
+    stub:
+    """
+    touch ${id}_${method}.xls    
+    """
+
 }

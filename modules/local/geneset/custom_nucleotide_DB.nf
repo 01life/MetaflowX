@@ -43,4 +43,15 @@ process CUSTOMNTDB {
     END_VERSIONS
 
     """
+
+    stub:
+    """
+    mkdir customnt_report
+    touch ${params.pipeline_prefix}_geneset_function_${params.ntDB_name}_NO_RESULT_abundance.xls
+    touch ${params.pipeline_prefix}_geneset_function_${params.ntDB_name}_NO_RESULT_annotation.xls
+    touch customnt.report.list
+    touch ${params.pipeline_prefix}_geneset_function_${params.ntDB_name}_annotation.xls
+    touch ${params.pipeline_prefix}_geneset_function_${params.ntDB_name}_abundance.xls
+    """
+    
 }

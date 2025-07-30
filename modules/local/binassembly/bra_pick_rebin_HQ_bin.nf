@@ -20,11 +20,15 @@ process PICKREBIN {
     script:
    
     """
-
     bra_pick_HQ_rebinning_bin_dastools.py --rebin_checkm ${checkm2_quality_report}  --das_tools_result ${das_bins} --org_checkm  ${bin_QS_taxonomy} --bin_id ${id} --mergeQS ${id}_ReAss_ReBin_checkm2.txt  --pick_checkm ${id}_ReBin_checkm2.txt
-
-    echo "Done!!!!"
-
-
     """
+
+    stub:
+    """
+    touch ReAss_ReBin_0.fa
+    touch ${id}_ReAss_ReBin_checkm2.txt
+    touch ${id}_ReBin_checkm2.txt
+    touch ${id}_ReAss_ReBin_checkm2.txt_improve_info.txt
+    """
+
 }

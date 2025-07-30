@@ -29,4 +29,11 @@ process FASTQSTAT {
     
     """
     
+    
+    stub:
+    """
+    echo "id,stub test" > ${id}_reads_stat.txt
+    echo "${id},stub test" >> ${id}_reads_stat.txt
+    touch ${id}_clean_reads.txt
+    """
 }

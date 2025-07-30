@@ -31,4 +31,11 @@ process CONTIGSTAT {
 
     """
 
+    stub:
+    """
+    touch contig.path.list
+    mkdir contig_report
+    touch all_contig_info.txt
+    """
+    
 }

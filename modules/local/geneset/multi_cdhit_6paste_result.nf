@@ -37,5 +37,21 @@ process PASTERESULT {
     cp \$prefix\\_geneset_gene_length.xls \$prefix\\_geneset_Gene_report/genesetLenStat.xls
     
     """
+    stub:
+    """
+    prefix='multi_cdhit'
+
+    touch ${params.pipeline_prefix}_geneset_protein.fa
+    touch ${params.pipeline_prefix}_geneset_gene.fa
+    touch ${params.pipeline_prefix}_geneset_gene_info.xls
+    touch ${params.pipeline_prefix}_geneset_cdhit_clstr.txt
+    mkdir -p multi_cdhit_split
+    touch multi_cdhit_split/chun1.fa
+    touch multi_cdhit_split/chun2.fa
+    mkdir multi_cdhit_geneset_Gene_report
+    touch multi_cdhit_geneset_Gene_report/genesetLenStat.xls
+    touch multi_cdhit_geneset_Gene_report/genesetGeneInfo.xls
+
+    """
 
 }

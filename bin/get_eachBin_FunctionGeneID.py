@@ -14,6 +14,7 @@ def ParsReceiver():
 
     V1	2023-03-21
     V2  2024-09-30 using os
+    V3  2025-02-26 change handel geneIDinfo
 ------------------'''
 )
     ars = p.add_argument
@@ -61,7 +62,7 @@ def getNewID(idF):
     with open(idF,'r') as idFile:
         for ii in idFile:
             iline = ii.strip().split('\t')
-            newIDDir[iline[-1]] =  iline[0]
+            newIDDir[iline[0]] =  iline[1]
 
 
 #dir[unique]=[ko]
@@ -176,11 +177,11 @@ def main():
     
     needFunction={6:"cog_catF",9:"GOs",10:"EC",11:"KEGG_ko",12:"KEGG_Pathway",13:"KEGG_Module", 14:"KEGG_Reaction",18:"CAZy",20:"PFAMs"}
 
-    commond1 = 'cut -f 2,3 ' + pars['geneIDinfo'] + '> '+ pars['geneIDinfo']+'.tmp'
-    os.system(commond1)
+    # commond1 = 'cut -f 2,3 ' + pars['geneIDinfo'] + '> '+ pars['geneIDinfo']+'.tmp'
+    # os.system(commond1)
 
     #1 get new old gene id pair
-    getNewID(pars['geneIDinfo']+'.tmp')
+    getNewID(pars['geneIDinfo'])
 
     #2 get gene cluster reprsent info
     geneClusterDir = getGeneCluster(pars['geneCdhitCluster'])

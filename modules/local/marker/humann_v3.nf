@@ -50,7 +50,8 @@ process HUMANNV3 {
     """
 
     mkdir ${id}
-    touch ${id}/${id}_genefamilies_relab.xls
+    echo "ID\tabundance" > ${id}/${id}_genefamilies_relab.xls
+    echo "${id}\t100" >> ${id}/${id}_genefamilies_relab.xls
     touch ${id}/${id}_ko_relab.xls
 
     """

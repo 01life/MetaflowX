@@ -13,7 +13,7 @@ process BOWTIE2BIN {
     tuple val(id),path("${id}_depth.xls"),emit:"binDepth"
     path("${id}_bin_bowtie2_log.txt"),emit:"bowtie2_log"
     path("${id}.sorted.bam"),emit:"sorted_bam"
-    path("${id}_depth.list"),emit:"depth_list"
+    path("${id}_depth.xls"),emit:"depth_list"
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,7 +30,7 @@ process BOWTIE2BIN {
     
     jgi_summarize_bam_contig_depths --outputDepth ${id}_depth.xls ${id}.sorted.bam
 
-    echo -e "${id}\t\$PWD/${id}_depth.xls" > ${id}_depth.list
+    #echo -e "${id}\t\$PWD/${id}_depth.xls" > ${id}_depth.list
 
     #Clean up intermediate files.
     #rm -rf *.sam *.bam
@@ -42,6 +42,14 @@ process BOWTIE2BIN {
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
     END_VERSIONS
 
+    """
+
+    stub:
+    """
+    touch ${id}_bin_bowtie2_log.txt
+    echo "${id} bam stub test" > ${id}.sorted.bam
+    touch ${id}_depth.xls
+    touch ${id}_depth.list
     """
 
 }

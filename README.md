@@ -15,22 +15,24 @@
 
 # MetaflowX User Manual
 
-**MetaflowX** is a Nextflow-based metagenomics analysis workflow that processes short-read sequences and/or assembled contigs to automatically generate taxonomic compositions, community functional profiles, non-redundant gene catalogs with functional annotations, and high-quality MAGs. This workflow is designed to simplify and accelerate metagenomic data analysis for researchers and bioinformaticians, offering a streamlined and scalable approach.
+**MetaflowX** is a scalable and modular metagenomics analysis pipeline powered by Nextflow. It supports both short-read and contig-based inputs and automates key analyses such as taxonomic profiling, functional annotation, gene catalog construction, and MAG recovery.
 
 <p align="center">
     <img src="docs/images/workflow.png" alt="nf-core-metassembly workflow overview" width="100%"  height="auto">
 </p>
 
+
 ## Contents
 
 - [1. Pipeline Summary](#1-pipeline-summary)
-- [2. Getting Startedy](#2-getting-started)
-  - [2.1 Prerequisites](#21-prerequisites)
-  - [2.2 Installation](#22-installation)
-- [3. How to run](#3-how-to-run)
-  - [3.1 Basic usage](#31-basic-usage)
-  - [3.2 Demo runs](#32-demo-runs)
-  - [3.3 Advance usage](#33-advance-usage)
+- [2. Getting Started](#2-getting-started)
+  - [2.1 Quick Start](#21-quick-start)
+  - [2.2 Prerequisites](#22-prerequisites)
+  - [2.3 Installation](#23-installation)
+  - [2.4 Environment & Database Check](#24-environment--database-check)
+- [3. How to Run](#3-how-to-run)
+  - [3.1 Basic Usage](#31-basic-usage)
+  - [3.2 Advanced Usage](#32-advanced-usage)
 - [4. Output](#4-output)
 - [5. Support](#5-support)
 - [6. Credits](#6-credits)
@@ -38,37 +40,109 @@
 
 
 
+
 ## 1. Pipeline Summary
 
-1. Quality control ( [`fastp`](https://github.com/OpenGene/fastp) [`Trimmomatic`](https://github.com/usadellab/Trimmomatic) [`Bowtie2`](https://github.com/BenLangmead/bowtie2))
-2. Contig assembly ( [`SPAdes`](https://github.com/ablab/spades) [`MEGAHIT`](https://github.com/voutcn/megahit) )
-3. Microbial taxonomy and metabolic function analysis ( [`MetaPhlAn`](https://github.com/biobakery/MetaPhlAn) [`HUMAnN`](https://github.com/biobakery/humann) [`Kraken2`](https://github.com/DerrickWood/kraken2) )
-4. Gene catalog construction ( [`Prodigal`](https://github.com/hyattpd/Prodigal) [`CD-HIT`](https://github.com/weizhongli/cdhit) [`eggNOG-mapper`](https://github.com/eggnogdb/eggnog-mapper) [`antiSMASH`](https://github.com/antismash/antismash) [`BiG-MAP`](https://github.com/medema-group/BiG-MAP) )
-5. Automated binning analysis ( [`MetaBAT2`](https://bitbucket.org/berkeleylab/metabat) [`CONCOCT`](https://github.com/BinPro/CONCOCT) [`SemiBin2`](https://github.com/BigDataBiology/SemiBin) [`MaxBin2`](https://sourceforge.net/projects/maxbin/) [`MetaBinner`](https://github.com/ziyewang/MetaBinner) [`COMEBin`](https://github.com/ziyewang/COMEBin) [`binny`](https://github.com/a-h-b/binny) [`DAS_Tool`](https://github.com/cmks/DAS_Tool) [`Checkm2`](https://github.com/chklovski/CheckM2) [`dRep`](https://github.com/MrOlm/drep) [`GTDB-Tk`](https://github.com/Ecogenomics/GTDBTk) [`CoverM`](https://github.com/wwood/CoverM) [`Deepurify`](https://github.com/ericcombiolab/Deepurify) [`COBRA`](https://github.com/linxingchen/cobra) )
-6. Report generation ( [`Jinja`](https://github.com/pallets/jinja) [`MultiQC`](https://github.com/MultiQC/MultiQC) )
+The MetaflowX pipeline consists of the following steps:
 
+1. **Quality control** ( [`fastp`](https://github.com/OpenGene/fastp) [`Trimmomatic`](https://github.com/usadellab/Trimmomatic) [`Bowtie2`](https://github.com/BenLangmead/bowtie2))
+2. **Contig assembly** ( [`SPAdes`](https://github.com/ablab/spades) [`MEGAHIT`](https://github.com/voutcn/megahit) )
+3. **Microbial taxonomy and metabolic function analysis** ( [`MetaPhlAn`](https://github.com/biobakery/MetaPhlAn) [`HUMAnN`](https://github.com/biobakery/humann) [`Kraken2`](https://github.com/DerrickWood/kraken2) )
+4. **Gene catalog construction** ( [`Prodigal`](https://github.com/hyattpd/Prodigal) [`CD-HIT`](https://github.com/weizhongli/cdhit) [`eggNOG-mapper`](https://github.com/eggnogdb/eggnog-mapper) [`antiSMASH`](https://github.com/antismash/antismash) [`BiG-MAP`](https://github.com/medema-group/BiG-MAP) )
+5. **MAG binning and evaluation** ( [`MetaBAT2`](https://bitbucket.org/berkeleylab/metabat) [`CONCOCT`](https://github.com/BinPro/CONCOCT) [`SemiBin2`](https://github.com/BigDataBiology/SemiBin) [`MaxBin2`](https://sourceforge.net/projects/maxbin/) [`MetaBinner`](https://github.com/ziyewang/MetaBinner) [`COMEBin`](https://github.com/ziyewang/COMEBin) [`binny`](https://github.com/a-h-b/binny) [`MetaDecoder`](https://github.com/liu-congcong/MetaDecoder) [`Vamb`](https://github.com/RasmussenLab/vamb) [`DAS_Tool`](https://github.com/cmks/DAS_Tool) [`MAGScoT`](https://github.com/ikmb/MAGScoT) [`Checkm2`](https://github.com/chklovski/CheckM2) [`dRep`](https://github.com/MrOlm/drep) [`Galah`](https://github.com/wwood/galah?tab=readme-ov-file#galah) [`GTDB-Tk`](https://github.com/Ecogenomics/GTDBTk) [`CoverM`](https://github.com/wwood/CoverM) [`Deepurify`](https://github.com/ericcombiolab/Deepurify) [`COBRA`](https://github.com/linxingchen/cobra) )
+6. **Report generation** ( [`Jinja`](https://github.com/pallets/jinja) [`MultiQC`](https://github.com/MultiQC/MultiQC) )
 
-For the details implementation of each module in the pipeline, please refer to the [module description](docs/modules.md).
-
+For module-level details, see [Module Description](docs/modules.md).
 
 ## 2. Getting Started
 
-### 2.1 Prerequisites
-To ensure smooth analysis with MetaflowX, we strongly recommend pre-building both the software components and the reference databases before starting your analysis.
+### 2.1 Quick Start
 
-- **Environment Setup**: Follow the [Environment Installation and Configuration](docs/dependencies.md) guide to create a Conda environment and manage dependencies.
-- **Database Setup**: Refer to the [Database Installation and Configuration](docs/database.md) guide for downloading and configuring required databases.
+If **Nextflow** is already installed, you can quickly validate MetaflowX using demo tests:
 
-> [!NOTE]
-> If you are new to Nextflow and nf-core, check the [Nextflow installation guide](https://nf-co.re/docs/usage/installation). Ensure your setup passes the `-profile test` before processing real data.
+1. Clone the repository:
 
-  
-### 2.2 Installation
+
+```bash
+git clone git@github.com:01life/MetaflowX.git
+```
+
+2. Run either of the following tests:
+
+#### 1️⃣ Test 1: Full pipeline dry run using `stub` mode (no Docker or Conda required)
+
+This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). It requires **only Nextflow**, no Docker or Conda.
+
+```bash
+nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1.out
+```
+
+#### 2️⃣ Test 2: Run a single module (`nf-core/fastp` only, requires **Docker**)
+
+This test runs the built-in `nf-core/fastp` module with a demo input. It requires **Docker**.
+
+```bash
+nextflow -bg run MetaflowX -profile test --outdir remote > remote.out
+```
+
+💡 Both tests finish in a few minutes and produce logs and outputs under the specified `--outdir`.
+
+> 🚫 **Note**: These are functional tests only, not for biological analysis.
+
+
+### 2.2 Prerequisites
+We recommend preparing all software environments and databases in advance:
+
+- See [Environment Guide](docs/dependencies.md) for setting up Conda and required tools.
+- See [Database Guide](docs/database.md) for downloading and configuring necessary reference data.
+
+ 
+### 2.3 Installation
 
 1. **Clone the repository:**
   ```bash
    git clone https://github.com/01life/MetaflowX.git
   ```
+
+### 2.4 Environment & Database Check
+
+> [!NOTE]
+> If you are new to Nextflow and nf-core, check the [Nextflow installation guide](https://nf-co.re/docs/usage/installation). Ensure your setup passes the `-profile test` before processing real data.
+
+After installation, validate your full environment using built-in paired-end test data under `test/data/`:
+
+- `fullwork_test_sample1_reads1.fq.gz`, `fullwork_test_sample1_reads2.fq.gz`
+- `fullwork_test_sample2_reads1.fq.gz`, `fullwork_test_sample2_reads2.fq.gz`
+
+First, prepare an input file `reads.csv` (see [Basic Usage](#31-basic-usage)), then run:
+
+```bash
+nextflow run MetaflowX \
+   -profile <docker/singularity/conda/.../institute> \
+   --input reads.csv \
+   --outdir full_test
+```
+
+This run will:
+
+- Check tool availability
+- Verify database paths
+- Execute major pipeline steps
+
+> ⚠️ **Important**: Before running, ensure that the following configuration files are properly set:
+>
+> - `nextflow.config`: general defaults, database paths
+> - `conf/modules.config`: tool environments and options
+> - `conf/base.config`: compute resources (CPU, memory)
+>
+> ✅ Match the `-profile` flag to your local compute environment.
+
+> 💡 You can use `-profile slurm`, `-profile docker`, `-profile local`, etc.
+
+⏱️ This test may take several minutes depending on system specs.
+
+
+
 
 ## 3. How to run
 
@@ -108,20 +182,17 @@ For more details and further functionality, please refer to the [usage documenta
 > MetaflowX relies on plenty of tools and their databases. For detailed installation and configuration instructions, please refer to the [dependencies guide](docs/dependencies.md), [database guide](docs/database.md) and [version documentation](docs/version.md).
 
 
-### 3.2 Demo runs
-The `test` folder contains demo input file. These files consist of paired-end (PE) reads in FASTQ format. The following command is used to test mode1, which corresponds to the Quality Control (QC) function.
+### 3.2 Advance usage
 
-   ```bash
-   nextflow run MetaflowX \
-      -profile test \
-      --outdir test_result
-   ```
+MetaflowX supports:
+
+- Single-end and paired-end reads
+- Selective module execution using `--mode` and `--skip` parameters
+- Custom database paths and tool options
+
+See the [Usage Guide](docs/usage.md) for tutorials and advanced settings.
 
 
-
-### 3.3 Advance usage
-
-MetaflowX supports both single-ended and paired data processing, with flexible execution patterns including `skip` and `mode` patterns. The platform features advanced capabilities for database modifications and parameter customization. For comprehensive tutorials and implementation guidelines, please refer to our [Usage Documentation](docs/usage.md).
 
 
 ## 4. Output
@@ -153,35 +224,39 @@ The results generated by MetaflowX include the following sections:
 ✤ **Pipeline information**
 - pipeline_info 
 
-For more in-depth information on the Metaflow's results, refer to [Output Documentation](docs/output.md).
+See [Output Documentation](docs/output.md) for details.
+
+
 
 ## 5. Support
 
-Refer to the [MetaflowX tutorial](docs/usage.md) for an overview of analysis options and example runs.
+- Visit the [MetaflowX tutorial](docs/usage.md) for examples and explanations.
+- Check the [Changelog](CHANGELOG.md) for version history.
+- Report issues via the [GitHub Issues page](https://github.com/01life/MetaflowX/issues).
 
-See the [change log](CHANGELOG.md) for a detailed record of all updates, modifications, and improvements to MetaflowX.
 
-For any questions, please visit the [MetaflowX GitHub page](https://github.com/01life/MetaflowX/issues).
+
 
 
 ## 6. Credits
 
-MetaflowX was originally written by 👩‍💻Yang ying and 👩‍💻Liang lifeng.
+MetaflowX is developed by:
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+👩‍💻 Yang Ying  
+👩‍💻 Liang Lifeng  
 
-👨‍💻Long Shibin
-👨Xie hailiang
+With contributions and feedback from:
+
+👨‍💻 Long Shibin  
+👨 Xie Hailiang
 
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
 ## 7. Citations
 
-If you use nf-core/mag for your analysis, please cite the preprint as follows:
+If you use MetaflowX in your research, please cite:
 
 > **MetaflowX: A Scalable and Resource-Efficient Workflow for Multi-Strategy Metagenomic Analysis**
->
 
+For all third-party tools used, refer to [`CITATIONS.md`](CITATIONS.md).
 
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.

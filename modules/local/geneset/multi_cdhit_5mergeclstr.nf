@@ -18,4 +18,9 @@ process MEGRCLSTR {
 
     """
 
+    stub:
+    """
+    touch  ${clstr_num}_sub.clstr
+    """
+
 }

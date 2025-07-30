@@ -46,6 +46,11 @@ process DEEPURIFYCLEAN {
 
 
     """
+    stub:
+    """
+    mkdir ${id}_deepurify_bin
+    """
+
 
 }
 
@@ -65,13 +70,13 @@ process DEEPURIFYCLEANRENAME {
     task.ext.when == null || task.ext.when
 
     script:
-    def options = params.deepurify_clean_options ?: ""
 
     """
-
     bra_deepurify_rename_bin.py --deepurify_dir ${deepurify_raw} --rename_dir ${id}_Deepurify_rename_bin  --metaInfo  ${deepurify_raw}/MetaInfo.tsv --binid ${id}
-
-
     """
 
+    stub:
+    """
+    mkdir ${id}_Deepurify_rename_bin
+    """
 }

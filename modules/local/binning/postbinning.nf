@@ -29,5 +29,12 @@ process POSTBINNING {
     cp 050.HQRawBin/${params.pipeline_prefix}_all_Original_Bins_all_level_quality.xls binQS_report/rawbinQS.xls
 
     """
+    stub:
+    """
+    mkdir -p 050.HQRawBin/HQBin
+    touch 050.HQRawBin/HQBin/bin1.fa
+    mkdir binQS_report
+    touch 050.HQRawBin/${params.pipeline_prefix}_all_Original_Bins_all_level_quality.xls
+    """
 
 }

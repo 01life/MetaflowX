@@ -5,8 +5,7 @@ process POSTPIPELINE {
     label 'process_low'
 
     input:
-    path(report)
-    tuple val(id),path(reads)
+    tuple val(id),path(reads),path(report)
 
     output:
     path("${id}/*")
@@ -22,6 +21,14 @@ process POSTPIPELINE {
 
     echo "OK" > status.txt
 
+    """
+
+    stub:
+    """
+    mkdir ${id}
+    touch ${id}/reads.fq.gz
+    touch ${id}/report.txt
+    touch ${id}/status.txt
     """
 
 }

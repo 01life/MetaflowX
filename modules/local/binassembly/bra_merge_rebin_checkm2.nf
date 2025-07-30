@@ -17,7 +17,6 @@ process MERGEREBINCHECKM2 {
     script:
    
     """
-
     # Get the first filename in the rebinCheckm2 directory and write its first line to c1.
     head -n 1 "\$(ls ${rebinCheckm2} | head -n 1)" > c1
 
@@ -34,7 +33,10 @@ process MERGEREBINCHECKM2 {
 
 
     cat ${improve} > ReBin_improve_info.txt
-
-
+    """
+    stub:
+    """
+    touch ReAss_ReBin_checkm2.txt
+    touch ReBin_improve_info.txt
     """
 }

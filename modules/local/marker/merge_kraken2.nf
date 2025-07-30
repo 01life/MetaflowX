@@ -34,4 +34,12 @@ process MERGEKRAKEN2 {
     cp kraken.sunburst.txt kraken_report/krakenspecies.txt
     
     """
+    stub:
+    """
+    touch ${params.pipeline_prefix}_Kraken2_species.xls
+    touch kraken.sunburst.txt
+    mkdir kraken_report
+
+    """ 
+
 }

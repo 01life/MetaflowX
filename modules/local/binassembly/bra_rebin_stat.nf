@@ -31,5 +31,11 @@ process REBINSTAT {
     #cp ${params.pipeline_prefix}_${type}_bins_info.xls REBINSTAT_report/reasbinInfo.xls
 
     """
+    
+    stub:
+    """
+    touch ${params.pipeline_prefix}_${type}_bins_info.xls
+    mkdir Reassembly_Bins
+    """
 
 }

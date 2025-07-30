@@ -9,9 +9,9 @@ process BINNY {
     tuple val(id),path(contigs),path(sorted_bam)
 
     output:
-    tuple val(id),path("${id}/bins/",type:'dir'),emit:"bins"
-    tuple val(id),path("binny.contigs2bin.tsv"),emit:"tsv"
-
+    tuple val(id),path("${id}/bins/",type:'dir'), emit:"bins", optional: true
+    tuple val(id),path("binny.contigs2bin.tsv"), emit:"tsv", optional: true
+    tuple val(id),path("${id}_binny_BinsContigs.tsv"), emit:"BinsContigs", optional: true
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,10 +23,10 @@ process BINNY {
     
     template_binny.py -f ${contigs} -b ${sorted_bam} -o \$PWD/${id} > ${id}.binny.yaml
     
-    ${params.binny_path}/binny -l ${id}.binny.yaml -t ${task.cpus} ${options}
+    ${params.binny_path}/binny -l ${id}.binny.yaml -t ${task.cpus} ${options} || echo "BINNY task for sample ${id} failed ......" > ${id}.log
 
     finish=0
-    if [ -d "${id}/bins" ] ; then      
+    if [ -d "${id}/bins" ] && [ ! -e "${id}.log" ]; then      
         finish=\$((ls -1 "./${id}/bins") | wc -l)
     fi
 
@@ -40,12 +40,20 @@ process BINNY {
 
         #sed -i 's%\\tbin%\\t${id}%g' binny.contigs2bin.tsv
 
-    else
-        touch binny.contigs2bin.tsv
+        awk -F "\\t" '{print\$2"\\t"\$1"\\tbinny"}' binny.contigs2bin.tsv  > ${id}_binny_BinsContigs.tsv
+
     fi
     
     rm -rf ${id}/intermediary ${id}/contig_data.tsv.gz
 
+    """
+
+    stub:
+    """
+    mkdir -p ${id}/bins
+    touch ${id}.log
+    touch binny.contigs2bin.tsv
+    touch ${id}_binny_BinsContigs.tsv
     """
 
 }
