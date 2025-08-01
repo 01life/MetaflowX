@@ -65,7 +65,7 @@ def getNewID(idF):
     with open(idF,'r') as idFile:
         for ii in idFile:
             iline = ii.strip().split('\t')
-            newIDDir[iline[-1]] =  iline[0]
+            newIDDir[iline[0]] =  iline[1]
 
 
 #dir[unique]=[ko]
@@ -176,21 +176,20 @@ def main():
     
     needFunction={1: pars['databaseName'] }
 
-    commond1 = 'cut -f 2,3 ' + pars['geneIDinfo'] + '> '+ pars['geneIDinfo']+'.tmp'
-    os.system(commond1)
 
     #1 get new old gene id pair
-    getNewID(pars['geneIDinfo']+'.tmp')
+    getNewID(pars['geneIDinfo'])
 
     #2 get gene cluster reprsent info
     geneClusterDir = getGeneCluster(pars['geneCdhitCluster'])
 
-
-
     allgeneNewDir,contigGeneDir={},{}
     for g in geneClusterDir:
-        re=geneClusterDir[g]
-        re_newID = newIDDir[re]
+        re = geneClusterDir[g]
+        re_newID = newIDDir.get(re, None)  # 安全访问
+        if re_newID is None:
+            continue  # 跳过或记录日志
+        
         allgeneNewDir[g] = re_newID
         gg =  g.strip().split("|")
         contigID ="%s|%s" % (gg[0],gg[-1].split('_')[0])

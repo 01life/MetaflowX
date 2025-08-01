@@ -136,7 +136,15 @@ export CHECKM2DB="/path/to/database/uniref100.KO.1.dmnd"
 conda activate deepurify
 pip install Deepurify==2.3.7
 ```
+For more detailes refer to the [official instructions](https://github.com/zoubohao/Deepurify).
 
+
+### 2.9 Vamb
+```
+conda create -c bioconda vamb -n vamb
+```
+
+For more detailes refer to the [official instructions](https://vamb.readthedocs.io/en/latest/index.html).
 
 
 ## 3. Configuration

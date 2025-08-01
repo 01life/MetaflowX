@@ -22,6 +22,7 @@
 </p>
 
 
+
 ## Contents
 
 - [1. Pipeline Summary](#1-pipeline-summary)
@@ -60,21 +61,23 @@ For module-level details, see [Module Description](docs/modules.md).
 
 If **Nextflow** is already installed, you can quickly validate MetaflowX using demo tests:
 
-1. Clone the repository:
+**1. Clone the repository:**
 
 
 ```bash
 git clone https://github.com/01life/MetaflowX.git
 ```
 
-2. Run either of the following tests:
+**2. Run either of the following tests:**
 
 #### 1️⃣ Test 1: Full pipeline dry run using `stub` mode (no Docker or Conda required)
 
-This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). It requires **only Nextflow**, no Docker or Conda.
+This test runs the full pipeline structure with small input and stubbed commands (logic is tested, but real computation is skipped). 
+
+It requires **only Nextflow**, no Docker or Conda.
 
 ```bash
-nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1.out
+nextflow run MetaflowX -stub -profile test_stub --outdir stub_remote
 ```
 
 #### 2️⃣ Test 2: Run a single module (`nf-core/fastp` only, requires **Docker**)
@@ -82,12 +85,19 @@ nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1
 This test runs the built-in `nf-core/fastp` module with a demo input. It requires **Docker**.
 
 ```bash
-nextflow -bg run MetaflowX -profile test --outdir remote > remote.out
+nextflow run MetaflowX -profile test --outdir remote 
 ```
 
 💡 Both tests finish in a few minutes and produce logs and outputs under the specified `--outdir`.
 
-> 🚫 **Note**: These are functional tests only, not for biological analysis.
+> [!NOTE]
+> If you want to run the Nextflow pipeline in the background, you can add the `-bg` option:
+>
+> ```bash
+> nextflow run -bg MetaflowX -profile test --outdir remote > remote.out
+> ```
+>
+> ⚠️ These are functional tests only, not for biological analysis.
 
 
 ### 2.2 Prerequisites
@@ -129,19 +139,18 @@ This run will:
 - Verify database paths
 - Execute major pipeline steps
 
-> ⚠️ **Important**: Before running, ensure that the following configuration files are properly set:
+> [!IMPORTANT]
+> ⚠️ Before running, ensure that the following configuration files are properly set:
 >
 > - `nextflow.config`: general defaults, database paths
 > - `conf/modules.config`: tool environments and options
 > - `conf/base.config`: compute resources (CPU, memory)
 >
 > ✅ Match the `-profile` flag to your local compute environment.
-
+>
 > 💡 You can use `-profile slurm`, `-profile docker`, `-profile local`, etc.
 
 ⏱️ This test may take several minutes depending on system specs.
-
-
 
 
 ## 3. How to run
@@ -182,7 +191,7 @@ For more details and further functionality, please refer to the [usage documenta
 > MetaflowX relies on plenty of tools and their databases. For detailed installation and configuration instructions, please refer to the [dependencies guide](docs/dependencies.md), [database guide](docs/database.md) and [version documentation](docs/version.md).
 
 
-### 3.2 Advance usage
+### 3.2 Advanced Usage
 
 MetaflowX supports:
 
@@ -190,9 +199,9 @@ MetaflowX supports:
 - Selective module execution using `--mode` and `--skip` parameters
 - Custom database paths and tool options
 
-See the [Usage Guide](docs/usage.md) for tutorials and advanced settings.
+📖 For a full overview of available parameters and advanced configuration, see the [Usage Guide](docs/usage.md).
 
-
+📘 For practical examples of common execution modes and corresponding commands, refer to the [Execution Guide](docs/Execution_Modes/execution_guide.md).
 
 
 ## 4. Output
@@ -239,17 +248,19 @@ See [Output Documentation](docs/output.md) for details.
 
 
 ## 6. Credits
+❤️ MetaflowX was developed with support from 01Life. ️
 
 MetaflowX is developed by:
 
-👩‍💻 Yang Ying  
+👩‍💻 Yang Ying
+
 👩‍💻 Liang Lifeng  
 
 With contributions and feedback from:
 
-👨‍💻 Long Shibin  
 👨 Xie Hailiang
 
+👨‍💻 Long Shibin  
 
 
 ## 7. Citations

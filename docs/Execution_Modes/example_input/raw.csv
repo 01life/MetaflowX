@@ -1,0 +1,3 @@
+id,raw_reads1,raw_reads2
+sample_0,/Your/RawReads/Path/sample_0/reads_1.fq.gz,/Your/RawReads/Path/sample_0/reads_2.fq.gz
+sample_10,/Your/RawReads/Path/sample_10/reads_1.fq.gz,/Your/RawReads/Path/sample_10/reads_2.fq.gz
