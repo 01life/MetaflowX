@@ -96,9 +96,7 @@ nextflow run MetaflowX -profile test --outdir remote
 > ```bash
 > nextflow run -bg MetaflowX -profile test --outdir remote > remote.out
 > ```
-
-
-> [!NOTE]
+>
 > ⚠️ These are functional tests only, not for biological analysis.
 
 
@@ -254,12 +252,14 @@ See [Output Documentation](docs/output.md) for details.
 
 MetaflowX is developed by:
 
-👩‍💻 Yang Ying  
+👩‍💻 Yang Ying
+
 👩‍💻 Liang Lifeng  
 
 With contributions and feedback from:
 
 👨 Xie Hailiang
+
 👨‍💻 Long Shibin  
 
 
