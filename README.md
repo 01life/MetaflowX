@@ -201,7 +201,7 @@ MetaflowX supports:
 
 📖 For a full overview of available parameters and advanced configuration, see the [Usage Guide](docs/usage.md).
 
-📘 For practical examples of common execution modes and corresponding commands, refer to the [Execution Guide]().
+📘 For practical examples of common execution modes and corresponding commands, refer to the [Execution Guide](docs/Execution_Modes/execution_guide.md).
 
 
 ## 4. Output
