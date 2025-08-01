@@ -1,0 +1,3 @@
+id,clean_reads1,clean_reads2,contig
+sample_0,/Your/CleanReads/Path/sample_0/sample_0_clean_1.fq.gz,/Your/CleanReads/Path/sample_0/sample_0_clean_2.fq.gz,/Your/02.Contigs/Path/sample_0/sample_0_final.contigs.fa
+sample_10,/Your/CleanReads/Path/sample_10/sample_10_clean_1.fq.gz,/Your/CleanReads/Path/sample_10/sample_10_clean_2.fq.gz,/Your/02.Contigs/Path/sample_10/sample_10_final.contigs.fa

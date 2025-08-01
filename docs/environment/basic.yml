@@ -5,7 +5,7 @@ channels:
   - main
   - defaults
 dependencies:
-  - python>=3.10
+  - python=3.10
   - bedtools=2.31.0
   - biopython=1.78
   - blast=2.14.1
@@ -62,7 +62,6 @@ dependencies:
   - r-readr
   - r-funr
   - r-digest
-  - vamb
   - galah=0.4.2
   - pandas
   - pip:

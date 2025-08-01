@@ -22,6 +22,7 @@
 </p>
 
 
+
 ## Contents
 
 - [1. Pipeline Summary](#1-pipeline-summary)
@@ -74,7 +75,7 @@ git clone https://github.com/01life/MetaflowX.git
 This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). It requires **only Nextflow**, no Docker or Conda.
 
 ```bash
-nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1.out
+nextflow run MetaflowX -stub -profile test_stub --outdir stub_remote
 ```
 
 #### 2️⃣ Test 2: Run a single module (`nf-core/fastp` only, requires **Docker**)
@@ -82,10 +83,19 @@ nextflow -bg run MetaflowX -stub -profile test_stub --outdir stub_remote > stub1
 This test runs the built-in `nf-core/fastp` module with a demo input. It requires **Docker**.
 
 ```bash
-nextflow -bg run MetaflowX -profile test --outdir remote > remote.out
+nextflow run MetaflowX -profile test --outdir remote 
 ```
 
 💡 Both tests finish in a few minutes and produce logs and outputs under the specified `--outdir`.
+
+> [!NOTE]
+> If you want to run the Nextflow pipeline in the background, you can add the `-bg` option:
+>
+> ```bash
+> nextflow run -bg MetaflowX -profile test --outdir remote > remote.out
+> ```
+
+
 
 > 🚫 **Note**: These are functional tests only, not for biological analysis.
 
@@ -182,7 +192,7 @@ For more details and further functionality, please refer to the [usage documenta
 > MetaflowX relies on plenty of tools and their databases. For detailed installation and configuration instructions, please refer to the [dependencies guide](docs/dependencies.md), [database guide](docs/database.md) and [version documentation](docs/version.md).
 
 
-### 3.2 Advance usage
+### 3.2 Advanced Usage
 
 MetaflowX supports:
 
@@ -190,7 +200,13 @@ MetaflowX supports:
 - Selective module execution using `--mode` and `--skip` parameters
 - Custom database paths and tool options
 
+📖 For a full overview of available parameters and advanced configuration, see the [Usage Guide](docs/usage.md).
+
+📘 For practical examples of common execution modes and corresponding commands, refer to the [Execution Guide]().
+
 See the [Usage Guide](docs/usage.md) for tutorials and advanced settings.
+
+👉 For common execution scenarios and command templates, see the [📘 Execution Guide](docs/Execution_Modes/execution_guide.md).
 
 
 
@@ -239,6 +255,7 @@ See [Output Documentation](docs/output.md) for details.
 
 
 ## 6. Credits
+> ❤️ MetaflowX was developed with support from 01Life. ️
 
 MetaflowX is developed by:
 
