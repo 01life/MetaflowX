@@ -14,14 +14,14 @@ All commands are executed via Nextflow and support both local and cluster enviro
 ## Contents
 
 <!-- toc -->
-- [📂 Input File Format Guide](#📂-input-file-format-guide)
-- [🧭 Execution Scenarios and Command Templates](#🧭-execution-scenarios-and-command-templates)
-  - [🔹 mode0: One-click Execution of Multiple Modules](#🔹-mode0-one-click-execution-of-multiple-modules)
-  - [🔹 mode1: Quality Control](#🔹-mode1-quality-control)
-  - [🔹 mode2: Assembly](#🔹-mode2-assembly)
-  - [🔹 mode3: Reference-based Taxonomic Profiling](#🔹-mode3-reference-based-taxonomic-profiling)
-  - [🔹 mode4: Gene Set Construction and Annotation](#🔹-mode4-gene-set-construction-and-annotation)
-  - [🔹 mode5: MAG Construction and Annotation](#🔹-mode5-mag-construction-and-annotation)
+- [📂 Input File Format Guide](#-input-file-format-guide)
+- [🧭 Execution Scenarios and Command Templates](#-execution-scenarios-and-command-templates)
+  - [🔹 mode0: One-click Execution of Multiple Modules](#-mode0-one-click-execution-of-multiple-modules)
+  - [🔹 mode1: Quality Control](#-mode1-quality-control)
+  - [🔹 mode2: Assembly](#-mode2-assembly)
+  - [🔹 mode3: Reference-based Taxonomic Profiling](#-mode3-reference-based-taxonomic-profiling)
+  - [🔹 mode4: Gene Set Construction and Annotation](#-mode4-gene-set-construction-and-annotation)
+  - [🔹 mode5: MAG Construction and Annotation](#-mode5-mag-construction-and-annotation)
 <!-- tocstop -->
 
 ## 📂 Input File Format Guide
