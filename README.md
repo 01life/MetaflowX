@@ -61,18 +61,19 @@ For module-level details, see [Module Description](docs/modules.md).
 
 If **Nextflow** is already installed, you can quickly validate MetaflowX using demo tests:
 
-1. Clone the repository:
+**1. Clone the repository:**
 
 
 ```bash
 git clone https://github.com/01life/MetaflowX.git
 ```
 
-2. Run either of the following tests:
+**2. Run either of the following tests:**
 
 #### 1️⃣ Test 1: Full pipeline dry run using `stub` mode (no Docker or Conda required)
 
-This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). 
+This test runs the full pipeline structure with small input and stubbed commands (logic is tested, but real computation is skipped). 
+
 It requires **only Nextflow**, no Docker or Conda.
 
 ```bash
@@ -97,8 +98,8 @@ nextflow run MetaflowX -profile test --outdir remote
 > ```
 
 
-
-> 🚫 **Note**: These are functional tests only, not for biological analysis.
+> [!NOTE]
+> ⚠️ These are functional tests only, not for biological analysis.
 
 
 ### 2.2 Prerequisites
@@ -140,19 +141,18 @@ This run will:
 - Verify database paths
 - Execute major pipeline steps
 
-> ⚠️ **Important**: Before running, ensure that the following configuration files are properly set:
+> [!IMPORTANT]
+> ⚠️ Before running, ensure that the following configuration files are properly set:
 >
 > - `nextflow.config`: general defaults, database paths
 > - `conf/modules.config`: tool environments and options
 > - `conf/base.config`: compute resources (CPU, memory)
 >
 > ✅ Match the `-profile` flag to your local compute environment.
-
+>
 > 💡 You can use `-profile slurm`, `-profile docker`, `-profile local`, etc.
 
 ⏱️ This test may take several minutes depending on system specs.
-
-
 
 
 ## 3. How to run
@@ -250,7 +250,7 @@ See [Output Documentation](docs/output.md) for details.
 
 
 ## 6. Credits
-> ❤️ MetaflowX was developed with support from 01Life. ️
+❤️ MetaflowX was developed with support from 01Life. ️
 
 MetaflowX is developed by:
 
@@ -259,9 +259,8 @@ MetaflowX is developed by:
 
 With contributions and feedback from:
 
-👨‍💻 Long Shibin  
 👨 Xie Hailiang
-
+👨‍💻 Long Shibin  
 
 
 ## 7. Citations
