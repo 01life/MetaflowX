@@ -72,7 +72,8 @@ git clone https://github.com/01life/MetaflowX.git
 
 #### 1️⃣ Test 1: Full pipeline dry run using `stub` mode (no Docker or Conda required)
 
-This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). It requires **only Nextflow**, no Docker or Conda.
+This test runs the **full pipeline structure** with small input and stubbed commands (logic is tested, but real computation is skipped). 
+It requires **only Nextflow**, no Docker or Conda.
 
 ```bash
 nextflow run MetaflowX -stub -profile test_stub --outdir stub_remote
@@ -203,12 +204,6 @@ MetaflowX supports:
 📖 For a full overview of available parameters and advanced configuration, see the [Usage Guide](docs/usage.md).
 
 📘 For practical examples of common execution modes and corresponding commands, refer to the [Execution Guide]().
-
-See the [Usage Guide](docs/usage.md) for tutorials and advanced settings.
-
-👉 For common execution scenarios and command templates, see the [📘 Execution Guide](docs/Execution_Modes/execution_guide.md).
-
-
 
 
 ## 4. Output
