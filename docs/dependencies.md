@@ -18,6 +18,7 @@ For installing and managing the software in this pipeline, we recommend using [`
     - [2.6 COMEBin](#26-comebin)
     - [2.7 binny](#27-binny)
     - [2.8 Deepurify](#28-deepurify)
+    - [2.9 Vamb](#29-vamb)
 - [3. Configuration](#3-configuration)
 
 ## 1. Basic tools
@@ -27,14 +28,6 @@ Most of the tools that the workflow depends on can be installed in the same cond
 ``` bash
 conda env create -f basic.yml -n MetaflowX
 ```
-
-
-**Set the environment variable to the directory containing the GTDB-Tk reference data**
-
-``` bash
-conda env config vars set GTDBTK_DATA_PATH="/path/to/conda_env/gtdbtk_db" -n MetaflowX
-```
-
 
 ## 2. Specific tools
 
@@ -184,16 +177,8 @@ withName: METABINNER {
     conda = "/path/to/conda_env/metabinner"
 }
 
-withName: DASTOOL {
-    conda = "/path/to/conda_env/dastool"
-}
-
 withName: ANTISMASH {
     conda = "/path/to/conda_env/antismash"
-}
-
-withName: GTDB {
-    conda = "/path/to/conda_env/gtdbtk"
 }
 
 ```

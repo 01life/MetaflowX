@@ -121,15 +121,15 @@ We recommend preparing all software environments and databases in advance:
 
 After installation, validate your full environment using built-in paired-end test data under `test/data/`:
 
-- `fullwork_test_sample1_reads1.fq.gz`, `fullwork_test_sample1_reads2.fq.gz`
-- `fullwork_test_sample2_reads1.fq.gz`, `fullwork_test_sample2_reads2.fq.gz`
+- `Sample1_R1.fq.gz`, `Sample1_R2.fq.gz`
+- `Sample2_R1.fq.gz`, `Sample2_R2.fq.gz`
 
-First, prepare an input file `reads.csv` (see [Basic Usage](#31-basic-usage)), then run:
+First, prepare an input file `samplesheet.csv` (see [Basic Usage](#31-basic-usage)), then run:
 
 ```bash
 nextflow run MetaflowX \
    -profile <docker/singularity/conda/.../institute> \
-   --input reads.csv \
+   --input samplesheet.csv \
    --outdir full_test
 ```
 

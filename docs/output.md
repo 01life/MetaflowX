@@ -270,10 +270,10 @@ This part contains data on species annotations, genes present within the bins, a
     - `bins/`
       - `binID/`
         - `binID_reassembly_contigs.fa`
-    - `MetaFlowX_Bins_Reassembly_Deepurify_info.xls`
+    - `MetaflowX_Bins_Reassembly_Deepurify_info.xls`
   - `After_Refine_bin_CheckM2_info.txt`
   - `Deepurify_COBRA_Refine_bin_choose_info.txt`
-  - `MetaFlowX_select2refine_bin_info.xls`
+  - `MetaflowX_select2refine_bin_info.xls`
 
 </details>
 
