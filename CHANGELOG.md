@@ -3,9 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# Changelog for MetaflowX v1.0.0
+# Changelog for MetaflowX v0.1.0
 
-## v1.0.0 - [2024-11-05]
+## v0.1.0 - [2024-11-05]
 ### Initial Release
 We are excited to announce the first official release of MetaflowX! MetaflowX is an innovative workflow management tool that merges the power of Nextflow with the flexibility of Python, offering efficient and scalable solutions for data pipelines. Below are the key features and highlights of version v1.0.0:
 
@@ -30,3 +30,18 @@ We are excited to announce the first official release of MetaflowX! MetaflowX is
 ---
 
 For more detailed documentation and usage guides, please visit the 🚀 [MetaflowX User Manual](README.md).
+
+# Changelog for MetaflowX v1.0.0
+
+## v1.0.0 - [2025-08-04]
+We are excited to announce the first official release of MetaflowX v1.0.0! This update brings major improvements and new features to the MetaflowX ecosystem.
+
+Key updates include:
+
+- Added a stub test and demo pipeline for simplified validation and quick-start testing
+
+- Updated the PBO and SBO modules with improved performance and compatibility
+
+- Enhanced support for multi-threaded CD-HIT, enabling faster and more scalable clustering
+
+- Integrated new binning and MAG evaluation tools: MAGScoT, Galah, Vamb, and MetaDecoder
