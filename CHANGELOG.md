@@ -39,9 +39,6 @@ We are excited to announce the first official release of MetaflowX v1.0.0! This 
 Key updates include:
 
 - Added a stub test and demo pipeline for simplified validation and quick-start testing
-
 - Updated the PBO and SBO modules with improved performance and compatibility
-
 - Enhanced support for multi-threaded CD-HIT, enabling faster and more scalable clustering
-
 - Integrated new binning and MAG evaluation tools: MAGScoT, Galah, Vamb, and MetaDecoder
