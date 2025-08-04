@@ -926,28 +926,24 @@
                 },
                 "kegg_db_category": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/ko_category.txt",
                     "description": "Category information of KEGG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "go_db_category": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/GO_ontology.txt",
                     "description": "Category information of GO database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cazy_db_category": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cazy_category.txt",
                     "description": "Category information of CAZy database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
                 },
                 "cog_db_category": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/db/cog_level.txt",
                     "description": "Category information of COG database",
                     "fa_icon": "fas fa-file-alt",
                     "format": "file-path"
@@ -1192,22 +1188,18 @@
             "properties": {
                 "report_topic": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/topic.txt",
                     "description": "Path to topic information file"
                 },
                 "report_order": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/report.order.txt",
                     "description": "Path to figure order file"
                 },
                 "report_template": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/template_V20240307.html",
                     "description": "Path to HTML template file"
                 },
                 "report_images": {
                     "type": "string",
-                    "default": "/aimigene/yangying/pipeline/nf-core-metaflowx-public/assets/report/img",
                     "description": "Path to images of HTML template"
                 }
             }
