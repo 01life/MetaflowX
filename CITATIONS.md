@@ -1,4 +1,4 @@
-# nf-core/metaflowx: Citations
+# MetaflowX: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
@@ -7,6 +7,10 @@
 ## [Nextflow](https://pubmed.ncbi.nlm.nih.gov/28398311/)
 
 > Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. Nextflow enables reproducible computational workflows. Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. PubMed PMID: 28398311.
+
+## [nf-core platform paper](https://pubmed.ncbi.nlm.nih.gov/40731283/)
+> Langer BE, Amaral A, Baudement MO, Bonath F et al. Empowering bioinformatics communities with Nextflow and nf-core. Genome Biol. 2025 Jul 29;26(1):228. doi:10.1186/s13059-025-03673-9. PubMed PMID: 40731283.
+
 
 ## Pipeline tools
 

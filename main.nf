@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/metaflowx
+    MetaflowX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/01life/MetaflowX
 ----------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ include { CUSTOMREASSEMBLY } from './workflows/customreassembly'
 include { FASTPTEST } from './workflows/fastptest'
 
 //
-// WORKFLOW: Run main nf-core/metassembly analysis pipeline
+// WORKFLOW: Run main MetaflowX analysis pipeline
 //
 workflow NFCORE_METASSEMBLY {
 

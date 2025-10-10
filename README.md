@@ -1,10 +1,5 @@
-<h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-MetaflowX_logo_dark.png">
-    <img alt="nf-core MetaflowX Logo" src="docs/images/nf-core-MetaflowX_logo_light.png" style="width: 75%; height: auto;">
-  </picture>
-</h1>
 
+# MetaflowX User Manual
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -13,12 +8,11 @@
 [![run with slurm](https://img.shields.io/badge/run%20with-slurm-1AAEE8.svg?labelColor=000000)](https://www.schedmd.com)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.14166585-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.14166585)
 
-# MetaflowX User Manual
 
 **MetaflowX** is a scalable and modular metagenomics analysis pipeline powered by Nextflow. It supports both short-read and contig-based inputs and automates key analyses such as taxonomic profiling, functional annotation, gene catalog construction, and MAG recovery.
 
 <p align="center">
-    <img src="docs/images/workflow.png" alt="nf-core-metassembly workflow overview" width="100%"  height="auto">
+    <img src="docs/images/workflow.png" alt="MetaflowX workflow overview" width="100%"  height="auto">
 </p>
 
 
@@ -176,10 +170,6 @@ nextflow run MetaflowX \
    --outdir <OUTDIR>
 ```
 
-> [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
-
 For more details and further functionality, please refer to the [usage documentation](docs/usage.md). You can use the following command to see all the parameters of the pipeline.
 
    ```bash
@@ -267,7 +257,21 @@ With contributions and feedback from:
 
 If you use MetaflowX in your research, please cite:
 
-> **MetaflowX: A Scalable and Resource-Efficient Workflow for Multi-Strategy Metagenomic Analysis**
+> Xia Y, Liang L, Wang X, et al. MetaflowX: a scalable and resource-efficient workflow for multi-strategy metagenomic analysis[J]. Nucleic Acids Research, 2025, 53(18): gkaf954.
 
 For all third-party tools used, refer to [`CITATIONS.md`](CITATIONS.md).
 
+
+
+
+## 8. Acknowledgements
+
+This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE). We gratefully acknowledge the nf-core community for their tooling, framework, and support, which have been essential to the development of this pipeline.
+
+> The nf-core framework for community-curated bioinformatics pipelines.  
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.  
+> *Nat Biotechnol.* 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://doi.org/10.1038/s41587-020-0439-x).
+
+> Empowering bioinformatics communities with Nextflow and nf-core.  
+> Langer, B.E., Amaral, A., Baudement, M.O., Bonath, F. et al.  
+> *Genome Biol.* 26, 228 (2025). doi: [10.1186/s13059-025-03673-9](https://doi.org/10.1186/s13059-025-03673-9).

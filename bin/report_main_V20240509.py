@@ -1264,7 +1264,7 @@ def plotAllResult(reportFile,templateHTML):
             
     reference = resultPlottxtDir['reference']
 
-    with open(imgPath+"/nf-core-logo-square.png", "rb") as img_file:
+    with open(imgPath+"/MetaflowX_logo.png", "rb") as img_file:
         logoB64 = base64.b64encode(img_file.read()).decode()
 
     with open(imgPath+"/MetaFlowX.png", "rb") as img_file2:

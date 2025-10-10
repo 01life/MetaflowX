@@ -1,7 +1,3 @@
-//
-// This file holds several functions used within the nf-core pipeline template.
-//
-
 import org.yaml.snakeyaml.Yaml
 
 class NfcoreTemplate {
@@ -26,8 +22,7 @@ class NfcoreTemplate {
             log.warn "[$workflow.manifest.name] You are attempting to run the pipeline without any custom configuration!\n\n" +
                     "This will be dependent on your local compute environment but can be achieved via one or more of the following:\n" +
                     "   (1) Using an existing pipeline profile e.g. `-profile docker` or `-profile singularity`\n" +
-                    "   (2) Using an existing nf-core/configs for your Institution e.g. `-profile crick` or `-profile uppmax`\n" +
-                    "   (3) Using your own local custom config e.g. `-c /path/to/your/custom.config`\n\n" +
+                    "   (2) Using your own local custom config e.g. `-c /path/to/your/custom.config`\n\n" +
                     "Please refer to the quick start section and usage docs for the pipeline.\n "
         }
     }
@@ -315,22 +310,16 @@ class NfcoreTemplate {
     }
 
     //
-    // nf-core logo
+    // MetaflowX logo
     //
     public static String logo(workflow, monochrome_logs) {
         Map colors = logColours(monochrome_logs)
         String workflow_version = NfcoreTemplate.version(workflow)
-        String.format(
-            """\n
-            ${dashedLine(monochrome_logs)}
-                                                    ${colors.green},--.${colors.black}/${colors.green},-.${colors.reset}
-            ${colors.blue}        ___     __   __   __   ___     ${colors.green}/,-._.--~\'${colors.reset}
-            ${colors.blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${colors.yellow}}  {${colors.reset}
-            ${colors.blue}  | \\| |       \\__, \\__/ |  \\ |___     ${colors.green}\\`-._,-`-,${colors.reset}
-                                                    ${colors.green}`._,._,\'${colors.reset}
-            ${colors.purple}  ${workflow.manifest.name} ${workflow_version}${colors.reset}
-            ${dashedLine(monochrome_logs)}
-            """.stripIndent()
-        )
+        String wf_name = workflow.manifest.name
+        return """
+    ${dashedLine(monochrome_logs)}
+    ${colors.purple}  MetaflowX — ${wf_name} ${workflow_version}${colors.reset}
+    ${dashedLine(monochrome_logs)}
+    """.stripIndent()
     }
 }

@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/metassembly/master/assets/schema_input.json",
-    "title": "nf-core/metassembly pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/01life/MetaflowX/refs/heads/main/assets/schema_input.json",
+    "title": "MetaflowX pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {

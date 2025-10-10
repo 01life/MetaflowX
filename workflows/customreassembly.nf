@@ -12,8 +12,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowMetassembly.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
-// Check input path parameters to see if they exist
 
 if(params.bin_genome_floder) { checkFaFiles(params.bin_genome_floder) }
 
@@ -25,9 +23,6 @@ if (params.outdir) { ch_output = new File(params.outdir).getAbsolutePath()  } el
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
 // include { EASYREASSEMBLY } from '../subworkflows/local/EASY_REASSEMBLY'
 include { INPUT_CHECK } from '../subworkflows/local/INPUT_CHECK'
 

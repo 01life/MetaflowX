@@ -1,7 +1,3 @@
-//
-// This file holds several functions specific to the workflow/metassembly.nf in the nf-core/metassembly pipeline
-//
-
 import groovy.text.SimpleTemplateEngine
 
 class WorkflowMetassembly {

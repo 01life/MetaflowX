@@ -9,8 +9,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowMetassembly.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
-// Check input path parameters to see if they exist
 
 def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
@@ -35,9 +33,6 @@ include { checkEssentialParams } from '../modules/local/common/utils'
 include { CONTIGFILTER } from '../modules/local/common/contig_filter'
 include { CONTIGSTAT } from '../modules/local/assembly/contig_stat'
 
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
 include { INPUT_CHECK } from '../subworkflows/local/INPUT_CHECK'
 include { QC } from '../subworkflows/local/QC'
 include { ASSEMBLY } from '../subworkflows/local/ASSEMBLY'
