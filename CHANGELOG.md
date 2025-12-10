@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+
+# Changelog for MetaflowX v1.0.2
+## v1.0.2 - [2025-12-10]
+
+### Changed
+- **QC**: update `fastp` parameter names for compatibility with Ubuntu Perl `rename`; add optional `ch_phix_db` input.
+- **Assembly**: skip samples with empty MEGAHIT outputs; set PBO task split threshold to 100 to reduce task count.
+- **Marker/functional**: align HUMAnN v4 and `merge_humann` modules with the public MetaflowX setup.
+- **Environment**: clarify `quast` handling in `basic.yml`; install MetaDecoder in a separate Conda environment. (#18)
+- **Docs**: update installation notes for CentOS-based dev environment, lack of Docker support, and minor adaptation needs on other Linux systems.
+
+
 # Changelog for MetaflowX v1.0.1
 
 ## v1.0.1 - [2025-10-10]

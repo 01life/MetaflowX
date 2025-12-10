@@ -63,7 +63,7 @@ process FASTP {
         """
 
     // Host-only removal
-    if (host_db && !phix_db) {
+    if (params.host_db && !params.phix_db) {
         removeCmd = """
         rmhost_with_bowtie2.py ${rmhostInput} -db ${host_db}/${params.host_db_index} \\
             -t ${task.cpus} -o ${id}_host ${bowtie2Options} 2>${id}_rmhost.log
@@ -72,7 +72,7 @@ process FASTP {
     }
 
     // Phix-only removal
-    if (phix_db && !host_db) {
+    if (params.phix_db && !params.host_db) {
         removeCmd = """
         rmhost_with_bowtie2.py ${rmhostInput} -db ${phix_db}/${params.phix_db_index} \\
             -t ${task.cpus} -o ${id}_phix ${bowtie2Options} 2>${id}_rmphix.log
@@ -81,7 +81,7 @@ process FASTP {
     }
 
     // Both host and phix removal in sequence
-    if (host_db && phix_db) {
+    if (params.host_db && params.phix_db) {
         removeCmd = """
         rmhost_with_bowtie2.py ${rmhostInput} -db ${host_db}/${params.host_db_index} \\
             -t ${task.cpus} -o ${id}_host ${bowtie2Options} 2>${id}_rmhost.log

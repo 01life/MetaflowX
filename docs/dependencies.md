@@ -6,6 +6,10 @@ Due to the intricate nature of bioinformatics tools, creating a single operation
 
 For installing and managing the software in this pipeline, we recommend using [`conda`](https://conda.io/miniconda.html) or [`mamba`](https://github.com/mamba-org/mamba). Detailed installation instructions can be found in the following content.
 
+> **Note:** Our development environment is based on **CentOS**, and users on other operating systems may need to adapt certain components accordingly (especially the use of `rename` in `MetaflowX/modules/local/qc/fastp.nf`).  
+> Docker cannot be provided because our development environment does not support it; however, the updated Conda-based installation using `basic.yml` has been fully tested.  
+> If you encounter software version conflicts, please contact us for assistance.
+
 
 ## Contents
 - [1. Basic tools](#1-basic-tools)
@@ -19,6 +23,10 @@ For installing and managing the software in this pipeline, we recommend using [`
     - [2.7 binny](#27-binny)
     - [2.8 Deepurify](#28-deepurify)
     - [2.9 Vamb](#29-vamb)
+    - [2.10 MetaDecoder](#210-metadecoder)
+    - [2.11 Galah](#211-galah)
+    - [2.12 QUAST](#212-quast)
+
 - [3. Configuration](#3-configuration)
 
 ## 1. Basic tools
@@ -138,6 +146,43 @@ conda create -c bioconda vamb -n vamb
 ```
 
 For more detailes refer to the [official instructions](https://vamb.readthedocs.io/en/latest/index.html).
+
+
+### 2.10 MetaDecoder
+```
+# You may need to install pip3 before. #
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+
+# You may need to install or upgrade setuptools and wheel using pip3 before. #
+pip3 install --upgrade setuptools wheel
+
+# Download and install MetaDecoder version 1.2.1 #
+pip3 install -U https://github.com/liu-congcong/MetaDecoder/releases/download/v1.2.1/metadecoder-1.2.1-py3-none-any.whl
+
+pip3 install numpy scipy scikit-learn threadpoolctl
+```
+
+For more detailes refer to the [official instructions](https://github.com/liu-congcong/MetaDecoder).
+
+
+### 2.11 Galah
+```
+conda create -c bioconda -c conda-forge galah=0.4.2 python=3.10 pandas fastani=1.34 -n galah
+```
+For more detailes refer to the [official instructions](https://github.com/wwood/galah).
+
+### 2.12 QUAST
+```
+mamba create -c bioconda quast==5.3.0
+
+#download the database
+
+quast-download-gridss                        
+quast-download-silva                           
+quast-download-busco 
+```
+For more detailes refer to the [official instructions](https://quast.sourceforge.net/docs/manual.html#sec1).
 
 
 ## 3. Configuration

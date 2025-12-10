@@ -30,7 +30,7 @@ workflow QC {
 
     ch_host_db = params2Channel(params.host_db)
     ch_adapters = params2Channel(params.adapters)
-    ch_phix_db = params2Channel(params.phix_db)
+    ch_phix_db = params.phix_db ? params2Channel(params.phix_db) : Channel.value([])
 
     fastp_json = Channel.empty()
 

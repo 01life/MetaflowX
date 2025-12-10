@@ -54,6 +54,7 @@ workflow ASSEMBLY {
         PIPELINEWARNING("Assembly", SWITCH2MEGAHIT.out.log.collect())
         ch_warning_log = PIPELINEWARNING.out.log
 
+        megahit_contigs = megahit_contigs.filter{ id, contigs -> contigs.size() > 0 }
         contigs = spades_contigs.concat(megahit_contigs)
         
     }

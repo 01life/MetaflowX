@@ -275,7 +275,7 @@ workflow BINNER {
             COMBINEBINNER(ch_combinebin_in)
             combine_bin_tsv = COMBINEBINNER.out.combine_bin_tsv
 
-            if(sample_number > 500){
+            if(sample_number > 100){
                 // [id,[folde1, .......]]
                 MULTICHECKM2(COMBINEBINNER.out.combine_bin_fa, ch_checkm2_db, "PBO")
                 ch_new_quality_report = MULTICHECKM2.out.new_quality_report
